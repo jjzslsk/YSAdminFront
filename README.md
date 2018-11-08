@@ -10,7 +10,7 @@ npm run dev
 ```
 浏览器访问 http://localhost:9528
 
-## 发布....1
+## 发布。。
 ```bash
 # 构建 测试环境
 npm run build:sit
