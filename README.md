@@ -12,7 +12,7 @@ npm run dev
 
 ## 发布
 ```bash
-# 构建测试环境
+# 构建 测试环境
 npm run build:sit
 
 # 构建生产环境
