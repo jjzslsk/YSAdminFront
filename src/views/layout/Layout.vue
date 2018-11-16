@@ -7,7 +7,7 @@
       <tags-view></tags-view>
       <app-main></app-main>
     </div>
-  </div>
+</div>
 </template>
 
 <script>

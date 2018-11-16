@@ -5,6 +5,7 @@ import {
 } from '@/utils/auth'
 //登录
 export function login(username, password) {
+  console.log (3)
   let para = {
     Code: 'Login',
     Data: JSON.stringify({

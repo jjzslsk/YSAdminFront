@@ -87,8 +87,8 @@ export default {
         if (valid) {
           console.log ('userlogin::',this.loginForm)
           this.$store.dispatch('Login', this.loginForm).then(res => {
-            // console.log('456789')
-            console.log('userlogin::',res)
+            console.log(7)
+            console.log('userlogin::res',res)
             this.$router.push({ path: '/dashboard/dashboard' })
           })
         }

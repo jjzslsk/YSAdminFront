@@ -249,6 +249,7 @@
     </el-dialog>
 
     <!--编辑界面-->
+    <edit></edit>
     <el-dialog title="编辑" :visible.sync="dialogFormVisibleEdit" :close-on-click-modal="false">
       <el-form :model="editForm" label-width="100px" :rules="editFormRules" ref="editForm">
         <el-form-item label="接口名称" prop="jiekoumingcheng">
@@ -304,12 +305,16 @@
 </template>
 
 <script>
+import edit from './edit'
 import store from "@/store/index.js"; //引入本地存储
 import util from "@/utils/table.js";
 import { paraHelper } from "@/utils/para.js"; //请求参数格式
 import { handlePost, handleGet } from "@/api/apihelper.js";
 
 export default {
+  components: {
+    edit
+  },
   data() {
     return {
       bllCode: {
