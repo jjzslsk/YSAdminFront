@@ -102,6 +102,7 @@ Vue.use(contentmenu)
 Vue.use(ElementUI, { locale })
 iconfontVersion.forEach(ele => {
   loadStyle(iconfontUrl.replace('$key', ele))
+  console.log ('replace',ele)
 })
 Vue.use(ElementUI, {
   size: 'medium', // set element-ui default size

@@ -138,10 +138,10 @@
                   </ul>
                 </li>
                 <!-- Tasks: style can be found in dropdown.less -->
-                <li class="dropdown tasks-menu">
+                <li class="dropdown tasks-menu" @click="logout">
                   <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                    <i class="fa fa-flag-o"></i>
-                    <span class="label label-danger">9</span>
+                    <i class="fa fa-sign-out"></i>
+                    <span class="label label-danger"></span>
                   </a>
                   <ul class="dropdown-menu">
                     <li class="header">You have 9 tasks</li>
@@ -270,7 +270,13 @@
 <script>
 export default {
     name:'headerTop',
-
+  methods: {
+        logout() {
+      this.$store.dispatch('LogOut').then(() => {
+        location.reload() // In order to re-instantiate the vue-router object to avoid bugs
+      })
+    }
+  }    
 }
 </script>
 

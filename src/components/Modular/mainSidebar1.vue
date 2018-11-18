@@ -1,20 +1,4 @@
 <template >
-<div>
-    <!-- <el-scrollbar wrapClass="scrollbar-wrapper">
-    <logo :isCollapse="isCollapse"></logo>
-    <el-menu
-      mode="vertical"
-      :show-timeout="200"
-      :default-active="$route.path"
-      :collapse="isCollapse"
-      background-color="#6959CD"
-      text-color="white"
-      active-text-color="#42b983"
-    >
-      <sidebar-item :routes="permission_routers"></sidebar-item>
-    </el-menu>
-  </el-scrollbar> -->
-
     <!-- Left side column. contains the logo and sidebar -->
         <aside class="main-sidebar">
           <!-- sidebar: style can be found in sidebar.less -->
@@ -44,6 +28,7 @@
             <template>
             <!-- sidebar menu: : style can be found in sidebar.less -->
             <ul class="sidebar-menu" data-widget="tree">
+          <sidebar-item :is-nest="true" class="nest-menu"></sidebar-item>
 
               <li class="header">MAIN NAVIGATION</li>
               <li class="active treeview">
@@ -219,24 +204,9 @@
           </section>
           <!-- /.sidebar -->
         </aside>
-
-  </div>
 </template>
 <script>
-import { mapGetters } from 'vuex'
-import SidebarItem from './../../views/layout/components/Sidebar/SidebarItem'
-import logo from './../../views/layout/components/Sidebar/logo'
 export default {
-  name:'mainSidebar',
-  components: { SidebarItem, logo },
-  computed: {
-    ...mapGetters([
-      'sidebar',
-      'permission_routers'
-    ]),
-    isCollapse() {
-      return !this.sidebar.opened
-    }
-  }
+  name:'mainSidebar'
 }
 </script>

@@ -1,13 +1,12 @@
 <template>
   <div id="app">
         <!--登入动画-->
-    <!-- <transition name="rotate-fall">
+    <transition name="rotate-fall">
     <router-view  class="app-router-view"></router-view>
-    </transition> -->
+    </transition>
       
-  <body class="hold-transition skin-blue sidebar-mini">
+  <!-- <body class="hold-transition skin-blue sidebar-mini">
      <div class="wrapper">
-       <header></header>
         <main-sidebar></main-sidebar>
         <header-top></header-top>
         <content-wrapper></content-wrapper>
@@ -15,7 +14,7 @@
         <control-sidebar></control-sidebar>
         <div class="control-sidebar-bg"></div>
       </div>
-  </body>
+  </body> -->
   </div>
 </template>
 <script>

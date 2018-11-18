@@ -29,6 +29,11 @@ export const constantRouterMap = [
     component: Layout,
     redirect: '/dashboard/dashboard'
   },
+  {
+    path: '/indexLte',
+    component: Layout,
+    redirect: '/indexLte/indexLte'
+  },
   // 错误日志
   {
     path: '/errorLog',
