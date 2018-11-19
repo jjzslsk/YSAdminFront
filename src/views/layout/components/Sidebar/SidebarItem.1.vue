@@ -65,7 +65,6 @@ export default {
     }
   },
   mounted() {
-    console.log ('123123llOO',this.routes)
   }
 }
 </script>

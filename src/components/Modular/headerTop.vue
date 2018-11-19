@@ -271,12 +271,23 @@
 export default {
     name:'headerTop',
   methods: {
-        logout() {
+              logout() {
+      this.$confirm("确认退出吗?", "提示", {
+        confirmButtonText: "退出",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() => {
       this.$store.dispatch('LogOut').then(() => {
         location.reload() // In order to re-instantiate the vue-router object to avoid bugs
       })
-    }
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
   }    
 }
+
 </script>
 

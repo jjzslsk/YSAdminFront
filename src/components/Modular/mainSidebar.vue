@@ -58,7 +58,7 @@
                   <li><a href="index2.html"><i class="fa fa-circle-o"></i> Dashboard v2</a></li>
                 </ul>
               </li>
-              <!-- <li class="treeview">
+              <li class="treeview">
                 <a href="#">
                   <i class="fa fa-files-o"></i>
                   <span>Layout Options</span>
@@ -80,7 +80,7 @@
                     <small class="label pull-right bg-green">new</small>
                   </span>
                 </a>
-              </li> -->
+              </li>
               <!-- <li class="treeview">
                 <a href="#">
                   <i class="fa fa-pie-chart"></i>

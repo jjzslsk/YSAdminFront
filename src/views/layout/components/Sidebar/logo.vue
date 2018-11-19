@@ -55,9 +55,9 @@ export default {
   justify-content: center;
   align-items: center;
   // width: 230px;
-  height: 64px;
-  line-height: 64px;
-  background: #473C8B;
+  height: 50px;
+  line-height: 50px;
+  background: #367fa9;
   color: #fdfdfd;
   text-align: center;
   font-size: 20px;
@@ -67,7 +67,7 @@ export default {
 }
 .logo_title {
   padding: 0 5px 0 0;
-  color: #42b983;
+  color: #fff;
   font-size: 20px;
   &.is-bold {
     font-weight: 700;

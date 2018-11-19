@@ -1,68 +1,94 @@
 <template>
   <section class="app-container">
-    <!--工具条-->
-    <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
+    <!--列表-->
+        <div class="panel-heading">
+         <div class="panel-lead">
+        <em>菜单规则</em>
+        <span>
+        规则通常对应一个控制器的方法,同时左侧的菜单栏数据也从规则中体现,通常建议通过命令行进行生成规则节点
+        </span>
+        </div>
+        </div>
+        <div class="toolBox">
+              <!--工具条-->
+    <el-col :span="24" class="toolbar" style="height:100%; padding-bottom: 0px;">
       <el-form :inline="true" :model="filters" label-position label-width="120px" @submit.native.prevent>
-        <el-form-item :label="formLabel.value1">
-          <el-input style="width: 180px;" size="small" :autofocus='inputAutofocus' v-if="buttons.selectshow==true" v-model="modelData" :placeholder="formPlaceholder.value1"></el-input>
-        </el-form-item>
-        <el-form-item :label="formLabel.value2">
-          <el-input style="width: 180px;" size="small" :autofocus='inputAutofocus' v-if="buttons.selectshow==true" v-model="filters.bllCode" :placeholder="formPlaceholder.value2"></el-input>
-        </el-form-item>
-        <!-- <el-form-item size="small" :label="formLabel.value3">
-          <el-select style="width: 180px;" v-model="filters.caidanguanlian" :placeholder="formPlaceholder.value3">
-            <el-option v-for="item in options" :key="item.id" :label="item.mingcheng" :value="item.id">
-            </el-option>
-          </el-select>
-        </el-form-item> -->
-        <el-form-item size="small" :label="formLabel.value4">
-          <el-select style="width: 180px;" v-model="filters.shifouyanzheng" :placeholder="formPlaceholder.value4">
-            <el-option label="是" :value='true'>是</el-option>
-            <el-option label="否" :value='false'>否</el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item size="small" :label="formLabel.value5">
-          <el-select style="width: 180px;" v-model="filters.shifouguanlihoutai" :placeholder="formPlaceholder.value5">
-            <el-option label="是" :value='true'>是</el-option>
-            <el-option label="否" :value='false'>否</el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item size="small" :label="formLabel.value6">
-          <el-select style="width: 180px;" v-model="filters.shifouqiyong" :placeholder="formPlaceholder.value6">
-            <el-option label="是" :value='true'>是</el-option>
-            <el-option label="否" :value='false'>否</el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item size="small" :label="formLabel.value7">
-          <el-select style="width: 180px;" v-model="filters.shifouxuyaodenglu" :placeholder="formPlaceholder.value7">
-            <el-option label="是" :value='true'>是</el-option>
-            <el-option label="否" :value='false'>否</el-option>
-          </el-select>
-        </el-form-item>
         <div style="float: right;">
         <el-form-item>
-          <el-button size="mini" v-if="buttons.selectshow==true" type="primary" v-on:click="getKeyList">{{button.query}}</el-button>
+          <el-button size="mini" icon="el-icon-search" v-if="buttons.selectshow==true" type="primary" v-on:click="getKeyList">{{button.query}}</el-button>
         </el-form-item>
         <el-form-item>
-          <el-button size="mini" v-if="buttons.addshow==true" type="primary" @click="handleAdd">{{button.add}}</el-button>
+          <el-button size="mini" icon="el-icon-zoom-in" v-if="buttons.selectshow==true" type="primary" v-on:click="elCard">{{button.condition}}</el-button>
         </el-form-item>
         <el-form-item>
-      <el-button size="mini" type="primary" @click="getKeyLists" v-if="buttons.selectshow==true">{{button.whole}}</el-button>
+          <el-button size="mini" icon="el-icon-edit" v-if="buttons.addshow==true" type="primary" @click="handleAdd">{{button.add}}</el-button>
         </el-form-item>
+        <!-- <el-form-item>
+      <el-button size="mini" icon="el-icon-menu" type="primary" @click="getKeyLists" v-if="buttons.selectshow==true">{{button.whole}}</el-button>
+        </el-form-item> -->
         <el-form-item>
-      <el-button type="danger" size="mini" @click="batchRemove" :disabled="this.sels.length===0">{{button.batchRemove}}</el-button>
+      <el-button type="danger" icon="el-icon-delete" size="mini" @click="batchRemove" :disabled="this.sels.length===0">{{button.batchRemove}}</el-button>
         </el-form-item>
         </div>
       </el-form>
-
     </el-col>
+        </div>
 
-    <!--列表-->
-      <el-card class="box-card box-cardBox" v-if="elCardBox">
+        <!-- 查询筛选 -->
+         <el-card class="box-card box-cardBox" v-if="elCardBox">
           <el-row>
-            <el-button size="mini" round v-for="item in tableLabel" :key="item.Label" @click="conditionClick(item.Label)">{{item.Label}}</el-button>
+            <!-- <el-button size="mini" round v-for="item in tableLabel" :key="item.Label" @click="conditionClick(item.Label)">{{item.Label}}</el-button> -->
+            <el-col :span="24" class="toolbar" style="height:100%; padding-bottom: 0px;">
+              <el-form :inline="true" :model="filters" label-position label-width="120px" @submit.native.prevent>
+                <el-form-item :label="formLabel.value1">
+                  <el-input style="width: 180px;" size="small" :autofocus='inputAutofocus' v-if="buttons.selectshow==true" v-model="filters.jiekoumingcheng" :placeholder="formPlaceholder.value1"></el-input>
+                </el-form-item>
+                <el-form-item :label="formLabel.value2">
+                  <el-input style="width: 180px;" size="small" :autofocus='inputAutofocus' v-if="buttons.selectshow==true" v-model="filters.bllCode" :placeholder="formPlaceholder.value2"></el-input>
+                </el-form-item>
+                <!-- <el-form-item size="small" :label="formLabel.value3">
+                  <el-select style="width: 180px;" v-model="filters.caidanguanlian" :placeholder="formPlaceholder.value3">
+                    <el-option v-for="item in options" :key="item.id" :label="item.mingcheng" :value="item.id">
+                    </el-option>
+                  </el-select>
+                </el-form-item> -->
+                <el-form-item size="small" :label="formLabel.value4">
+                  <el-select style="width: 180px;" v-model="filters.shifouyanzheng" :placeholder="formPlaceholder.value4">
+                    <el-option label="是" :value='true'>是</el-option>
+                    <el-option label="否" :value='false'>否</el-option>
+                  </el-select>
+                </el-form-item>
+                <el-form-item size="small" :label="formLabel.value5">
+                  <el-select style="width: 180px;" v-model="filters.shifouguanlihoutai" :placeholder="formPlaceholder.value5">
+                    <el-option label="是" :value='true'>是</el-option>
+                    <el-option label="否" :value='false'>否</el-option>
+                  </el-select>
+                </el-form-item>
+                <el-form-item size="small" :label="formLabel.value6">
+                  <el-select style="width: 180px;" v-model="filters.shifouqiyong" :placeholder="formPlaceholder.value6">
+                    <el-option label="是" :value='true'>是</el-option>
+                    <el-option label="否" :value='false'>否</el-option>
+                  </el-select>
+                </el-form-item>
+                <el-form-item size="small" :label="formLabel.value7">
+                  <el-select style="width: 180px;" v-model="filters.shifouxuyaodenglu" :placeholder="formPlaceholder.value7">
+                    <el-option label="是" :value='true'>是</el-option>
+                    <el-option label="否" :value='false'>否</el-option>
+                  </el-select>
+                </el-form-item>
+                <div style="float: right;">
+                  <el-form-item>
+                    <el-button size="mini" v-if="buttons.selectshow==true" type="primary" v-on:click="getKeyList">{{button.query}}</el-button>
+                  </el-form-item>
+                  <el-form-item>
+                    <el-button size="mini" v-if="buttons.selectshow==true" type="" v-on:click="getDataList">{{button.Reset}}</el-button>
+                  </el-form-item>
+                  </div>
+              </el-form>
+            </el-col>
           </el-row>
-        </el-card>
+         </el-card>
+
     <el-table @row-dblclick="Rowdblclick" border :data="dataList" @current-change="checkbox" highlight-current-row @selection-change="selsChange" style="width: 100%;">
       <!-- <el-table-column type="selection" width="55">
       </el-table-column> -->
@@ -100,11 +126,11 @@
       <el-table-column prop="shifouxuyaodenglu" label="是否需要登录" width="120" :formatter="function (row, column) {
           return row.shifouxuyaodenglu == true ? '是' : '否'}">
       </el-table-column>
-      <el-table-column v-if="buttons.updateshow==true||buttons.delshow==true" label="操作" width="150" fixed="right">
+      <el-table-column v-if="buttons.updateshow==true||buttons.delshow==true" label="操作" width="90" fixed="right">
         <template slot-scope="scope">
           
-          <el-button size="mini" v-if="buttons.updateshow==true" @click="handleEdit(scope.$index, scope.row)">{{button.edit}}</el-button>
-          <el-button size="mini" type="danger" v-if="buttons.delshow==true" @click="handleDel(scope.$index, scope.row)">{{button.del}}</el-button>
+          <el-button size="mini" style="padding: 7px 9px;margin-left: 0px;" icon="el-icon-edit" v-if="buttons.updateshow==true" @click="handleEdit(scope.$index, scope.row)"></el-button>
+          <el-button size="mini" style="padding: 7px 9px;margin-left: 0px;" icon="el-icon-delete" type="danger" v-if="buttons.delshow==true" @click="handleDel(scope.$index, scope.row)"></el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -328,6 +354,7 @@ export default {
         setState: "SetStateInterface", //设置状态
         getListMenu: "GetListMenu" //获取菜单
       },
+      //列表数组
       tableLabel: [
         { type: "selection", width: "55" },
         { type: "index", width: "60" },
@@ -342,6 +369,7 @@ export default {
         // {Label:'是否需要登录',prop:"shifouxuyaodenglu",width:'150'},
         // {Label:'操作',width:'150'},
       ],
+      //搜索标题
       formLabel: {
         value1: "接口名称",
         value2: "接口标识",
@@ -351,15 +379,17 @@ export default {
         value6: "是否管理后台",
         value7: "是否需要登录"
       },
+      //搜索框提示文字
       formPlaceholder: {
-        value1: "输入接口名称",
-        value2: "输入接口标识",
-        value3: "输入菜单关联",
-        value4: "输入是否验证",
-        value5: "输入是否启用",
-        value6: "输入否管理后台",
-        value7: "输入否需要登录"
+        value1: "名称",
+        value2: "标识",
+        value3: "关联",
+        value4: "是否验证",
+        value5: "是否启用",
+        value6: "是否管理后台",
+        value7: "是否需要登录"
       },
+      //按钮文字
       button: {
         edit: "编辑",
         del: "删除",
@@ -367,7 +397,8 @@ export default {
         add: "添加",
         whole: "显示所有",
         batchRemove: "批量删除",
-        condition: "显示筛选"
+        condition: "筛选",
+        Reset: "重置",
       },
       currentRow: null,
       buttons: {
@@ -391,15 +422,16 @@ export default {
       dialogStatus: "",
       dialogFormVisibleAdd: false, //控制添加显示
       dialogFormVisibleEdit: false, //控制编辑显示
-
-      filters: {
         //查询筛选
+      filters: {
         // Page: this.page,
-        // jiekoumingcheng:'',
+        // jiekoumingcheng:this.modelData.value1,
         Page: 1,
         Size: 10
       },
-      modelData: null,
+      // modelData: {
+      //   value1:'',
+      // },
       menuList: [], //菜单
       dataList: [], //主页数据
       total: 0,
@@ -518,22 +550,6 @@ export default {
         }
       });
     },
-    //查询
-    getKeyList() {
-      console.log("modelData:!!!!!", this.modelData);
-      // var filters = { a: 1 };
-
-      if (this.modelData.length > 0) {
-        // var target = { jiekoumingcheng: this.modelData };
-
-        console.log("098");
-      }
-      // Object.assign(this.filters,target);
-      // filters // {a:1, b:2, c:3}
-
-      this.page = 1;
-      this.getDataList();
-    },
     //显示所有
     getKeyLists() {
       this.page = 1;
@@ -574,17 +590,34 @@ export default {
           console.log(err);
         });
     },
+        //查询
+    getKeyList() {
+      // console.log("modelData:!!!!!", this.modelData);
+      // var filters = { a: 1 };
+
+      // if (this.modelData.length > 0) {
+      //   var target = { jiekoumingcheng: this.modelData };
+
+      //   console.log("098");
+      // }
+      // Object.assign(this.filters,target);
+      // filters // {a:1, b:2, c:3}
+
+      // this.page = 1;
+      this.getDataList();
+    },
     // 获取列表
     getDataList() {
       this.getMenuList();
       // const paraSelect = {
-      //   jiekoumingcheng: this.filters,
+      //   jiekoumingcheng: this.modelData,
       //   Page: this.page,
       //   Size: 10
       // };
       this.para.Code = this.bllCode.getList;
       this.para.Data = JSON.stringify(this.filters);
-      console.log("filters!!!", this.filters);
+      // console.log("filters!!!", this.filters);
+      console.log("para!!!", this.para);
       handlePost(this.para).then(res => {
         if (res.IsSuccess == true) {
           this.total = res.Data.Count;
@@ -791,5 +824,32 @@ export default {
 <style scoped>
 .box-cardBox {
   background: #f1f1f1;
+}
+.panel-heading {
+    padding: 15px;
+    background: #e8edf0;
+    border-color: #e8edf0;
+    border-bottom: 1px solid transparent;
+    border-top-right-radius: 2px;
+    border-top-left-radius: 2px;
+}
+.panel-lead {
+    /* margin-bottom: 15px; */
+}
+.panel-lead em{
+    font-weight: bold;
+    font-size: 14px;
+    display: block;
+}
+.panel-lead span{
+    color: #666;
+    font-size: 14px;
+}
+.toolBox {
+  background: #fff;
+  min-height: 3.6rem;
+}
+.el-form-item {
+  margin-bottom: 0px;
 }
 </style>

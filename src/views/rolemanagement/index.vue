@@ -130,10 +130,10 @@
           </el-form-item>
         </el-form>
       </el-col>
-      <el-row class="tac">
+      <el-row class="tac tree-row">
         <el-col :span="24">
           <el-tree :data="menus" ref="tree" show-checkbox node-key="value" :default-expanded-keys="[2, 3]"
-            :default-checked-keys="this.editForm.caidanguanlian" :props="defaultProps">
+            :default-checked-keys="this.editForm.caidanguanlian" :props="defaultProps" default-expand-all>
           </el-tree>
         </el-col>
       </el-row>
@@ -638,4 +638,5 @@ export default {
 </script>
 
 <style scoped>
+
 </style>

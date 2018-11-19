@@ -2,28 +2,26 @@
   <div class="login-container pull-height" @keyup.enter.native="handleLogin">
     <div class="login-info text-white animated fadeInLeft">
       <div class="logo" style="margin-top:-426px">
-          <!-- <img src="../../assets/images/home/logo.png" width="160px" height="160px" alt="logo" style="vertical-align: middle;" /> -->
-          <!-- <img src="../../assets/images/home/logo.png" width="160px" height="160px" alt="logo" style="vertical-align: middle;" /> -->
-          <!-- <h1 width="160px" height="160px" alt="logo" style="vertical-align: middle;">LOGO</h1> -->
+          <img src="../../assets/images/home/logo.png" width="160px" height="160px" alt="logo" style="vertical-align: middle;" />
       </div>
-      <!-- <h2 class="login-info-title">{{website.info.title}}</h2>
+      <h2 class="login-info-title">{{website.info.title}}</h2>
       <ul class="login-info-list">
         <li class="login-info-item" v-for="item in website.info.list" :key="item.id">
           <i class="el-icon-check"></i>&nbsp;{{item}}
         </li>
-      </ul> -->
+      </ul>
     </div>
     <div class="login-border  animated fadeInRight">
       <div class="login-main">
         <h4 class="login-title">登录{{website.title}}
         </h4>
         <el-tabs v-model="activeName">
-          <!-- <el-tab-pane label="用户密码" name="user"> -->
+          <el-tab-pane label="用户密码" name="user">
             <userLogin></userLogin>
-          <!-- </el-tab-pane> -->
-          <!-- <el-tab-pane label="短信验证码" name="code">
+          </el-tab-pane>
+          <el-tab-pane label="短信验证码" name="code">
             <codeLogin></codeLogin>
-          </el-tab-pane> -->
+          </el-tab-pane>
         </el-tabs>
       </div>
     </div>
@@ -59,8 +57,7 @@ export default {
 .login-container {
   display: flex;
   align-items: center;
-  // justify-content: space-around;
-  justify-content:center;
+  justify-content: space-around;
   background: rgba(0, 0, 0, 0.2);
   position: relative;
   height: 900px;
@@ -77,7 +74,7 @@ export default {
   background-size: cover;
 }
 .login-info {
-  // padding-left: 60px;
+  padding-left: 60px;
 }
 .login-info-title {
   line-height: 90px;
@@ -90,15 +87,14 @@ export default {
   justify-content: center;
   flex-direction: column;
   padding: 30px 50px 25px 50px;
-  // background-color: #fff;
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: #fff;
   border-radius: 6px;
   box-shadow: 1px 1px 2px #eee;
 }
 .login-main {
   border-radius: 3px;
   box-sizing: border-box;
-  // background-color: #fff;
+  background-color: #fff;
 }
 .login-main > h3 {
   margin-bottom: 20px;
@@ -110,8 +106,6 @@ export default {
   margin: 0 0 20px;
   text-align: center;
   color: #409eff;
-  // color: #fff;
-
   letter-spacing: 3px;
 }
 .login-submit {

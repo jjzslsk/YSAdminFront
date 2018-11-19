@@ -6,9 +6,9 @@
       :show-timeout="200"
       :default-active="$route.path"
       :collapse="isCollapse"
-      background-color="#6959CD"
-      text-color="white"
-      active-text-color="#42b983"
+      background-color="#222d32"
+      text-color="#fff"
+      active-text-color="#3c8dbc"
     >
       <sidebar-item :routes="permission_routers"></sidebar-item>
     </el-menu>

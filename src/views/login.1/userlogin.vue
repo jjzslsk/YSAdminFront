@@ -89,7 +89,8 @@ export default {
           this.$store.dispatch('Login', this.loginForm).then(res => {
             console.log(7)
             console.log('userlogin::res',res)
-            this.$router.push({ path: '/' })
+            // this.$router.push({ path: '/index' })
+            this.$router.push({ path: '/dashboard/dashboard' })
           })
         }
       })

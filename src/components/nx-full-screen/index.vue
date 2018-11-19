@@ -1,6 +1,6 @@
 <template>
   <div>
-    <svg t="1508738709248" @click='click' class="screenfull-svg" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"
+    <svg t="1508738709248" @click='click' class="screenfull-svg" style="fill: #fff" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"
       p-id="2069" xmlns:xlink="http://www.w3.org/1999/xlink" width="32" height="32">
       <path d="M333.493443 428.647617 428.322206 333.832158 262.572184 168.045297 366.707916 64.444754 64.09683 64.444754 63.853283 366.570793 167.283957 262.460644Z"
         p-id="2070"></path>
@@ -59,7 +59,7 @@ export default {
   cursor: pointer;
   fill: #5a5e66;;
   width: 20px;
-  height: 20px;
+  height: 50px;
   vertical-align: 10px;
 }
 </style>
