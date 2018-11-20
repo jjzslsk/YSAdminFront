@@ -119,18 +119,24 @@
         <el-tab-pane label="接口权限">
 
             <!-- `checked` 为 true 或 false -->
-            <el-checkbox v-model="defaultExpandAll">选中全部</el-checkbox>
-            <!-- <el-checkbox v-model="defaultExpandAll">展开全部</el-checkbox> -->
-            {{defaultExpandAll}}
+            <!-- <el-checkbox v-model="defaultExpandAll">选中全部</el-checkbox> -->
+            <el-checkbox :change='checkboxChange(defaultExpandAllX)' v-model="defaultExpandAllX">展开全部</el-checkbox>
+            <!-- <el-checkbox :change='handleDeliveryRegionCheckAll(defaultExpandAllS)' v-model="defaultExpandAllS">选中全部</el-checkbox> -->
+              <!-- <el-button size="small" type="danger" @click.native="$refs.treex.setCheckedNodes([])">清除选择</el-button> -->
+              <el-button size="small" type="primary" @click="handleDeliveryRegionCheckAll" class="ml20">全选</el-button>
+    
 
        <el-row class="tac tree-row">
         <el-col :span="24">
           <el-tree
+          ref="treex"
             :data="data2"
             show-checkbox
             node-key="id"
-            :default-checked-keys="[10]"
-            :default-expand-all="defaultExpandAll"
+            @check="handle"
+            :check-on-click-node="true"
+            :highlight-current="true"
+            :default-checked-keys="[1,8,9,10]"
             :props="defaultProps">
           </el-tree>
           <!-- <el-table :data="this.interface" ref="table" highlight-current-row @selection-change="selsChangeInterface"
@@ -157,13 +163,18 @@
         <el-button size="mini" type="primary" @click="SetInterfaceRole">保存</el-button>
       </div>
         </el-tab-pane>
-
+<!-- s -->
         <el-tab-pane label="菜单管理">
+
+            <el-checkbox v-model="defaultExpandAllX">展开全部</el-checkbox>
+
+            <!-- {{this.$refs.treex.store.defaultExpandAll}} -->
+
       <el-row class="tac tree-row">
         <el-col :span="24">
-          <el-tree :data="menus" ref="tree" show-checkbox node-key="value" :default-expanded-keys="[2, 3]"
-            :default-checked-keys="this.editForm.caidanguanlian" :props="defaultProps" :default-expand-all="defaultExpandAll">
-          </el-tree>
+          <!-- <el-tree :data="menus" ref="treex" show-checkbox node-key="value" :default-expanded-keys="[2, 3]"
+            :default-checked-keys="this.editForm.caidanguanlian" :props="defaultProps" ="defaultExpandAll">
+          </el-tree> -->
         </el-col>
       </el-row>
       <div slot="footer" class="dialog-footer">
@@ -197,7 +208,6 @@
             show-checkbox
             node-key="id"
             :default-checked-keys="[10]"
-            :default-expand-all="defaultExpandAll"
             :props="defaultProps">
           </el-tree>
           <!-- <el-table :data="this.interface" ref="table" highlight-current-row @selection-change="selsChangeInterface"
@@ -242,7 +252,7 @@
       <el-row class="tac tree-row">
         <el-col :span="24">
           <el-tree :data="menus" ref="tree" show-checkbox node-key="value" :default-expanded-keys="[2, 3]"
-            :default-checked-keys="this.editForm.caidanguanlian" :props="defaultProps" default-expand-all>
+            :default-checked-keys="this.editForm.caidanguanlian" :props="defaultProps">
           </el-tree>
         </el-col>
       </el-row>
@@ -472,7 +482,9 @@ export default {
       ],
 
       checked: true,//是否全选
-      defaultExpandAll: true,
+      defaultExpandAllX: null,
+      defaultExpandAllS:null,
+      treeStore:null,
 
         defaultProps: {
           children: 'children',
@@ -501,10 +513,7 @@ export default {
       addPara: paraHelper, //添加参数
       editPara: paraHelper, //编辑参数
       delPara: paraHelper, //删除参数
-      defaultProps: {
-        children: "children",
-        label: "label"
-      },
+
       dialogStatus: "",
       textMap: {
         update: "编辑角色",
@@ -705,11 +714,53 @@ export default {
     Rowdblclick(index, row) {
       this.handleEdit(index, row);
     },
+    //查看属性
+    handle(data, checkState){
+      console.log ('查看属性：',data, checkState)
+    },
+    //全选切换
+    // handleDeliveryRegionCheckAll (i) {
+      //   console.log (i)
+      //   // this.$refs.treex.setCheckedNodes(this.deliveryRegion)
+      //   // console.log(this.$refs.deliveryRegionTree.getCheckedNodes())
+      //  if(i == true){
+      //    $refs.deliveryRegionTree.setCheckedNodes([])
+      //  }
+      // },
+      handleDeliveryRegionCheckAll () {
+        this.$refs.treex.setCheckedNodes(this.data2)
+        // console.log(this.$refs.treex.getCheckedNodes())
+      },
+    //展开切换
+    checkboxChange(i){
+      if(i == true){
+        for(var i=0;i<this.$refs.treex.store._getAllNodes().length;i++){
+           this.$refs.treex.store._getAllNodes()[i].expanded= true;
+        }
+      }
+      if (i == false){
+        for(var i=0;i<this.$refs.treex.store._getAllNodes().length;i++){
+           this.$refs.treex.store._getAllNodes()[i].expanded= false;
+        }
+      }
+      // alert (1232)
+      console.log (123212,i)
+    },
     // 显示编辑界面
     handleEdit(index, row) {
       this.dialogStatus = "update";
       this.dialogFormVisibleEdit = true;
       this.editForm = Object.assign({}, row);
+
+    //  console.log ('this.$refs.treex',this.$refs.treex.store.defaultExpandAll)
+    //  console.log ('this.$refs.store',this.$refs.treex.store)
+    //  for(var i=0;i<this.$refs.treex.store._getAllNodes().length;i++){
+    //        this.$refs.treex.store._getAllNodes()[i].expanded= this.defaultExpandAll;
+    //     }
+     
+    //  this.treeStore = this.$refs.treex.store.defaultExpandAll
+    //  this.$refs.treex.store.defaultExpandAll = this.defaultExpandAll
+    //  this.$refs.treex.store.defaultExpandAll = this.defaultExpandAll
 
       // 获取菜单管理信息
       this.paraMenu.Code = this.bllCode.getTreeMenu;
@@ -921,9 +972,12 @@ export default {
     this.loadButton(store.getters.interfaces); //按钮显示
     this.getDataList();
       },
-   created: function () {
-
-    }
+  //  created: function () {
+  //    console.log ('this.$refs.treeX',this.$refs.treeX)
+  //   },
+  //   mounted() {
+  //    console.log ('this.$refs.treeX',this.$refs.attrList.store.defaultExpandAll)
+  // }
 };
 </script>
 
