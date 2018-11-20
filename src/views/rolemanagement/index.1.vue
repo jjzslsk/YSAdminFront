@@ -1,5 +1,5 @@
 <template>
-  <section class="app-container roleBox">
+  <section class="app-container">
     <!--工具条-->
     <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
       <el-form :inline="true" :model="filters" @submit.native.prevent>
@@ -88,7 +88,6 @@
 
     <!--编辑界面-->
     <el-dialog title="编辑" :visible.sync="dialogFormVisibleEdit" :close-on-click-modal="false">
-      <el-card class="box-card">
       <el-form :model="editForm" label-width="100px" :rules="editFormRules" ref="editForm">
         <el-form-item label="角色名称" prop="RoleName">
           <el-input v-model="editForm.juesemingcheng" auto-complete="off"></el-input>
@@ -112,116 +111,9 @@
           <el-input type="textarea" v-model="editForm.beizhu"></el-input>
         </el-form-item>
       </el-form>
-      </el-card>
-
-      <!-- 页面切换 -->
-      <el-tabs style="margin: 0 30px">
-        <el-tab-pane label="接口权限">
-
-            <!-- `checked` 为 true 或 false -->
-            <el-checkbox v-model="defaultExpandAll">选中全部</el-checkbox>
-            <!-- <el-checkbox v-model="defaultExpandAll">展开全部</el-checkbox> -->
-            {{defaultExpandAll}}
-
-       <el-row class="tac tree-row">
-        <el-col :span="24">
-          <el-tree
-            :data="data2"
-            show-checkbox
-            node-key="id"
-            :default-checked-keys="[10]"
-            :default-expand-all="defaultExpandAll"
-            :props="defaultProps">
-          </el-tree>
-          <!-- <el-table :data="this.interface" ref="table" highlight-current-row @selection-change="selsChangeInterface"
-            :max-height="400" style="width: 100%;">
-            <el-table-column type="selection" width="55">
-            </el-table-column>
-            <el-table-column type="index" width="60">
-            </el-table-column>
-            <el-table-column prop="id" label="ID" width="40">
-            </el-table-column>
-            <el-table-column prop="jiekoumingcheng" label="接口名称" width="150">
-            </el-table-column>
-            <el-table-column prop="bllcode" label="接口标识" width="150">
-            </el-table-column>
-            <el-table-column prop="beizhu" label="备注" min-width="160">
-            </el-table-column>
-            <el-table-column prop="chuangjianriqi" label="创建时间" width="100">
-            </el-table-column>
-          </el-table> -->
-        </el-col>
-      </el-row>
-      <div slot="footer" class="dialog-footer">
-        <el-button size="mini" @click.native="dialogFormPermissionVisibleInterface=false">取消</el-button>
-        <el-button size="mini" type="primary" @click="SetInterfaceRole">保存</el-button>
-      </div>
-        </el-tab-pane>
-
-        <el-tab-pane label="菜单管理">
-      <el-row class="tac tree-row">
-        <el-col :span="24">
-          <el-tree :data="menus" ref="tree" show-checkbox node-key="value" :default-expanded-keys="[2, 3]"
-            :default-checked-keys="this.editForm.caidanguanlian" :props="defaultProps" :default-expand-all="defaultExpandAll">
-          </el-tree>
-        </el-col>
-      </el-row>
-      <div slot="footer" class="dialog-footer">
-        <el-button size="mini" @click.native="dialogFormPermissionVisibleMenu=false">取消</el-button>
-        <el-button size="mini" type="primary" @click="SetMenuRole">保存</el-button>
-      </div>
-        </el-tab-pane>
-      </el-tabs>
       <div slot="footer" class="dialog-footer">
         <el-button size="mini" @click.native="dialogFormVisibleEdit=false">取消</el-button>
         <el-button size="mini" type="primary" @click="updateData">修改</el-button>
-      </div>
-    </el-dialog>
-
-        <!-- 接口界面 -->
-    <el-dialog style="Height:400px" title="接口权限" :visible.sync="dialogFormPermissionVisibleInterface"
-      :close-on-click-modal="false" @open="callbackUp(dialogStatus)">
-      <!--工具条-->
-      <!-- <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
-        <el-form :inline="true" :model="filters" @submit.native.prevent>
-          <el-form-item>
-            <el-input size="mini" v-model="editForm.juesemingcheng" placeholder="角色名称"><template slot="prepend">
-                当前选中角色为：</template></el-input>
-          </el-form-item>
-        </el-form>
-      </el-col> -->
-      <el-row class="tac tree-row">
-        <el-col :span="24">
-          <el-tree
-            :data="data2"
-            show-checkbox
-            node-key="id"
-            :default-checked-keys="[10]"
-            :default-expand-all="defaultExpandAll"
-            :props="defaultProps">
-          </el-tree>
-          <!-- <el-table :data="this.interface" ref="table" highlight-current-row @selection-change="selsChangeInterface"
-            :max-height="400" style="width: 100%;">
-            <el-table-column type="selection" width="55">
-            </el-table-column>
-            <el-table-column type="index" width="60">
-            </el-table-column>
-            <el-table-column prop="id" label="ID" width="40">
-            </el-table-column>
-            <el-table-column prop="jiekoumingcheng" label="接口名称" width="150">
-            </el-table-column>
-            <el-table-column prop="bllcode" label="接口标识" width="150">
-            </el-table-column>
-            <el-table-column prop="beizhu" label="备注" min-width="160">
-            </el-table-column>
-            <el-table-column prop="chuangjianriqi" label="创建时间" width="100">
-            </el-table-column>
-          </el-table> -->
-        </el-col>
-      </el-row>
-      <div slot="footer" class="dialog-footer">
-        <el-button size="mini" @click.native="dialogFormPermissionVisibleInterface=false">取消</el-button>
-        <el-button size="mini" type="primary" @click="SetInterfaceRole">保存</el-button>
       </div>
     </el-dialog>
 
@@ -252,6 +144,45 @@
       </div>
     </el-dialog>
 
+    <!-- 分配接口权限 -->
+    <el-dialog style="Height:400px" title="接口分配" :visible.sync="dialogFormPermissionVisibleInterface"
+      :close-on-click-modal="false" @open="callbackUp(dialogStatus)">
+      <!--工具条-->
+      <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
+        <el-form :inline="true" :model="filters" @submit.native.prevent>
+          <el-form-item>
+            <el-input size="mini" v-model="editForm.juesemingcheng" placeholder="角色名称"><template slot="prepend">
+                当前选中角色为：</template></el-input>
+          </el-form-item>
+        </el-form>
+      </el-col>
+      <el-row class="tac">
+        <el-col :span="24">
+          <!--列表-->
+          <el-table :data="this.interface" ref="table" highlight-current-row @selection-change="selsChangeInterface"
+            :max-height="400" style="width: 100%;">
+            <el-table-column type="selection" width="55">
+            </el-table-column>
+            <el-table-column type="index" width="60">
+            </el-table-column>
+            <el-table-column prop="id" label="ID" width="40">
+            </el-table-column>
+            <el-table-column prop="jiekoumingcheng" label="接口名称" width="150">
+            </el-table-column>
+            <el-table-column prop="bllcode" label="接口标识" width="150">
+            </el-table-column>
+            <el-table-column prop="beizhu" label="备注" min-width="160">
+            </el-table-column>
+            <el-table-column prop="chuangjianriqi" label="创建时间" width="100">
+            </el-table-column>
+          </el-table>
+        </el-col>
+      </el-row>
+      <div slot="footer" class="dialog-footer">
+        <el-button size="mini" @click.native="dialogFormPermissionVisibleInterface=false">取消</el-button>
+        <el-button size="mini" type="primary" @click="SetInterfaceRole">保存</el-button>
+      </div>
+    </el-dialog>
   </section>
 </template>
 
@@ -277,208 +208,6 @@ export default {
         getTreeMenu: "GetTreeMenu", //获取树形菜单
         setMenuRole: "SetMenuRole" //提交菜单分配
       },
-      //接口TREE数
-       data2: [
-         {id: 1,
-          label: '用户管理',
-              children: [{
-                id: 9,
-                label: '添加'
-              }, {
-                id: 10,
-                label: '编辑'
-              }, {
-                id: 13,
-                label: '删除'
-              }, {
-                id: 11,
-                label: '查看'
-              }, {
-                id: 12,
-                label: '查看列表'
-              }]
-        }, 
-        // {id: 2,
-        //   label: '菜单管理',
-        //       children: [{
-        //         id: 9,
-        //         label: '添加'
-        //       }, {
-        //         id: 10,
-        //         label: '编辑'
-        //       }, {
-        //         id: 13,
-        //         label: '删除'
-        //       }, {
-        //         id: 11,
-        //         label: '查看'
-        //       }, {
-        //         id: 12,
-        //         label: '查看列表'
-        //       }]
-        // }, 
-        {id: 3,
-          label: '接口管理',
-              children: [{
-                id: 9,
-                label: '添加'
-              }, {
-                id: 10,
-                label: '编辑'
-              }, {
-                id: 13,
-                label: '删除'
-              }, {
-                id: 11,
-                label: '查看'
-              }, {
-                id: 12,
-                label: '查看列表'
-              }]
-        }, 
-        {id: 4,
-          label: '角色管理',
-              children: [{
-                id: 9,
-                label: '添加'
-              }, {
-                id: 10,
-                label: '编辑'
-              }, {
-                id: 13,
-                label: '删除'
-              }, {
-                id: 11,
-                label: '查看'
-              }, {
-                id: 12,
-                label: '查看列表'
-              }]
-        }, 
-        {id: 5,
-          label: '字典管理',
-              children: [{
-                id: 9,
-                label: '添加'
-              }, {
-                id: 10,
-                label: '编辑'
-              }, {
-                id: 13,
-                label: '删除'
-              }, {
-                id: 11,
-                label: '查看'
-              }, {
-                id: 12,
-                label: '查看列表'
-              }]
-        }, 
-        {id: 6,
-          label: '部门管理',
-              children: [{
-                id: 9,
-                label: '添加'
-              }, {
-                id: 10,
-                label: '编辑'
-              }, {
-                id: 13,
-                label: '删除'
-              }, {
-                id: 11,
-                label: '查看'
-              }, {
-                id: 12,
-                label: '查看列表'
-              }]
-        }, 
-        {id: 7,
-          label: '接入源管理',
-              children: [{
-                id: 9,
-                label: '添加'
-              }, {
-                id: 10,
-                label: '编辑'
-              }, {
-                id: 13,
-                label: '删除'
-              }, {
-                id: 11,
-                label: '查看'
-              }, {
-                id: 12,
-                label: '查看列表'
-              }]
-        }, 
-        {id: 8,
-          label: '数据源管理',
-              children: [{
-                id: 9,
-                label: '添加'
-              }, {
-                id: 10,
-                label: '编辑'
-              }, {
-                id: 13,
-                label: '删除'
-              }, {
-                id: 11,
-                label: '查看'
-              }, {
-                id: 12,
-                label: '查看列表'
-              }]
-        }, 
-        {id: 9,
-          label: '区块链管理',
-              children: [{
-                id: 9,
-                label: '添加'
-              }, {
-                id: 10,
-                label: '编辑'
-              }, {
-                id: 13,
-                label: '删除'
-              }, {
-                id: 11,
-                label: '查看'
-              }, {
-                id: 12,
-                label: '查看列表'
-              }]
-        }, 
-        {id: 10,
-          label: '系统配置',
-              children: [{
-                id: 9,
-                label: '配置系统设置'
-              }, {
-                id: 10,
-                label: '读取系统设置'
-              }, {
-                id: 13,
-                label: '修改管理员密码'
-              }, {
-                id: 11,
-                label: '获取所有缓存'
-              }, {
-                id: 12,
-                label: '清除所有缓存'
-              }]
-        }
-      ],
-
-      checked: true,//是否全选
-      defaultExpandAll: true,
-
-        defaultProps: {
-          children: 'children',
-          label: 'label'
-        },
-
       filtersName: "角色名称",
       button: {
         query: "查询",
@@ -710,21 +439,6 @@ export default {
       this.dialogStatus = "update";
       this.dialogFormVisibleEdit = true;
       this.editForm = Object.assign({}, row);
-
-      // 获取菜单管理信息
-      this.paraMenu.Code = this.bllCode.getTreeMenu;
-      this.paraMenu.Data = "";
-      handlePost(this.paraMenu)
-        .then(res => {
-          if (res.IsSuccess == true) {
-            this.menus = res.Data;
-            this.dialogStatus = "updatePermissionMenu";
-          }
-        })
-        .catch(err => {
-          console.log(err);
-        });
-
     },
     // 显示菜单权限界面
     handlePermissionMenu(index, row) {
@@ -920,15 +634,10 @@ export default {
   mounted() {
     this.loadButton(store.getters.interfaces); //按钮显示
     this.getDataList();
-      },
-   created: function () {
-
-    }
+  }
 };
 </script>
 
 <style scoped>
-.el-dialog__body {
-    padding: 0;
-}
+
 </style>

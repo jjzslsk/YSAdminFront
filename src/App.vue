@@ -42,4 +42,21 @@ export default {
 .tree-row .el-tree-node__content {
   /* background: beige; */
 }
+#app .sidebar-container .svg-icon {
+    margin-right: 0px;
+}
+.el-submenu .el-menu-item {
+    padding: 0 0px;
+
+}.el-submenu .el-menu-item .pull-right-container{
+    height: 50px;
+    display: flex;
+    float: right;
+    align-items: center;
+    margin-right: 2rem;
+}
+.roleBox .el-dialog__body {
+    padding: 0;
+
+}
 </style>

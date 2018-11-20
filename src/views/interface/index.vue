@@ -89,7 +89,7 @@
           </el-row>
          </el-card>
 
-    <el-table @row-dblclick="Rowdblclick" border :data="dataList" @current-change="checkbox" highlight-current-row @selection-change="selsChange" style="width: 100%;">
+    <el-table @row-dblclick="Rowdblclick" stripe border :data="dataList" @current-change="checkbox" highlight-current-row @selection-change="selsChange" style="width: 100%;">
       <!-- <el-table-column type="selection" width="55">
       </el-table-column> -->
       <el-table-column v-for="item in tableLabel" :key="item.Label" :label="item.Label" :prop="item.prop" :width='item.width' :type='item.type'>
@@ -847,7 +847,7 @@ export default {
 }
 .toolBox {
   background: #fff;
-  min-height: 3.6rem;
+  /* min-height: 3.6rem; */
 }
 .el-form-item {
   margin-bottom: 0px;
