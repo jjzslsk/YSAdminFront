@@ -120,7 +120,7 @@ export default {
   position: absolute;
   left: 50px;
   top: 0px;
-  width: 80%;
+  width: 76%;
   .tags-view-wrapper {
     background: #3c8dbc;
     height: 49px;

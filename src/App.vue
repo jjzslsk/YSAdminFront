@@ -62,4 +62,7 @@ export default {
 .roleBox .el-card__body {
     padding: 0;
 } 
+.roleBox .el-form--inline .el-form-item {
+    margin-right: 1px;
+}
 </style>

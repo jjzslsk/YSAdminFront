@@ -14,6 +14,9 @@
     <el-col :span="24" class="toolbar" style="height:100%; padding-bottom: 0px;">
       <el-form :inline="true" :model="filters" label-position label-width="120px" @submit.native.prevent>
         <div style="float: left;">
+          <el-form-item>
+          <el-button size="mini" icon="el-icon-refresh" v-if="buttons.selectshow==true" type="info" v-on:click="getKeyList"></el-button>
+        </el-form-item>
         <el-form-item>
           <el-button size="mini" icon="el-icon-search" v-if="buttons.selectshow==true" type="primary" v-on:click="getKeyList">{{button.query}}</el-button>
         </el-form-item>
