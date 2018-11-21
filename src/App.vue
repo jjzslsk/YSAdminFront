@@ -59,4 +59,7 @@ export default {
     padding: 0;
 
 }
+.roleBox .el-card__body {
+    padding: 0;
+} 
 </style>

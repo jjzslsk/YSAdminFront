@@ -21,7 +21,7 @@
     <div class="panel-heading"><div class="panel-lead"><em>角色组</em>角色组可以有多个,角色有上下级层级关系,如果子角色有角色组和管理员的权限则可以派生属于自己组别的下级角色组或管理员</div></div>
 
     <!--列表--> 
-    <el-table @row-dblclick='Rowdblclick' :data="dataList" highlight-current-row @selection-change="selsChange" style="width: 100%;">
+    <el-table @row-dblclick='Rowdblclick' stripe border :data="dataList" highlight-current-row @selection-change="selsChange" style="width: 100%;">
       <el-table-column v-for="item in tableLabel" :key="item.Label" :label="item.Label" :prop="item.prop" :width='item.width' :type='item.type'>
       </el-table-column>
       <!-- <el-table-column type="selection" width="55">

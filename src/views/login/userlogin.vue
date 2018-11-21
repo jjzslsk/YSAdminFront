@@ -11,7 +11,7 @@
         <i slot="prefix" class="icon-mima"></i>
       </el-input>
     </el-form-item>
-    <el-checkbox v-model="checked">记住账号</el-checkbox>
+    <el-checkbox style="color:#fff" v-model="checked">记住账号</el-checkbox>
     <el-form-item>
       <el-button type="primary" size="small" @click.native.prevent="handleLogin" class="login-submit">登录</el-button>
     </el-form-item>

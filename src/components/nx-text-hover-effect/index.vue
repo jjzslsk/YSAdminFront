@@ -15,7 +15,7 @@ export default {
     },
     text: {
       type: String,
-      default: 'nx-admin'
+      default: 'Fast-Admin'
     }
   }
 }

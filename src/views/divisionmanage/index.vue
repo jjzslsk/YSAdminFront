@@ -19,7 +19,7 @@
     </el-col>
 
     <!--列表-->
-    <el-table @row-dblclick='Rowdblclick' :data="users" highlight-current-row @selection-change="selsChange" style="width: 100%;">
+    <el-table @row-dblclick='Rowdblclick' stripe border :data="users" highlight-current-row @selection-change="selsChange" style="width: 100%;">
       <el-table-column type="selection" width="55">
       </el-table-column>
       <el-table-column type="index" width="60">

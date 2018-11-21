@@ -6,7 +6,7 @@
     <h3>{{$t('errorLog.tips')}}</h3>
     <code>
       {{$t('errorLog.description')}}
-      <a target="_blank" class="link-type" href="https://mgbq.github.io/nx-admin-site/guide/advanced/error.html">
+      <a target="_blank" class="link-type" href="https://mgbq.github.io/Fast-Admin-site/guide/advanced/error.html">
         {{$t('errorLog.documentation')}}
       </a>
     </code>

@@ -68,7 +68,7 @@ const webpackConfig = merge(baseWebpackConfig, {
       template: 'index.html',
       inject: true,
       favicon: resolve('log.ico'),
-      title: 'nx-admin',
+      title: 'Fast-Admin',
       minify: {
         removeComments: true,
         collapseWhitespace: true,

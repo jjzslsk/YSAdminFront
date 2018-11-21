@@ -15,8 +15,8 @@
     </div>
     <div class="login-border  animated fadeInRight">
       <div class="login-main">
-        <h4 class="login-title">登录{{website.title}}
-        </h4>
+        <h3 class="login-title">登录{{website.title}}
+        </h3>
         <el-tabs v-model="activeName">
           <!-- <el-tab-pane label="用户密码" name="user"> -->
             <userLogin></userLogin>
@@ -109,7 +109,7 @@ export default {
 .login-title {
   margin: 0 0 20px;
   text-align: center;
-  color: #409eff;
+  color: #fff;
   // color: #fff;
 
   letter-spacing: 3px;

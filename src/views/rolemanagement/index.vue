@@ -1,25 +1,96 @@
 <template>
   <section class="app-container roleBox">
-    <!--工具条-->
-    <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
-      <el-form :inline="true" :model="filters" @submit.native.prevent>
+            <div class="panel-heading">
+         <div class="panel-lead">
+        <em>角色组</em>
+        <span>
+        角色组可以有多个,角色有上下级层级关系,如果子角色有角色组和管理员的权限则可以派生属于自己组别的下级角色组或管理员
+        </span>
+        </div>
+        </div>
+
+        <!--工具条-->
+        <div class="toolBox">
+    <el-col :span="24" class="toolbar" style="height:100%; padding-bottom: 0px;">
+      <el-form :inline="true" :model="filters" label-position label-width="120px" @submit.native.prevent>
+        <div style="float: left;">
         <el-form-item>
-          <el-input size="mini" v-if="buttons.selectshow==true" v-model="filters.name" :placeholder="filtersName"></el-input>
+          <el-button size="mini" icon="el-icon-search" v-if="buttons.selectshow==true" type="primary" v-on:click="getKeyList">{{button.query}}</el-button>
         </el-form-item>
         <el-form-item>
-          <el-button size="mini" v-if="buttons.selectshow==true" type="primary" v-on:click="getKeyList">{{button.query}}</el-button>
+          <el-button size="mini" icon="el-icon-zoom-in" v-if="buttons.selectshow==true" type="primary" v-on:click="elCard">{{button.condition}}</el-button>
         </el-form-item>
         <el-form-item>
-          <el-button size="mini" v-if="buttons.addshow==true" type="primary" @click="handleAdd">{{button.add}}</el-button>
+          <el-button size="mini" icon="el-icon-edit" v-if="buttons.addshow==true" type="primary" @click="handleAdd">{{button.add}}</el-button>
         </el-form-item>
+        <!-- <el-form-item>
+      <el-button size="mini" icon="el-icon-menu" type="primary" @click="getKeyLists" v-if="buttons.selectshow==true">{{button.whole}}</el-button>
+        </el-form-item> -->
         <el-form-item>
-      <el-button type="danger" size="mini" @click="batchRemove" :disabled="this.sels.length===0">{{button.batchRemove}}</el-button>
+      <el-button type="danger" icon="el-icon-delete" size="mini" @click="batchRemove" :disabled="this.sels.length===0">{{button.batchRemove}}</el-button>
         </el-form-item>
+        </div>
       </el-form>
     </el-col>
+        </div>
+
+            <!-- 查询筛选 -->
+         <el-card class="box-card box-cardBox" v-if="elCardBox">
+          <el-row>
+            <!-- <el-button size="mini" round v-for="item in tableLabel" :key="item.Label" @click="conditionClick(item.Label)">{{item.Label}}</el-button> -->
+            <el-col :span="24" class="toolbar" style="height:100%; padding-bottom: 0px;">
+              <el-form :inline="true" :model="filters" label-position label-width="120px" @submit.native.prevent>
+                <el-form-item :label="formLabel.value1">
+                  <el-input style="width: 180px;" size="small" :autofocus='inputAutofocus' v-if="buttons.selectshow==true" v-model="filters.jiekoumingcheng" :placeholder="formPlaceholder.value1"></el-input>
+                </el-form-item>
+                <el-form-item :label="formLabel.value2">
+                  <el-input style="width: 180px;" size="small" :autofocus='inputAutofocus' v-if="buttons.selectshow==true" v-model="filters.bllCode" :placeholder="formPlaceholder.value2"></el-input>
+                </el-form-item>
+                <!-- <el-form-item size="small" :label="formLabel.value3">
+                  <el-select style="width: 180px;" v-model="filters.caidanguanlian" :placeholder="formPlaceholder.value3">
+                    <el-option v-for="item in options" :key="item.id" :label="item.mingcheng" :value="item.id">
+                    </el-option>
+                  </el-select>
+                </el-form-item> -->
+                <el-form-item size="small" :label="formLabel.value4">
+                  <el-select style="width: 180px;" v-model="filters.shifouyanzheng" :placeholder="formPlaceholder.value4">
+                    <el-option label="是" :value='true'>是</el-option>
+                    <el-option label="否" :value='false'>否</el-option>
+                  </el-select>
+                </el-form-item>
+                <el-form-item size="small" :label="formLabel.value5">
+                  <el-select style="width: 180px;" v-model="filters.shifouguanlihoutai" :placeholder="formPlaceholder.value5">
+                    <el-option label="是" :value='true'>是</el-option>
+                    <el-option label="否" :value='false'>否</el-option>
+                  </el-select>
+                </el-form-item>
+                <el-form-item size="small" :label="formLabel.value6">
+                  <el-select style="width: 180px;" v-model="filters.shifouqiyong" :placeholder="formPlaceholder.value6">
+                    <el-option label="是" :value='true'>是</el-option>
+                    <el-option label="否" :value='false'>否</el-option>
+                  </el-select>
+                </el-form-item>
+                <el-form-item size="small" :label="formLabel.value7">
+                  <el-select style="width: 180px;" v-model="filters.shifouxuyaodenglu" :placeholder="formPlaceholder.value7">
+                    <el-option label="是" :value='true'>是</el-option>
+                    <el-option label="否" :value='false'>否</el-option>
+                  </el-select>
+                </el-form-item>
+                <div style="float: right;">
+                  <el-form-item>
+                    <el-button size="mini" v-if="buttons.selectshow==true" type="primary" v-on:click="getKeyList">确定</el-button>
+                  </el-form-item>
+                  <el-form-item>
+                    <el-button size="mini" v-if="buttons.selectshow==true" type="" v-on:click="getDataList">{{button.Reset}}</el-button>
+                  </el-form-item>
+                  </div>
+              </el-form>
+            </el-col>
+          </el-row>
+         </el-card>
 
     <!--列表-->
-    <el-table @row-dblclick='Rowdblclick' :data="dataList" highlight-current-row @selection-change="selsChange" style="width: 100%;">
+    <el-table @row-dblclick='Rowdblclick' stripe border :data="dataList" highlight-current-row @selection-change="selsChange" style="width: 100%;">
       <el-table-column type="selection" width="55">
       </el-table-column>
       <el-table-column type="index" label="#" width="60">
@@ -40,10 +111,10 @@
       </el-table-column>
       <el-table-column v-if="buttons.updateshow==true||buttons.delshow==true||buttons.interfaceshow==true||buttons.menushow==true" label="操作" width="400">
         <template slot-scope="scope">
-          <el-button size="mini" v-if="buttons.updateshow==true" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-          <el-button size="mini" v-if="buttons.menushow==true" @click="handlePermissionMenu(scope.$index, scope.row)">菜单权限</el-button>
-          <el-button size="mini" v-if="buttons.interfaceshow==true" @click="handlePermissionInterface(scope.$index, scope.row)">接口权限</el-button>
-          <el-button size="mini" v-if="buttons.delshow==true" type="danger" @click="handleDel(scope.$index, scope.row)">删除</el-button>
+          <el-button size="mini" style="padding: 7px 9px;margin-left: 0px;" icon="el-icon-edit" v-if="buttons.updateshow==true" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+          <!-- <el-button size="mini" v-if="buttons.menushow==true" @click="handlePermissionMenu(scope.$index, scope.row)">菜单权限</el-button> -->
+          <!-- <el-button size="mini" v-if="buttons.interfaceshow==true" @click="handlePermissionInterface(scope.$index, scope.row)">接口权限</el-button> -->
+          <el-button size="mini" style="padding: 7px 9px;margin-left: 0px;" icon="el-icon-delete" v-if="buttons.delshow==true" type="danger" @click="handleDel(scope.$index, scope.row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -122,9 +193,9 @@
             <!-- <el-checkbox v-model="defaultExpandAll">选中全部</el-checkbox> -->
             <el-checkbox :change='checkboxChange(defaultExpandAllX)' v-model="defaultExpandAllX">展开全部</el-checkbox>
             <!-- <el-checkbox :change='handleDeliveryRegionCheckAll(defaultExpandAllS)' v-model="defaultExpandAllS">选中全部</el-checkbox> -->
-              <!-- <el-button size="small" type="danger" @click.native="$refs.treex.setCheckedNodes([])">清除选择</el-button> -->
-              <el-button size="small" type="primary" @click="handleDeliveryRegionCheckAll" class="ml20">全选</el-button>
-    
+              <!-- <el-button size="small" type="danger" @click="cancelVent">清除选择</el-button> -->
+              <!-- <el-button size="small" type="primary" @click="handleDeliveryRegionCheckAll" class="ml20">全选</el-button> -->
+
 
        <el-row class="tac tree-row">
         <el-col :span="24">
@@ -136,7 +207,7 @@
             @check="handle"
             :check-on-click-node="true"
             :highlight-current="true"
-            :default-checked-keys="[1,8,9,10]"
+            :default-checked-keys="DefaultCheckedKey"
             :props="defaultProps">
           </el-tree>
           <!-- <el-table :data="this.interface" ref="table" highlight-current-row @selection-change="selsChangeInterface"
@@ -172,9 +243,9 @@
 
       <el-row class="tac tree-row">
         <el-col :span="24">
-          <!-- <el-tree :data="menus" ref="treex" show-checkbox node-key="value" :default-expanded-keys="[2, 3]"
-            :default-checked-keys="this.editForm.caidanguanlian" :props="defaultProps" ="defaultExpandAll">
-          </el-tree> -->
+          <el-tree :data="menus" ref="treex" show-checkbox node-key="value" :default-expanded-keys="[2, 3]"
+            :default-checked-keys="this.editForm.caidanguanlian" :props="defaultProps">
+          </el-tree>
         </el-col>
       </el-row>
       <div slot="footer" class="dialog-footer">
@@ -441,7 +512,7 @@ export default {
                 label: '查看列表'
               }]
         }, 
-        {id: 9,
+        {id: 14,
           label: '区块链管理',
               children: [{
                 id: 9,
@@ -459,23 +530,23 @@ export default {
                 id: 12,
                 label: '查看列表'
               }]
-        }, 
+        },
         {id: 10,
           label: '系统配置',
               children: [{
-                id: 9,
+                id: 15,
                 label: '配置系统设置'
               }, {
-                id: 10,
+                id: 16,
                 label: '读取系统设置'
               }, {
-                id: 13,
+                id: 17,
                 label: '修改管理员密码'
               }, {
-                id: 11,
+                id: 18,
                 label: '获取所有缓存'
               }, {
-                id: 12,
+                id: 19,
                 label: '清除所有缓存'
               }]
         }
@@ -485,17 +556,45 @@ export default {
       defaultExpandAllX: null,
       defaultExpandAllS:null,
       treeStore:null,
+      DefaultCheckedKey: [1,3,4,5,6,7,8,14,10], //选中的数组
 
         defaultProps: {
           children: 'children',
           label: 'label'
         },
 
+      inputAutofocus: false,      
+      elCardBox: false,
       filtersName: "角色名称",
+      //搜索标题
+      formLabel: {
+        value1: "接口名称",
+        value2: "接口标识",
+        value3: "菜单关联",
+        value4: "是否验证",
+        value5: "是否启用",
+        value6: "是否管理后台",
+        value7: "是否需要登录"
+      },
+      //搜索框提示文字
+      formPlaceholder: {
+        value1: "名称",
+        value2: "标识",
+        value3: "关联",
+        value4: "是否验证",
+        value5: "是否启用",
+        value6: "是否管理后台",
+        value7: "是否需要登录"
+      },
       button: {
+        edit: "编辑",
+        del: "删除",
         query: "查询",
         add: "添加",
-        batchRemove: "批量删除"
+        whole: "显示所有",
+        batchRemove: "批量删除",
+        condition: "筛选",
+        Reset: "重置",
       },
       buttons: {
         //按钮的权限控制
@@ -574,6 +673,28 @@ export default {
     };
   },
   methods: {
+        //选定筛选条件
+    conditionClick(val) {
+      console.log(val);
+      this.elCard();
+    },
+    //条件显示隐藏
+    elCard() {
+      if (this.elCardBox == false) {
+        this.elCardBox = true;
+      } else {
+        this.elCardBox = false;
+      }
+    },
+    //取消全选
+    cancelVent(){
+      // var ary = this.DefaultCheckedKey
+      // console.log (ary)
+      // this.DefaultCheckedKey = [1,3]
+      // ary.splice(0,ary.length);
+      // console.log (this.DefaultCheckedKey)
+      this.$refs.treex.setCheckedKeys([])
+    },
     // //设置默认角色
     // setMorenRole(rowdata) {
     //   // console.log('setIsCheckInterface--rowdata===',rowdata)
@@ -984,5 +1105,35 @@ export default {
 <style scoped>
 .el-dialog__body {
     padding: 0;
+}
+.box-cardBox {
+  background: #f1f1f1;
+}
+.panel-heading {
+    padding: 15px;
+    background: #e8edf0;
+    border-color: #e8edf0;
+    border-bottom: 1px solid transparent;
+    border-top-right-radius: 2px;
+    border-top-left-radius: 2px;
+}
+.panel-lead {
+    /* margin-bottom: 15px; */
+}
+.panel-lead em{
+    font-weight: bold;
+    font-size: 14px;
+    display: block;
+}
+.panel-lead span{
+    color: #666;
+    font-size: 14px;
+}
+.toolBox {
+  background: #fff;
+  /* min-height: 3.6rem; */
+}
+.el-form-item {
+  margin-bottom: 0px;
 }
 </style>

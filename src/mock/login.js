@@ -80,7 +80,7 @@ const userMap = {
         ]
       }
     ],
-    //avatar: 'https://raw.githubusercontent.com/mgbq/nx-admin/master/src/assets/img/home/logo.png',
+    //avatar: 'https://raw.githubusercontent.com/mgbq/Fast-Admin/master/src/assets/img/home/logo.png',
     name: 'Super Admin'
   },
   editor: {

@@ -25,7 +25,7 @@ export default {
   data() {
     return {
       activeName: 'directly',
-      inputData: 'https://github.com/mgbq/nx-admin'
+      inputData: 'https://github.com/mgbq/Fast-Admin'
     }
   },
   methods: {
