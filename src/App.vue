@@ -68,4 +68,7 @@ export default {
 .box-cardBox .el-card__body{
   padding: 0px;
 }
+.roleCard .el-card__body {
+  padding: 1rem
+}
 </style>

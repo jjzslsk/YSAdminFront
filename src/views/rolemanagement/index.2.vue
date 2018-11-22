@@ -403,8 +403,231 @@ export default {
 
       //接口TREE数
        data2: [
- 
-
+         {id: 1,
+          label: '用户管理',
+              children: [{
+                id: 9,
+                label: '添加'
+              }, {
+                id: 10,
+                label: '编辑'
+              }, {
+                id: 13,
+                label: '删除'
+              }, {
+                id: 11,
+                label: '查看'
+              }, {
+                id: 12,
+                label: '查看列表',
+                children: [{
+                id: 9,
+                label: '添加'
+              }, {
+                id: 10,
+                label: '编辑'
+              }, {
+                id: 13,
+                label: '删除'
+              }, {
+                id: 11,
+                label: '查看'
+              }, {
+                id: 12,
+                label: '查看列表'
+              }]
+              }]
+        }, 
+        // {id: 2,
+        //   label: '菜单管理',
+        //       children: [{
+        //         id: 9,
+        //         label: '添加'
+        //       }, {
+        //         id: 10,
+        //         label: '编辑'
+        //       }, {
+        //         id: 13,
+        //         label: '删除'
+        //       }, {
+        //         id: 11,
+        //         label: '查看'
+        //       }, {
+        //         id: 12,
+        //         label: '查看列表'
+        //       }]
+        // }, 
+        {id: 3,
+          label: '接口管理',
+              children: [{
+                id: 9,
+                label: '添加'
+              }, {
+                id: 10,
+                label: '编辑'
+              }, {
+                id: 13,
+                label: '删除'
+              }, {
+                id: 11,
+                label: '查看'
+              }, {
+                id: 12,
+                label: '查看列表'
+              }]
+        }, 
+        {id: 4,
+          label: '角色管理',
+              children: [{
+                id: 9,
+                label: '添加'
+              }, {
+                id: 10,
+                label: '编辑'
+              }, {
+                id: 13,
+                label: '删除'
+              }, {
+                id: 11,
+                label: '查看'
+              }, {
+                id: 12,
+                label: '查看列表'
+              }]
+        }, 
+        {id: 5,
+          label: '字典管理',
+              children: [{
+                id: 9,
+                label: '添加'
+              }, {
+                id: 10,
+                label: '编辑'
+              }, {
+                id: 13,
+                label: '删除'
+              }, {
+                id: 11,
+                label: '查看'
+              }, {
+                id: 12,
+                label: '查看列表'
+              }]
+        }, 
+        {id: 6,
+          label: '部门管理',
+              children: [{
+                id: 9,
+                label: '添加'
+              }, {
+                id: 10,
+                label: '编辑'
+              }, {
+                id: 13,
+                label: '删除'
+              }, {
+                id: 11,
+                label: '查看'
+              }, {
+                id: 12,
+                label: '查看列表'
+              }]
+        }, 
+        {id: 7,
+          label: '接入源管理',
+              children: [{
+                id: 9,
+                label: '添加'
+              }, {
+                id: 10,
+                label: '编辑'
+              }, {
+                id: 13,
+                label: '删除'
+              }, {
+                id: 11,
+                label: '查看'
+              }, {
+                id: 12,
+                label: '查看列表'
+              }]
+        }, 
+        {id: 8,
+          label: '数据源管理',
+              children: [{
+                id: 9,
+                label: '添加'
+              }, {
+                id: 10,
+                label: '编辑'
+              }, {
+                id: 13,
+                label: '删除'
+              }, {
+                id: 11,
+                label: '查看'
+              }, {
+                id: 12,
+                label: '查看列表'
+              }]
+        }, 
+        {id: 14,
+          label: '区块链管理',
+              children: [{
+                id: 9,
+                label: '添加'
+              }, {
+                id: 10,
+                label: '编辑'
+              }, {
+                id: 13,
+                label: '删除'
+              }, {
+                id: 11,
+                label: '查看'
+              }, {
+                id: 12,
+                label: '查看列表'
+              }]
+        },
+        {id: 10,
+          label: '系统配置',
+              children: [{
+                id: 15,
+                label: '配置系统设置'
+              }, {
+                id: 16,
+                label: '读取系统设置'
+              }, {
+                id: 17,
+                label: '修改管理员密码'
+              }, {
+                id: 18,
+                label: '获取所有缓存'
+              }, {
+                id: 19,
+                label: '清除所有缓存'
+              }]
+        },
+        {id: 11,
+          label: '用户设置',
+              children: [{
+                id: 20,
+                label: '登录'
+              }, {
+                id: 21,
+                label: '注销登录'
+              }, {
+                id: 22,
+                label: '管理员修改自己的信息'
+              }, {
+                id: 23,
+                label: '获取所有缓存'
+              }, {
+                id: 24,
+                label: '清除所有缓存'
+              }]
+        }
       ],
 
       checked: true,//是否全选
@@ -732,32 +955,6 @@ export default {
       this.dialogFormVisibleEdit = true;
       this.editForm = Object.assign({}, row);
 
-      //获取接口所有数据
-      this.paraInterface.Code = this.bllCode.getInterfaceList;
-      this.paraInterface.Data = "";
-      handlePost(this.paraInterface).then(res => {
-        if (res.IsSuccess == true) {
-          this.interface = res.Data.List;
-
-                // 获取菜单管理信息
-                this.paraMenu.Code = this.bllCode.getTreeMenu;
-                this.paraMenu.Data = "";
-                handlePost(this.paraMenu)
-                  .then(res => {
-                    if (res.IsSuccess == true) {
-                      this.menus = res.Data;
-                    }
-                  })
-                  .catch(err => {
-                    console.log(err);
-                  });
-
-
-        }
-      console.log ("this.interface:",this.interface)
-
-      });
-
     //  console.log ('this.$refs.treex',this.$refs.treex.store.defaultExpandAll)
     //  console.log ('this.$refs.store',this.$refs.treex.store)
     //  for(var i=0;i<this.$refs.treex.store._getAllNodes().length;i++){
@@ -768,7 +965,19 @@ export default {
     //  this.$refs.treex.store.defaultExpandAll = this.defaultExpandAll
     //  this.$refs.treex.store.defaultExpandAll = this.defaultExpandAll
 
-
+      // 获取菜单管理信息
+      this.paraMenu.Code = this.bllCode.getTreeMenu;
+      this.paraMenu.Data = "";
+      handlePost(this.paraMenu)
+        .then(res => {
+          if (res.IsSuccess == true) {
+            this.menus = res.Data;
+            this.dialogStatus = "updatePermissionMenu";
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
 
     },
     // 显示菜单权限界面
