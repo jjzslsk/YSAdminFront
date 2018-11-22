@@ -1,5 +1,5 @@
 <template>
-  <section class="app-container roleBox">
+  <section class="app-container sectionBox">
             <div class="panel-heading">
          <div class="panel-lead">
         <em>角色组</em>
@@ -17,11 +17,11 @@
           <el-form-item>
           <el-button size="mini" icon="el-icon-refresh" v-if="buttons.selectshow==true" type="info" v-on:click="getKeyList"></el-button>
         </el-form-item>
-        <el-form-item>
+        <!-- <el-form-item>
           <el-button size="mini" icon="el-icon-search" v-if="buttons.selectshow==true" type="primary" v-on:click="getKeyList">{{button.query}}</el-button>
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item>
-          <el-button size="mini" icon="el-icon-zoom-in" v-if="buttons.selectshow==true" type="primary" v-on:click="elCard">{{button.condition}}</el-button>
+          <el-button size="mini" icon="el-icon-zoom-in" v-if="buttons.selectshow==true" type="primary" v-on:click="elCard">查询</el-button>
         </el-form-item>
         <el-form-item>
           <el-button size="mini" icon="el-icon-edit" v-if="buttons.addshow==true" type="primary" @click="handleAdd">{{button.add}}</el-button>
@@ -94,7 +94,7 @@
 
     <!--列表-->
     <el-table @row-dblclick='Rowdblclick' stripe border :data="dataList" highlight-current-row @selection-change="selsChange" style="width: 100%;">
-      <el-table-column type="selection" width="55">
+      <el-table-column type="selection">
       </el-table-column>
       <el-table-column type="index" label="#" width="60">
       </el-table-column>
@@ -112,7 +112,7 @@
       </el-table-column> -->
       <el-table-column prop="beizhu" label="备注" min-width="160">
       </el-table-column>
-      <el-table-column v-if="buttons.updateshow==true||buttons.delshow==true||buttons.interfaceshow==true||buttons.menushow==true" label="操作" width="400">
+      <el-table-column v-if="buttons.updateshow==true||buttons.delshow==true||buttons.interfaceshow==true||buttons.menushow==true" label="操作" fixed="right" width="180">
         <template slot-scope="scope">
           <el-button size="mini" style="padding: 7px 9px;margin-left: 0px;" icon="el-icon-edit" v-if="buttons.updateshow==true" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
           <!-- <el-button size="mini" v-if="buttons.menushow==true" @click="handlePermissionMenu(scope.$index, scope.row)">菜单权限</el-button> -->
@@ -1110,7 +1110,7 @@ export default {
     padding: 0;
 }
 .box-cardBox {
-  background: #f1f1f1;
+  background: #e8edf0;
 }
 .panel-heading {
     padding: 15px;

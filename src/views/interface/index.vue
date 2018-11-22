@@ -1,5 +1,5 @@
 <template>
-  <section class="app-container">
+  <section class="app-container sectionBox">
     <!--列表-->
         <div class="panel-heading">
          <div class="panel-lead">
@@ -14,15 +14,21 @@
         <div class="toolBox">
     <el-col :span="24" class="toolbar" style="height:100%; padding-bottom: 0px;">
       <el-form :inline="true" :model="filters" label-position label-width="120px" @submit.native.prevent>
-        <div style="float: right;">
-        <el-form-item>
-          <el-button size="mini" icon="el-icon-search" v-if="buttons.selectshow==true" type="primary" v-on:click="getKeyList">{{button.query}}</el-button>
+        <div style="float: left;">
+          <el-form-item>
+          <el-button size="mini" icon="el-icon-refresh" v-if="buttons.selectshow==true" type="info" v-on:click="getKeyList"></el-button>
         </el-form-item>
+        <!-- <el-form-item>
+          <el-button size="mini" icon="el-icon-search" v-if="buttons.selectshow==true" type="primary" v-on:click="getKeyList">{{button.query}}</el-button>
+        </el-form-item> -->
         <el-form-item>
-          <el-button size="mini" icon="el-icon-zoom-in" v-if="buttons.selectshow==true" type="primary" v-on:click="elCard">{{button.condition}}</el-button>
+          <el-button size="mini" icon="el-icon-zoom-in" v-if="buttons.selectshow==true" type="primary" v-on:click="elCard">查询</el-button>
         </el-form-item>
         <el-form-item>
           <el-button size="mini" icon="el-icon-edit" v-if="buttons.addshow==true" type="primary" @click="handleAdd">{{button.add}}</el-button>
+        </el-form-item>
+        <el-form-item>
+          <el-button size="mini" icon="el-icon-edit" v-if="buttons.addshow==true" type="primary">更多</el-button>
         </el-form-item>
         <!-- <el-form-item>
       <el-button size="mini" icon="el-icon-menu" type="primary" @click="getKeyLists" v-if="buttons.selectshow==true">{{button.whole}}</el-button>
@@ -77,20 +83,20 @@
                     <el-option label="否" :value='false'>否</el-option>
                   </el-select>
                 </el-form-item>
-                <div style="float: right;">
-                  <el-form-item>
-                    <el-button size="mini" v-if="buttons.selectshow==true" type="primary" v-on:click="getKeyList">{{button.query}}</el-button>
-                  </el-form-item>
-                  <el-form-item>
+                <!-- <div style="float: right;"> -->
+                  <el-form-item size="small">
+                    <el-button size="mini" v-if="buttons.selectshow==true" type="primary" v-on:click="getKeyList">确定</el-button>
                     <el-button size="mini" v-if="buttons.selectshow==true" type="" v-on:click="getDataList">{{button.Reset}}</el-button>
                   </el-form-item>
-                  </div>
+                  <!-- <el-form-item> -->
+                  <!-- </el-form-item> -->
+                  <!-- </div> -->
               </el-form>
             </el-col>
           </el-row>
          </el-card>
 
-    <el-table @row-dblclick="Rowdblclick" stripe border :data="dataList" @current-change="checkbox" highlight-current-row @selection-change="selsChange" style="width: 100%;">
+    <el-table fit @row-dblclick="Rowdblclick" stripe border :data="dataList" @current-change="checkbox" highlight-current-row @selection-change="selsChange" style="width: 100%;">
       <!-- <el-table-column type="selection" width="55">
       </el-table-column> -->
       <el-table-column v-for="item in tableLabel" :key="item.Label" :label="item.Label" :prop="item.prop" :width='item.width' :type='item.type'>
@@ -127,9 +133,8 @@
       <el-table-column prop="shifouxuyaodenglu" label="是否需要登录" width="120" :formatter="function (row, column) {
           return row.shifouxuyaodenglu == true ? '是' : '否'}">
       </el-table-column>
-      <el-table-column v-if="buttons.updateshow==true||buttons.delshow==true" label="操作" width="90" fixed="right">
+      <el-table-column v-if="buttons.updateshow==true||buttons.delshow==true" label="操作" fixed="right" width="180">
         <template slot-scope="scope">
-          
           <el-button size="mini" style="padding: 7px 9px;margin-left: 0px;" icon="el-icon-edit" v-if="buttons.updateshow==true" @click="handleEdit(scope.$index, scope.row)"></el-button>
           <el-button size="mini" style="padding: 7px 9px;margin-left: 0px;" icon="el-icon-delete" type="danger" v-if="buttons.delshow==true" @click="handleDel(scope.$index, scope.row)"></el-button>
         </template>
@@ -824,7 +829,7 @@ export default {
 
 <style scoped>
 .box-cardBox {
-  background: #f1f1f1;
+  background: #e8edf0;
 }
 .panel-heading {
     padding: 15px;

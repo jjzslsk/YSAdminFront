@@ -773,7 +773,7 @@ export default {
 
 <style scoped>
 .box-cardBox {
-  background: #f1f1f1;
+  background: #e8edf0;
 }
 
 </style>

@@ -55,14 +55,17 @@ export default {
     align-items: center;
     margin-right: 2rem;
 }
-.roleBox .el-dialog__body {
+.sectionBox .el-dialog__body {
     padding: 0;
 
 }
-.roleBox .el-card__body {
+.sectionBox .el-card__body {
     padding: 0;
 } 
-.roleBox .el-form--inline .el-form-item {
+.sectionBox .el-form--inline .el-form-item {
     margin-right: 1px;
+}
+.box-cardBox .el-card__body{
+  padding: 0px;
 }
 </style>
