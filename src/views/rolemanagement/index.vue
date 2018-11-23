@@ -259,7 +259,9 @@
 <!-- s -->
         <el-tab-pane label="菜单管理">
 
-            <el-checkbox v-model="defaultExpandAllX">展开全部</el-checkbox>
+            <!-- <el-checkbox v-model="defaultExpandAllX">展开全部</el-checkbox> -->
+            <el-checkbox :change='checkboxChange(defaultExpandAllX)' v-model="defaultExpandAllX">展开全部</el-checkbox>
+
 
             <!-- {{this.$refs.treex.store.defaultExpandAll}} -->
 

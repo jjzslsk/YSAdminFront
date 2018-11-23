@@ -70,4 +70,26 @@ export default {
 .roleCard .el-card__body {
   padding: 1rem
 }
+.tablesSyl td, .tablesSyl th{
+  padding: 5px 0
+}
+.el-dialog__header {
+    background: #222d32;
+}
+.el-dialog__title {
+  color: #fff;
+}
+.el-table thead {
+    color: #000;
+}
+.el-table {
+    color: #000;
+}
+.tablesSyl .cell{
+      min-width: 8rem;
+}
+.el-dialog__headerbtn .el-dialog__close {
+    color: #fff;
+    font-size: 2rem;
+}
 </style>

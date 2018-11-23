@@ -3,7 +3,7 @@
         <!-- 头部文字说明 -->
         <div class="panel-heading">
          <div class="panel-lead">
-        <em>菜单规则</em>
+        <em>接口管理</em>
         <span>
         规则通常对应一个控制器的方法,同时左侧的菜单栏数据也从规则中体现,通常建议通过命令行进行生成规则节点
         </span>
@@ -25,7 +25,7 @@
           <el-button size="mini" icon="el-icon-zoom-in" v-if="ObjButton.query.isShow==true" type="primary" v-on:click="elCard">{{ObjButton.query.text}}</el-button>
         </el-form-item>
         <el-form-item>
-          <el-button size="mini" icon="el-icon-edit" v-if="Obj_button.buttons.addshow==true" type="primary" @click="handleAdd">{{ObjButton.add.text}}</el-button>
+          <el-button size="mini" icon="el-icon-plus" v-if="Obj_button.buttons.addshow==true" type="primary" @click="handleAdd">{{ObjButton.add.text}}</el-button>
         </el-form-item>
         <!-- <el-form-item>
           <el-button size="mini" icon="el-icon-edit" v-if="Obj_button.buttons.addshow==true" type="primary">{{Obj_button.buttonText.edit}}</el-button>
@@ -46,10 +46,12 @@
           <el-row>
             <!-- <el-button size="mini" round v-for="item in tableLabel" :key="item.Label" @click="conditionClick(item.Label)">{{item.Label}}</el-button> -->
             <el-col :span="24" class="toolbar" style="height:100%; padding-bottom: 0px;">
-              <el-form :inline="true" :model="filters" label-position label-width="120px" @submit.native.prevent>
+              <el-form :inline="true" label-position label-width="120px" @submit.native.prevent>
                 <el-form-item :label="formRemove.value1.text">
-                  <el-input style="width: 180px;" size="small" :autofocus='inputAutofocus' v-model="filters.jiekoumingcheng" :placeholder="formRemove.value1.text"></el-input>
+                  <el-input style="width: 180px;" size="small" :autofocus='inputAutofocus' v-model="formRemove.value1.key" :placeholder="formRemove.value1.text"></el-input>
                 </el-form-item>
+       <h1>1{{formRemove.value1.key}}</h1> 
+
                 <el-form-item :label="formRemove.value2.text">
                   <el-input style="width: 180px;" size="small" :autofocus='inputAutofocus' v-model="filters.bllCode" :placeholder="formRemove.value2.text"></el-input>
                 </el-form-item>
@@ -85,8 +87,8 @@
                 </el-form-item>
                 <!-- <div style="float: right;"> -->
                   <el-form-item size="small">
-                    <el-button size="mini" v-if="Obj_button.buttons.selectshow==true" type="primary" v-on:click="getKeyList">确定</el-button>
-                    <el-button size="mini" v-if="Obj_button.buttons.selectshow==true" type="" v-on:click="getDataList">{{Obj_button.buttonText.Reset}}</el-button>
+                    <el-button size="mini" type="primary" v-on:click="getKeyList">确定</el-button>
+                    <el-button size="mini" type="" v-on:click="getDataList">重置</el-button>
                   </el-form-item>
                   <!-- <el-form-item> -->
                   <!-- </el-form-item> -->
@@ -96,7 +98,7 @@
           </el-row>
          </el-card>
 
-    <el-table fit @row-dblclick="Rowdblclick" stripe border :data="dataList" @current-change="checkbox" highlight-current-row @selection-change="selsChange" style="width: 100%;">
+    <el-table class="tablesSyl" fit @row-dblclick="Rowdblclick" stripe border :data="dataList" @current-change="checkbox" highlight-current-row @selection-change="selsChange">
       <!-- <el-table-column type="selection" width="55">
       </el-table-column> -->
       <el-table-column v-for="item in tableLabel" :key="item.Label" :label="item.Label" :prop="item.prop" :width='item.width' :type='item.type'>
@@ -133,9 +135,9 @@
       <el-table-column prop="shifouxuyaodenglu" label="是否需要登录" width="120" :formatter="function (row, column) {
           return row.shifouxuyaodenglu == true ? '是' : '否'}">
       </el-table-column>
-      <el-table-column v-if="ObjButton.edit.isShow==true||ObjButton.del.isShow==true" label="操作" fixed="right" width="180">
+      <el-table-column v-if="ObjButton.edit.isShow==true||ObjButton.del.isShow==true" label="操作" fixed="right" >
         <template slot-scope="scope">
-          <el-button size="mini" style="padding: 7px 9px;margin-left: 0px;" icon="el-icon-edit" v-if="ObjButton.query.isShow==true" @click="handleEdit(scope.$index, scope.row)"></el-button>
+          <el-button size="mini" style="padding: 7px 9px;margin-left: 0px;" icon="el-icon-edit" type="primary" v-if="ObjButton.query.isShow==true" @click="handleEdit(scope.$index, scope.row)"></el-button>
           <el-button size="mini" style="padding: 7px 9px;margin-left: 0px;" icon="el-icon-delete" type="danger" v-if="ObjButton.del.isShow==true" @click="handleDel(scope.$index, scope.row)"></el-button>
         </template>
       </el-table-column>
@@ -391,15 +393,29 @@ export default {
           text:'批量删除',
           Code:'DelInterface',
           isShow: false,
-           para:paraHelper
         },
+        Cancel:{
+          text:'取消',
+          Code:'',
+          isShow: false,
+        },
+        confirm:{
+          text:'确定',
+          Code:'',
+          isShow: false,
+          para:paraHelper
+        }
       },
 
       //搜索
       formRemove: {
         value1:{
           text:'接口名称',//搜索标题
-          tips:'接口名称'//搜索提示
+          tips:'接口名称',//搜索提示
+          inputData:"",
+          // key:{
+          //   jiekoumingcheng:''
+          // }
         },
         value2:{
           text:'接口标识',
@@ -440,7 +456,7 @@ export default {
       //列表数组
       tableLabel: [
         { type: "selection", width: "55" },
-        { type: "index", width: "60" },
+        // { type: "index", width: "60" },
         { Label: "ID", prop: "id", width: "150" },
         { Label: "接口名称", prop: "jiekoumingcheng", width: "150" },
         { Label: "接口标识", prop: "bllcode", width: "150" },
@@ -453,28 +469,28 @@ export default {
         // {Label:'操作',width:'150'},
       ],
 
-      //搜索
-      removeForm: {
-        formLabel: {//搜索标题
-          value1: "接口名称",
-          value2: "接口标识",
-          value3: "菜单关联",
-          value4: "是否验证",
-          value5: "是否启用",
-          value6: "是否管理后台",
-          value7: "是否需要登录"
-        },
-        //搜索框提示文字
-        formPlaceholder: {
-          value1: "名称",
-          value2: "标识",
-          value3: "关联",
-          value4: "是否验证",
-          value5: "是否启用",
-          value6: "是否管理后台",
-          value7: "是否需要登录"
-        },
-      },
+      // //搜索
+      // removeForm: {
+      //   formLabel: {//搜索标题
+      //     value1: "接口名称",
+      //     value2: "接口标识",
+      //     value3: "菜单关联",
+      //     value4: "是否验证",
+      //     value5: "是否启用",
+      //     value6: "是否管理后台",
+      //     value7: "是否需要登录"
+      //   },
+      //   //搜索框提示文字
+      //   formPlaceholder: {
+      //     value1: "名称",
+      //     value2: "标识",
+      //     value3: "关联",
+      //     value4: "是否验证",
+      //     value5: "是否启用",
+      //     value6: "是否管理后台",
+      //     value7: "是否需要登录"
+      //   },
+      // },
       
       currentRow: null,
       // buttons: {
@@ -503,7 +519,7 @@ export default {
         // Page: this.page,
         // jiekoumingcheng:this.modelData.value1,
         Page: 1,
-        Size: 10
+        Size: 15,
       },
       // modelData: {
       //   value1:'',
@@ -549,7 +565,7 @@ export default {
     Refresh(){
       this.filters = {
         Page: 1,
-        Size: 10
+        Size: 15
       },
       this.getDataList()
     },
@@ -680,6 +696,12 @@ export default {
     },
     // 获取列表
     getDataList() {
+      class Point {
+          constructor(x, y) {
+            Object.assign(this, {x, y});
+          }
+        }
+        console.log ('QQQ',Point)
       this.getMenuList();
       // const paraSelect = {
       //   jiekoumingcheng: this.modelData,
@@ -687,7 +709,7 @@ export default {
       //   Size: 10
       // };
       this.para.Code = this.bllCode.getList;
-      this.para.Data = JSON.stringify(this.filters);
+      this.para.Data = JSON.stringify(this.formRemove.value1.key);
       // console.log("filters!!!", this.filters);
       console.log("para!!!", this.para);
       handlePost(this.para).then(res => {
@@ -698,7 +720,7 @@ export default {
           this.dataList = res.Data.List;
           this.filters = {
             Page: 1,
-            Size: 10
+            Size: 15,
           };
         }
       });
@@ -919,5 +941,8 @@ export default {
 }
 .el-form-item {
   margin-bottom: 0px;
+}
+.tablesSyl td, .tablesSyl th{
+  padding: 5px 0
 }
 </style>
