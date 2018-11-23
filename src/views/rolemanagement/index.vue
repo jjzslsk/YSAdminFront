@@ -194,7 +194,7 @@
 
             <!-- `checked` 为 true 或 false -->
             <!-- <el-checkbox v-model="defaultExpandAll">选中全部</el-checkbox> -->
-            <el-checkbox :change='checkboxChange(defaultExpandAllX)' v-model="defaultExpandAllX">展开全部</el-checkbox>
+            <!-- <el-checkbox :change='checkboxChange(defaultExpandAllX)' v-model="defaultExpandAllX">展开全部</el-checkbox> -->
             <!-- <el-checkbox :change='handleDeliveryRegionCheckAll(defaultExpandAllS)' v-model="defaultExpandAllS">选中全部</el-checkbox> -->
               <!-- <el-button size="small" type="danger" @click="cancelVent">清除选择</el-button> -->
               <!-- <el-button size="small" type="primary" @click="handleDeliveryRegionCheckAll" class="ml20">全选</el-button> -->
@@ -210,7 +210,7 @@
             :left-default-checked="[2, 3]"
             :right-default-checked="[1]"
             :render-content="renderFunc"
-            :titles="['Source', 'Target']"
+            :titles="['所有菜单', '已有菜单']"
             :format="{
               noChecked: '${total}',
               hasChecked: '${checked}/${total}'

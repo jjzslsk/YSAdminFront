@@ -1,6 +1,6 @@
 <template>
   <section class="app-container sectionBox">
-    <!--列表-->
+        <!-- 头部文字说明 -->
         <div class="panel-heading">
          <div class="panel-lead">
         <em>菜单规则</em>
@@ -16,77 +16,77 @@
       <el-form :inline="true" :model="filters" label-position label-width="120px" @submit.native.prevent>
         <div style="float: left;">
           <el-form-item>
-          <el-button size="mini" icon="el-icon-refresh" v-if="buttons.selectshow==true" type="info" v-on:click="getKeyList"></el-button>
+          <el-button size="mini" v-if="ObjButton.query.isShow==true" icon="el-icon-refresh" type="info" v-on:click="Refresh"></el-button>
         </el-form-item>
         <!-- <el-form-item>
-          <el-button size="mini" icon="el-icon-search" v-if="buttons.selectshow==true" type="primary" v-on:click="getKeyList">{{button.query}}</el-button>
+          <el-button size="mini" icon="el-icon-search" v-if="Obj_button.buttons.selectshow==true" type="primary" v-on:click="getKeyList">{{Obj_button.buttonText.query}}</el-button>
         </el-form-item> -->
         <el-form-item>
-          <el-button size="mini" icon="el-icon-zoom-in" v-if="buttons.selectshow==true" type="primary" v-on:click="elCard">查询</el-button>
+          <el-button size="mini" icon="el-icon-zoom-in" v-if="ObjButton.query.isShow==true" type="primary" v-on:click="elCard">{{ObjButton.query.text}}</el-button>
         </el-form-item>
         <el-form-item>
-          <el-button size="mini" icon="el-icon-edit" v-if="buttons.addshow==true" type="primary" @click="handleAdd">{{button.add}}</el-button>
-        </el-form-item>
-        <el-form-item>
-          <el-button size="mini" icon="el-icon-edit" v-if="buttons.addshow==true" type="primary">更多</el-button>
+          <el-button size="mini" icon="el-icon-edit" v-if="Obj_button.buttons.addshow==true" type="primary" @click="handleAdd">{{ObjButton.add.text}}</el-button>
         </el-form-item>
         <!-- <el-form-item>
-      <el-button size="mini" icon="el-icon-menu" type="primary" @click="getKeyLists" v-if="buttons.selectshow==true">{{button.whole}}</el-button>
+          <el-button size="mini" icon="el-icon-edit" v-if="Obj_button.buttons.addshow==true" type="primary">{{Obj_button.buttonText.edit}}</el-button>
+        </el-form-item> -->
+        <!-- <el-form-item>
+      <el-button size="mini" icon="el-icon-menu" type="primary" @click="getKeyLists" v-if="Obj_button.buttons.selectshow==true">{{Obj_button.buttonText.query}}</el-button>
         </el-form-item> -->
         <el-form-item>
-      <el-button type="danger" icon="el-icon-delete" size="mini" @click="batchRemove" :disabled="this.sels.length===0">{{button.batchRemove}}</el-button>
+      <el-button type="danger" icon="el-icon-delete" size="mini" v-if="ObjButton.del.isShow==true" @click="manyDel" :disabled="this.sels.length===0">{{ObjButton.manyDel.text}}</el-button>
         </el-form-item>
         </div>
       </el-form>
     </el-col>
         </div>
 
-        <!-- 查询筛选 -->
+        <!-- 搜索筛选 -->
          <el-card class="box-card box-cardBox" v-if="elCardBox">
           <el-row>
             <!-- <el-button size="mini" round v-for="item in tableLabel" :key="item.Label" @click="conditionClick(item.Label)">{{item.Label}}</el-button> -->
             <el-col :span="24" class="toolbar" style="height:100%; padding-bottom: 0px;">
               <el-form :inline="true" :model="filters" label-position label-width="120px" @submit.native.prevent>
-                <el-form-item :label="formLabel.value1">
-                  <el-input style="width: 180px;" size="small" :autofocus='inputAutofocus' v-if="buttons.selectshow==true" v-model="filters.jiekoumingcheng" :placeholder="formPlaceholder.value1"></el-input>
+                <el-form-item :label="formRemove.value1.text">
+                  <el-input style="width: 180px;" size="small" :autofocus='inputAutofocus' v-model="filters.jiekoumingcheng" :placeholder="formRemove.value1.text"></el-input>
                 </el-form-item>
-                <el-form-item :label="formLabel.value2">
-                  <el-input style="width: 180px;" size="small" :autofocus='inputAutofocus' v-if="buttons.selectshow==true" v-model="filters.bllCode" :placeholder="formPlaceholder.value2"></el-input>
+                <el-form-item :label="formRemove.value2.text">
+                  <el-input style="width: 180px;" size="small" :autofocus='inputAutofocus' v-model="filters.bllCode" :placeholder="formRemove.value2.text"></el-input>
                 </el-form-item>
-                <!-- <el-form-item size="small" :label="formLabel.value3">
-                  <el-select style="width: 180px;" v-model="filters.caidanguanlian" :placeholder="formPlaceholder.value3">
+                <!-- <el-form-item size="small" :label="formRemove.value1.text">
+                  <el-select style="width: 180px;" v-model="filters.caidanguanlian" :placeholder="formRemove.value1.text">
                     <el-option v-for="item in options" :key="item.id" :label="item.mingcheng" :value="item.id">
                     </el-option>
                   </el-select>
                 </el-form-item> -->
-                <el-form-item size="small" :label="formLabel.value4">
-                  <el-select style="width: 180px;" v-model="filters.shifouyanzheng" :placeholder="formPlaceholder.value4">
+                <el-form-item size="small" :label="formRemove.value4.text">
+                  <el-select style="width: 180px;" v-model="filters.shifouyanzheng" :placeholder="formRemove.value4.text">
                     <el-option label="是" :value='true'>是</el-option>
                     <el-option label="否" :value='false'>否</el-option>
                   </el-select>
                 </el-form-item>
-                <el-form-item size="small" :label="formLabel.value5">
-                  <el-select style="width: 180px;" v-model="filters.shifouguanlihoutai" :placeholder="formPlaceholder.value5">
+                <el-form-item size="small" :label="formRemove.value6.text">
+                  <el-select style="width: 180px;" v-model="filters.shifouguanlihoutai" :placeholder="formRemove.value6.text">
                     <el-option label="是" :value='true'>是</el-option>
                     <el-option label="否" :value='false'>否</el-option>
                   </el-select>
                 </el-form-item>
-                <el-form-item size="small" :label="formLabel.value6">
-                  <el-select style="width: 180px;" v-model="filters.shifouqiyong" :placeholder="formPlaceholder.value6">
+                <el-form-item size="small" :label="formRemove.value5.text">
+                  <el-select style="width: 180px;" v-model="filters.shifouqiyong" :placeholder="formRemove.value5.text">
                     <el-option label="是" :value='true'>是</el-option>
                     <el-option label="否" :value='false'>否</el-option>
                   </el-select>
                 </el-form-item>
-                <el-form-item size="small" :label="formLabel.value7">
-                  <el-select style="width: 180px;" v-model="filters.shifouxuyaodenglu" :placeholder="formPlaceholder.value7">
+                <el-form-item size="small" :label="formRemove.value7.text">
+                  <el-select style="width: 180px;" v-model="filters.shifouxuyaodenglu" :placeholder="formRemove.value7.text">
                     <el-option label="是" :value='true'>是</el-option>
                     <el-option label="否" :value='false'>否</el-option>
                   </el-select>
                 </el-form-item>
                 <!-- <div style="float: right;"> -->
                   <el-form-item size="small">
-                    <el-button size="mini" v-if="buttons.selectshow==true" type="primary" v-on:click="getKeyList">确定</el-button>
-                    <el-button size="mini" v-if="buttons.selectshow==true" type="" v-on:click="getDataList">{{button.Reset}}</el-button>
+                    <el-button size="mini" v-if="Obj_button.buttons.selectshow==true" type="primary" v-on:click="getKeyList">确定</el-button>
+                    <el-button size="mini" v-if="Obj_button.buttons.selectshow==true" type="" v-on:click="getDataList">{{Obj_button.buttonText.Reset}}</el-button>
                   </el-form-item>
                   <!-- <el-form-item> -->
                   <!-- </el-form-item> -->
@@ -115,13 +115,13 @@
       </el-table-column>
       <el-table-column prop="beizhu" label="备注" min-width="160">
       </el-table-column> -->
-      <el-table-column v-if="buttons.ischeckshow==true" prop="shifouyanzheng" label="是否验证" width="100">
+      <el-table-column v-if="Obj_button.buttons.ischeckshow==true" prop="shifouyanzheng" label="是否验证" width="100">
         <template slot-scope="scope">
           <el-switch v-model="scope.row.shifouyanzheng" @change="setIsCheckInterface(scope.row)">
           </el-switch>
         </template>
       </el-table-column>
-      <el-table-column v-if="buttons.setstateshow==true" prop="shifouqiyong" label="是否启用" width="100">
+      <el-table-column v-if="Obj_button.buttons.setstateshow==true" prop="shifouqiyong" label="是否启用" width="100">
         <template slot-scope="scope">
           <el-switch v-model="scope.row.shifouqiyong" @change="setStateInterface(scope.row)">
           </el-switch>
@@ -133,10 +133,10 @@
       <el-table-column prop="shifouxuyaodenglu" label="是否需要登录" width="120" :formatter="function (row, column) {
           return row.shifouxuyaodenglu == true ? '是' : '否'}">
       </el-table-column>
-      <el-table-column v-if="buttons.updateshow==true||buttons.delshow==true" label="操作" fixed="right" width="180">
+      <el-table-column v-if="ObjButton.edit.isShow==true||ObjButton.del.isShow==true" label="操作" fixed="right" width="180">
         <template slot-scope="scope">
-          <el-button size="mini" style="padding: 7px 9px;margin-left: 0px;" icon="el-icon-edit" v-if="buttons.updateshow==true" @click="handleEdit(scope.$index, scope.row)"></el-button>
-          <el-button size="mini" style="padding: 7px 9px;margin-left: 0px;" icon="el-icon-delete" type="danger" v-if="buttons.delshow==true" @click="handleDel(scope.$index, scope.row)"></el-button>
+          <el-button size="mini" style="padding: 7px 9px;margin-left: 0px;" icon="el-icon-edit" v-if="ObjButton.query.isShow==true" @click="handleEdit(scope.$index, scope.row)"></el-button>
+          <el-button size="mini" style="padding: 7px 9px;margin-left: 0px;" icon="el-icon-delete" type="danger" v-if="ObjButton.del.isShow==true" @click="handleDel(scope.$index, scope.row)"></el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -281,7 +281,6 @@
     </el-dialog>
 
     <!--编辑界面-->
-    <edit></edit>
     <el-dialog title="编辑" :visible.sync="dialogFormVisibleEdit" :close-on-click-modal="false">
       <el-form :model="editForm" label-width="100px" :rules="editFormRules" ref="editForm">
         <el-form-item label="接口名称" prop="jiekoumingcheng">
@@ -344,11 +343,89 @@ import { paraHelper } from "@/utils/para.js"; //请求参数格式
 import { handlePost, handleGet } from "@/api/apihelper.js";
 
 export default {
-  components: {
-    edit
-  },
   data() {
     return {
+      Obj_button:{
+        buttonText: {//按钮文字
+          edit: "编辑",
+          del: "删除",
+          query: "查询",
+          add: "添加",
+          whole: "显示所有",
+          manyDel: "批量删除",
+          condition: "筛选",
+          Reset: "重置",
+        },
+        buttons: {//按钮的权限控制
+          selectshow: false,
+          addshow: false,
+          updateshow: false,
+          delshow: false,
+          ischeckshow: false,
+          setstateshow: false
+        },
+      },
+         //按钮
+      ObjButton:{
+        add:{
+          text:'添加',//按钮文字
+          Code:'AddInterface',
+          isShow: false,//是否显示
+        },
+        query:{
+          text:'查询',
+          Code:'GetListMenu',
+          isShow: false,
+        },
+        edit:{
+          text:'编辑',
+          Code:'UpdateInterface',
+          isShow: false,
+        },
+        del:{
+          text:'删除',
+          Code:'DelInterface',
+          isShow: false,
+        },
+        manyDel:{
+          text:'批量删除',
+          Code:'DelInterface',
+          isShow: false,
+           para:paraHelper
+        },
+      },
+
+      //搜索
+      formRemove: {
+        value1:{
+          text:'接口名称',//搜索标题
+          tips:'接口名称'//搜索提示
+        },
+        value2:{
+          text:'接口标识',
+          tips:'接口标识'
+        },
+        value3:{
+          text:'菜单关联',
+          tips:'菜单关联'
+        },
+        value4:{
+          text:'是否验证',
+          tips:'是否验证'
+        },
+        value5:{
+          text:'是否启用',
+          tips:'是否启用'
+        },
+        value6:{
+          text:'是否管理后台',
+          tips:'是否管理后台'
+        },
+        value7:{
+          text:'是否需要登录',
+          tips:'是否需要登录'
+        },
+      },
       bllCode: {
         //接口标识，由后端提供
         add: "AddInterface", //添加
@@ -375,47 +452,40 @@ export default {
         // {Label:'是否需要登录',prop:"shifouxuyaodenglu",width:'150'},
         // {Label:'操作',width:'150'},
       ],
-      //搜索标题
-      formLabel: {
-        value1: "接口名称",
-        value2: "接口标识",
-        value3: "菜单关联",
-        value4: "是否验证",
-        value5: "是否启用",
-        value6: "是否管理后台",
-        value7: "是否需要登录"
+
+      //搜索
+      removeForm: {
+        formLabel: {//搜索标题
+          value1: "接口名称",
+          value2: "接口标识",
+          value3: "菜单关联",
+          value4: "是否验证",
+          value5: "是否启用",
+          value6: "是否管理后台",
+          value7: "是否需要登录"
+        },
+        //搜索框提示文字
+        formPlaceholder: {
+          value1: "名称",
+          value2: "标识",
+          value3: "关联",
+          value4: "是否验证",
+          value5: "是否启用",
+          value6: "是否管理后台",
+          value7: "是否需要登录"
+        },
       },
-      //搜索框提示文字
-      formPlaceholder: {
-        value1: "名称",
-        value2: "标识",
-        value3: "关联",
-        value4: "是否验证",
-        value5: "是否启用",
-        value6: "是否管理后台",
-        value7: "是否需要登录"
-      },
-      //按钮文字
-      button: {
-        edit: "编辑",
-        del: "删除",
-        query: "查询",
-        add: "添加",
-        whole: "显示所有",
-        batchRemove: "批量删除",
-        condition: "筛选",
-        Reset: "重置",
-      },
+      
       currentRow: null,
-      buttons: {
-        //按钮的权限控制
-        selectshow: false,
-        addshow: false,
-        updateshow: false,
-        delshow: false,
-        ischeckshow: false,
-        setstateshow: false
-      },
+      // buttons: {
+      //   //按钮的权限控制
+      //   selectshow: false,
+      //   addshow: false,
+      //   updateshow: false,
+      //   delshow: false,
+      //   ischeckshow: false,
+      //   setstateshow: false
+      // },
       elCardBox: false,
       paraSwitch: paraHelper, //开关按钮使用
       paraMenu: paraHelper, //菜单列表使用
@@ -459,20 +529,8 @@ export default {
           }
         ]
       },
-      // 编辑界面数据
-      editForm: {
-        id: 0,
-        jiekoumingcheng: "",
-        bllcode: "",
-        shifouyanzheng: true,
-        shifouxuyaodenglu: true,
-        shifouguanlihoutai: true,
-        // caidanguanlian: 9,
-        caidanguanlian: "",
-        shifouqiyong: true,
-        chuangjianriqi: "",
-        beizhu: ""
-      },
+      
+      editForm: {},// 编辑界面数据
       addFormRules: {
         name: [
           {
@@ -487,6 +545,14 @@ export default {
     };
   },
   methods: {
+    //刷新页面
+    Refresh(){
+      this.filters = {
+        Page: 1,
+        Size: 10
+      },
+      this.getDataList()
+    },
     //
     // formatterManage(row, column){
     //       return row.shifouguanlihoutai == true ? '是' : '否'
@@ -510,17 +576,17 @@ export default {
       if (data && data.length > 0) {
         this.interfaces = data.map(item => item.bllcode);
         console.log("this.interfaces.show", this.interfaces);
-        this.buttons.addshow =
+        this.Obj_button.buttons.addshow =
           this.interfaces.indexOf(this.bllCode.add) > 0 ? true : false;
-        this.buttons.selectshow =
+        this.ObjButton.query.isShow =
           this.interfaces.indexOf(this.bllCode.getList) > 0 ? true : false;
-        this.buttons.updateshow =
+        this.ObjButton.edit.isShow =
           this.interfaces.indexOf(this.bllCode.edit) > 0 ? true : false;
-        this.buttons.delshow =
+        this.ObjButton.del.isShow =
           this.interfaces.indexOf(this.bllCode.del) > 0 ? true : false;
-        this.buttons.ischeckshow =
+        this.Obj_button.buttons.ischeckshow =
           this.interfaces.indexOf(this.bllCode.isCheck) > 0 ? true : false;
-        this.buttons.setstateshow =
+        this.Obj_button.buttons.setstateshow =
           this.interfaces.indexOf(this.bllCode.setState) > 0 ? true : false;
         //console.log('this.interfaces.show', this.interfaces)
         //console.log('this.bllCode.add',this.bllCode.add)
@@ -573,7 +639,7 @@ export default {
       return row.shifouyanzheng == true ? "是" : "否";
     },
     handleCurrentChange(val) {
-      this.page = val;
+      this.filters.Page = val;
       this.getDataList();
     },
     //获取菜单列表
@@ -627,6 +693,8 @@ export default {
       handlePost(this.para).then(res => {
         if (res.IsSuccess == true) {
           this.total = res.Data.Count;
+            console.log ("11111111111222",this.total)
+
           this.dataList = res.Data.List;
           this.filters = {
             Page: 1,
@@ -667,7 +735,7 @@ export default {
       this.currentRow = val;
       console.log(this.currentRow);
       this.getMenuList();
-      this.dialogStatus = "update";
+      // this.dialogStatus = "update";
       this.dialogFormVisibleEdit = true;
       this.editForm = Object.assign({}, this.currentRow);
     },
@@ -679,7 +747,7 @@ export default {
     // 显示编辑界面
     handleEdit(index, row) {
       this.getMenuList();
-      this.dialogStatus = "update";
+      // this.dialogStatus = "update";
       this.dialogFormVisibleEdit = true;
       this.editForm = Object.assign({}, row);
     },
@@ -687,20 +755,14 @@ export default {
     handleAdd() {
       this.editForm = {};
       this.getMenuList();
-      this.dialogStatus = "create";
+      // this.dialogStatus = "create";
       this.dialogFormVisibleAdd = true;
       this.editForm = {
-        id: 0,
-        jiekoumingcheng: "",
-        bllcode: "",
         shifouyanzheng: true,
         shifouxuyaodenglu: true,
         shifouguanlihoutai: true,
-        // caidanguanlian: [4, 4, 9],
         caidanguanlian: 0,
         shifouqiyong: true,
-        chuangjianriqi: "",
-        beizhu: ""
       };
     },
     // 编辑
@@ -786,7 +848,7 @@ export default {
       this.sels = sels;
     },
     // 批量删除
-    batchRemove() {
+    manyDel() {
       var ids = this.sels.map(item => item.id);
       this.$confirm("确认删除选中记录吗？", "提示", {
         type: "warning",

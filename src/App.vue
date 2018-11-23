@@ -55,10 +55,9 @@ export default {
     align-items: center;
     margin-right: 2rem;
 }
-.sectionBox .el-dialog__body {
+/* .sectionBox .el-dialog__body {
     padding: 0;
-
-}
+} */
 .sectionBox .el-card__body {
     padding: 0;
 } 
