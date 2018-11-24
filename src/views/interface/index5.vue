@@ -6,10 +6,10 @@
         <el-form :inline="true" :model="filters" label-position label-width="120px" @submit.native.prevent>
           <div style="float: left;">
             <el-form-item>
-              <el-button size="mini" icon="el-icon-refresh" v-if="buttons.selectshow==true" type="info" v-on:click="getKeyList"></el-button>
+              <el-button size="mini" icon="el-icon-refresh" v-if="ObjButton.query.isShow==true" type="info" v-on:click="getKeyList"></el-button>
             </el-form-item>
             <el-form-item>
-              <el-button size="mini" icon="el-icon-zoom-in" v-if="buttons.selectshow==true" type="primary" v-on:click="elCard">查询</el-button>
+              <el-button size="mini" icon="el-icon-zoom-in" v-if="ObjButton.query.isShow==true" type="primary" v-on:click="elCard">查询</el-button>
             </el-form-item>
             <el-form-item>
               <el-button size="mini" icon="el-icon-edit" v-if="buttons.addshow==true" type="primary" @click="handleAdd">添加</el-button>
@@ -224,10 +224,6 @@
   export default {
     data() {
       return {
-        Objs:{
-          
-        },
-
         bllCode: {
           //接口标识，由后端提供
           add: "AddInterface", //添加
@@ -240,45 +236,76 @@
           getListMenu: "GetListMenu" //获取菜单
         },
 
-        //搜索
-        formLabel: {//搜索标题
-          value1: "接口名称",
-          value2: "接口标识",
-          value3: "菜单关联",
-          value4: "是否验证",
-          value5: "是否启用",
-          value6: "是否管理后台",
-          value7: "是否需要登录"
+      //按钮
+      ObjButton:{
+        add:{
+          text:'添加',//按钮文字
+          Code:'AddInterface',
+          isShow: false,//是否显示
         },
-        formPlaceholder: {//搜索框提示文字
-          value1: "名称",
-          value2: "标识",
-          value3: "关联",
-          value4: "是否验证",
-          value5: "是否启用",
-          value6: "是否管理后台",
-          value7: "是否需要登录"
+        query:{
+          text:'查询',
+          Code:'GetListMenu',
+          isShow: false,
         },
+        edit:{
+          text:'编辑',
+          Code:'UpdateInterface',
+          isShow: false,
+        },
+        del:{
+          text:'删除',
+          Code:'DelInterface',
+          isShow: false,
+        },
+        manyDel:{
+          text:'批量删除',
+          Code:'DelInterface',
+          isShow: false,
+        },
+        Cancel:{
+          text:'取消',
+          Code:'',
+          isShow: false,
+        },
+        confirm:{
+          text:'确定',
+          Code:'',
+          isShow: false,
+        }
+      },
 
-        //按钮
-        button: {//按钮文字
-          edit: "编辑",
-          del: "删除",
-          query: "查询",
-          add: "添加",
-          whole: "显示所有",
-          batchRemove: "批量删除",
-          condition: "筛选",
-          Reset: "重置",
+      //搜索
+      formRemove: {
+        value1:{
+          text:'接口名称',//搜索标题
+          tips:'接口名称',//搜索提示
         },
-        buttons: {//按钮的权限控制 显示与隐藏
-          selectshow: false,
-          addshow: false,
-          updateshow: false,
-          delshow: false,
-          ischeckshow: false,
-          setstateshow: false
+        value2:{
+          text:'接口标识',
+          tips:'接口标识'
         },
+        value3:{
+          text:'菜单关联',
+          tips:'菜单关联'
+        },
+        value4:{
+          text:'是否验证',
+          tips:'是否验证'
+        },
+        value5:{
+          text:'是否启用',
+          tips:'是否启用'
+        },
+        value6:{
+          text:'是否管理后台',
+          tips:'是否管理后台'
+        },
+        value7:{
+          text:'是否需要登录',
+          tips:'是否需要登录'
+        },
+      },
 
         //参数分类
         paraSwitch: paraHelper, //开关按钮使用
@@ -374,7 +401,7 @@
       },
       // 获取列表
       getDataList() {
-        this.getMenuList();
+        this.getList();
         this.para.Code = this.bllCode.getList;
         this.para.Data = JSON.stringify(this.filters);
         handlePost(this.para).then(res => {
@@ -415,20 +442,20 @@
       //双击编辑
       Rowdblclick(val) {
         this.currentRow = val;
-        this.getMenuList();
+        this.getList();
         this.dialogFormVisibleEdit = true;
         this.editForm = Object.assign({}, this.currentRow);
       },
       // 显示编辑界面
       handleEdit(index, row) {
-        this.getMenuList();
+        this.getList();
         this.dialogFormVisibleEdit = true;
         this.editForm = Object.assign({}, row);
       },
       // 显示添加界面
       handleAdd() {
         this.editForm = {};
-        this.getMenuList();
+        this.getList();
         this.dialogFormVisibleAdd = true;
         this.editForm = {
           shifouyanzheng: true,

@@ -37,8 +37,19 @@ service.interceptors.response.use(
      * code为非20000是抛错 可结合自己业务进行修改
      */
     const res = response.data
-    //console.log('service.interceptors.response', response) 
-    if (res.Code === 408 || response.code === 50008 || response.code === 50012 || response.code === 50014) {
+    //console.log('service.interceptors.response', response)
+    if (res.IsSuccess == true) {
+      // var message = res.Message
+      // if (message == "" || message == "Success") message = "操作成功"
+      // Message({
+      //   message: message,
+      //   type: 'success',
+      //   duration: 5 * 1000
+      // })
+      return response.data
+    } else {
+      //408未登录;50008:非法的token; 50012:其他客户端登录了;  50014:Token 过期了;
+      if (res.Code === 408 || response.code === 50008 || response.code === 50012 || response.code === 50014) {
         MessageBox.confirm('你已被登出，可以取消继续留在该页面，或者重新登录', '确定登出', {
           confirmButtonText: '重新登录',
           cancelButtonText: '取消',
@@ -49,9 +60,17 @@ service.interceptors.response.use(
           })
         })
         return Promise.reject('error')
-      } 
-    
-    return response.data
+      } else {
+        var message = res.Message
+        if (message == "" || message == null) message = "操作失败"
+        Message({
+          message: message,
+          type: 'error',
+          duration: 5 * 1000
+        })
+        return response.data
+      }
+    }
     // if (res.code !== 0) {
     //   Message({
     //     message: res.message, 

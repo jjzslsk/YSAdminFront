@@ -48,7 +48,7 @@
             <el-col :span="24" class="toolbar" style="height:100%; padding-bottom: 0px;">
               <el-form :inline="true" label-position label-width="120px" @submit.native.prevent>
                 <el-form-item :label="formRemove.value1.text">
-                  <el-input style="width: 180px;" size="small" :autofocus='inputAutofocus' v-model="queryForm.value1" :placeholder="formRemove.value1.text"></el-input>
+                  <el-input style="width: 180px;" size="small" :autofocus='inputAutofocus' v-model="formRemove.value1.inputData" :placeholder="formRemove.value1.text"></el-input>
                 </el-form-item>
                 <el-form-item :label="formRemove.value2.text">
                   <el-input style="width: 180px;" size="small" :autofocus='inputAutofocus' v-model="filters.bllCode" :placeholder="formRemove.value2.text"></el-input>
@@ -336,69 +336,43 @@
 </template>
 
 <script>
-//==================引入文件===========================
+import edit from './edit'
 import store from "@/store/index.js"; //引入本地存储
-import util from "@/utils/table.js";//表方法
+import util from "@/utils/table.js";
 import { paraHelper } from "@/utils/para.js"; //请求参数格式
 import { handlePost, handleGet } from "@/api/apihelper.js";
-import editVue from './edit.vue';
 
 export default {
   data() {
     return {
-      
-//==================数据定义===========================
-    //字段name code 
-
-    //添加 修改
-      Model: {
-        jiekoumingcheng: '',
-        shifouyanzheng: true,
-        shifouxuyaodenglu: true,
-        shifouguanlihoutai: true,
-        caidanguanlian: null,
-        shifouqiyong: true,
-        beizhu:'',
-        bllcode: '',
+      Obj_button:{
+        buttonText: {//按钮文字
+          edit: "编辑",
+          del: "删除",
+          query: "查询",
+          add: "添加",
+          whole: "显示所有",
+          manyDel: "批量删除",
+          condition: "筛选",
+          Reset: "重置",
+        },
+        buttons: {//按钮的权限控制
+          selectshow: false,
+          addshow: false,
+          updateshow: false,
+          delshow: false,
+          ischeckshow: false,
+          setstateshow: false
+        },
       },
-      //搜索
-      filters: {
-        jiekoumingcheng: '',
-        shifouyanzheng: true,
-        shifouxuyaodenglu: true,
-        shifouguanlihoutai: true,
-        caidanguanlian: null,
-        shifouqiyong: true,
-        beizhu:'',
-        bllcode: '',
-        Page: 1,
-        Size: 15,
-      },
-      addModel:Model,
-      editModel:Model,
-
-      //分页 列表 
-      total: 0,//分页
-      
-      dataList: [], //列表数据
-      sels: [], // 列表选中列 全选
-      tableLabel: [//列表格式
-        { Label: "接口名称", prop: "jiekoumingcheng", width: "150" },
-      ],
-      
-      //控制模块显示隐藏
-      elCardBox: false,//搜索模块显示隐藏
-      dialogFormVisibleAdd: false, //控制添加显示
-      dialogFormVisibleEdit: false, //控制编辑显示
-      para: paraHelper, //交互格式
-
-      //权限
-      interfaces:null,
-
-
-
-//===================按钮定义==========================
+         //按钮
       ObjButton:{
+        paraSwitch: paraHelper, //开关按钮使用
+        paraMenu: paraHelper, //菜单列表使用
+        para: paraHelper, //列表
+        addPara: paraHelper, //添加参数
+        updatePara: paraHelper, //编辑参数
+        delPara: paraHelper, //删除参数
         add:{
           text:'添加',//按钮文字
           Code:'AddInterface',
@@ -406,7 +380,7 @@ export default {
         },
         query:{
           text:'查询',
-          Code:'GetListInterface',
+          Code:'GetListMenu',
           isShow: false,
         },
         edit:{
@@ -424,122 +398,343 @@ export default {
           Code:'DelInterface',
           isShow: false,
         },
+        Cancel:{
+          text:'取消',
+          Code:'',
+          isShow: false,
+        },
+        confirm:{
+          text:'确定',
+          Code:'',
+          isShow: false,
+        }
       },
 
-//===================搜索定义==========================
+      //搜索
       formRemove: {
-        jiekoumingcheng:{
+        value1:{
           text:'接口名称',//搜索标题
           tips:'接口名称',//搜索提示
-          isShow: false,
+          inputData:"",
+          key:{
+            jiekoumingcheng: '',
+            Page: 1,
+            Size: 15
+          }
         },
         value2:{
           text:'接口标识',
           tips:'接口标识',
+          inputData:"",
+          key:{
+            Code: '',
+            Page: 1,
+            Size: 15
+          }
         },
         value3:{
           text:'菜单关联',
           tips:'菜单关联',
+          inputData:"",
+          key:{}
         },
         value4:{
           text:'是否验证',
           tips:'是否验证',
+          inputData:"",
+          key:{}
         },
         value5:{
           text:'是否启用',
           tips:'是否启用',
+          inputData:"",
+          key:{}
         },
         value6:{
           text:'是否管理后台',
           tips:'是否管理后台',
+          inputData:"",
+          key:{}
         },
         value7:{
           text:'是否需要登录',
           tips:'是否需要登录',
+          inputData:"",          
+          key:{}
         },
       },
+      bllCode: {
+        //接口标识，由后端提供
+        add: "AddInterface", //添加
+        edit: "UpdateInterface", //修改
+        del: "DelInterface", //删除
+        getList: "GetListInterface", //获取列表
+        getObj: "GetInterface", //获取对象（单个）
+        isCheck: "SetIsCheckInterface", //设置验证
+        setState: "SetStateInterface", //设置状态
+        getListMenu: "GetListMenu" //获取菜单
+      },
+      //列表数组
+      tableLabel: [
+        { type: "selection", width: "55" },
+        // { type: "index", width: "60" },
+        { Label: "ID", prop: "id", width: "150" },
+        { Label: "接口名称", prop: "jiekoumingcheng", width: "150" },
+        { Label: "接口标识", prop: "bllcode", width: "150" },
+        { Label: "菜单关联", prop: "caidanguanlian", width: "150" },
+        { Label: "备注", prop: "beizhu", width: "150" }
+        // { Label: "是否验证", prop: "shifouyanzheng", width: "150" }
+        // { Label: "是否启用", prop: "shifouqiyong", width: "150" }
+        // {Label:'是否管理后台',prop:"shifouguanlihoutai",width:'150'},
+        // {Label:'是否需要登录',prop:"shifouxuyaodenglu",width:'150'},
+        // {Label:'操作',width:'150'},
+      ],
+
+      // //搜索
+      // removeForm: {
+      //   formLabel: {//搜索标题
+      //     value1: "接口名称",
+      //     value2: "接口标识",
+      //     value3: "菜单关联",
+      //     value4: "是否验证",
+      //     value5: "是否启用",
+      //     value6: "是否管理后台",
+      //     value7: "是否需要登录"
+      //   },
+      //   //搜索框提示文字
+      //   formPlaceholder: {
+      //     value1: "名称",
+      //     value2: "标识",
+      //     value3: "关联",
+      //     value4: "是否验证",
+      //     value5: "是否启用",
+      //     value6: "是否管理后台",
+      //     value7: "是否需要登录"
+      //   },
+      // },
       
+      currentRow: null,
+      // buttons: {
+      //   //按钮的权限控制
+      //   selectshow: false,
+      //   addshow: false,
+      //   updateshow: false,
+      //   delshow: false,
+      //   ischeckshow: false,
+      //   setstateshow: false
+      // },
+      elCardBox: false,
+      options: [],
+      selectedOptions: [],
+      dialogStatus: "",
+      dialogFormVisibleAdd: false, //控制添加显示
+      dialogFormVisibleEdit: false, //控制编辑显示
+        //查询筛选
+      filters: {
+        // Page: this.page,
+        // jiekoumingcheng:this.modelData.value1,
+        Page: 1,
+        Size: 15,
+      },
+      // modelData: {
+      //   value1:'',
+      // },
+      menuList: [], //菜单
+      dataList: [], //主页数据
+      total: 0,
+      page: 1,
+      sels: [], // 列表选中列
+      editFormRules: {
+        jiekoumingcheng: [
+          {
+            required: true,
+            message: "接口名称",
+            trigger: "blur"
+          }
+        ],
+        bllcode: [
+          {
+            required: true,
+            message: "接口标识必填",
+            trigger: "blur"
+          }
+        ]
+      },
+      
+      editForm: {},// 编辑界面数据
+      addFormRules: {
+        name: [
+          {
+            required: true,
+            message: "接口名称",
+            trigger: "blur"
+          }
+        ]
+      },
+      tabs: null,
+      inputAutofocus: false
     };
   },
-//===================js==========================
   methods: {
-  //===================初始化 ==========================
-      //初始化方法
-      mounted() {
-        this.loadButton(store.getters.interfaces); //权限控制 按钮显示隐藏
-        this.getDataList();//获取列表
+    //刷新页面
+    Refresh(){
+      this.filters = {
+        Page: 1,
+        Size: 15
       },
-  //===================数据展示==========================
-      //加载按钮
-      loadButton(data) {
-        if (data && data.length > 0) {
-          this.interfaces = data.map(item => item.bllcode);
-          this.ObjButton.Add.isShow=
-          this.interfaces.indexOf(this.ObjButton.Add.Code) > 0 ? true : false;
-        }
-      },
-  //===================界面展示==========================
-      // 显示编辑界面
-      handleEdit(index, row) {
-        this.dialogFormVisibleEdit = true;
-        this.editModel = Object.assign({}, row);
-      },
-      // 显示添加界面
-      handleAdd() {
-        this.editModel = {};
-        this.dialogFormVisibleAdd = true;
-        this.editModel = {
-          shifouyanzheng: true,
-          shifouxuyaodenglu: true,
-          shifouguanlihoutai: true,
-          caidanguanlian: 0,
-          shifouqiyong: true,
-        };
-      },
-      //筛选显示隐藏
-      elCard() {
-        if (this.elCardBox == false) {
-          this.elCardBox = true;
-        } else {
-          this.elCardBox = false;
-        }
-      },
-  //===================增==========================
-      // 添加
-    createData: function() {
-      this.$refs.addEditModel.validate(valid => {
-        if (valid) {
-          this.$confirm("确认提交吗？", "提示", {
-            confirmButtonText: "确定",
-            cancelButtonText: "取消"
-          })
-            .then(() => {
-              this.addModel.id = parseInt(Math.random() * 100).toString(); 
-              const paraForm = Object.assign({}, this.addModel);
-              this.para.Data = JSON.stringify(paraForm);
-              this.para.Code = this.ObjButton.add.Code;
-              handlePost(this.para)
-                .then(res => {
-                  if (res.IsSuccess == true) {
-                    this.dialogFormVisibleAdd = false;
-                    this.getDataList();
-                    this.$message({
-                      message: "添加成功！",
-                      type: "success"
-                    });
-                  } else {
-                    this.$message({
-                      message: res.Code +':'+ res.message,
-                      type: "warning"
-                    });
-                  }
-                })
-            })
+      this.getDataList()
+    },
+    //
+    // formatterManage(row, column){
+    //       return row.shifouguanlihoutai == true ? '是' : '否'
+    // },
+
+    //选定筛选条件
+    conditionClick(val) {
+      console.log(val);
+      this.elCard();
+    },
+    //条件显示隐藏
+    elCard() {
+      if (this.elCardBox == false) {
+        this.elCardBox = true;
+      } else {
+        this.elCardBox = false;
+      }
+    },
+    //加载按钮
+    loadButton(data) {
+      if (data && data.length > 0) {
+        this.interfaces = data.map(item => item.bllcode);
+        console.log("this.interfaces.show", this.interfaces);
+        this.Obj_button.buttons.addshow =
+          this.interfaces.indexOf(this.bllCode.add) > 0 ? true : false;
+        this.ObjButton.query.isShow =
+          this.interfaces.indexOf(this.bllCode.getList) > 0 ? true : false;
+        this.ObjButton.edit.isShow =
+          this.interfaces.indexOf(this.bllCode.edit) > 0 ? true : false;
+        this.ObjButton.del.isShow =
+          this.interfaces.indexOf(this.bllCode.del) > 0 ? true : false;
+        this.Obj_button.buttons.ischeckshow =
+          this.interfaces.indexOf(this.bllCode.isCheck) > 0 ? true : false;
+        this.Obj_button.buttons.setstateshow =
+          this.interfaces.indexOf(this.bllCode.setState) > 0 ? true : false;
+        //console.log('this.interfaces.show', this.interfaces)
+        //console.log('this.bllCode.add',this.bllCode.add)
+      }
+    },
+    //设置是否验证
+    setIsCheckInterface(rowdata) {
+      // console.log('setIsCheckInterface--rowdata===',rowdata)
+      this.paraSwitch.Code = this.bllCode.isCheck;
+      let data = {
+        id: rowdata.id,
+        shifouyanzheng: rowdata.shifouyanzheng
+      };
+      this.paraSwitch.Data = JSON.stringify(data);
+      handlePost(this.paraSwitch).then(res => {
+        if (res.IsSuccess == true) {
+          this.getDataList();
         }
       });
     },
+    //设置是否启用
+    setStateInterface(rowdata) {
+      //  console.log('setStateInterface--rowdata===',rowdata)
+      this.paraSwitch.Code = this.bllCode.setState;
+      let data = {
+        id: rowdata.id,
+        shifouqiyong: rowdata.shifouqiyong
+      };
+      this.paraSwitch.Data = JSON.stringify(data);
+      handlePost(this.paraSwitch).then(res => {
+        if (res.IsSuccess == true) {
+          this.getDataList();
+        }
+      });
+    },
+    //显示所有
+    getKeyLists() {
+      this.page = 1;
+      this.para.Code = this.bllCode.getList;
+      this.para.Data = "";
+      handlePost(this.para).then(res => {
+        if (res.IsSuccess == true) {
+          this.total = res.Data.Count;
+          this.dataList = res.Data.List;
+        }
+      });
+    },
+    // 布尔值显示转换
+    formatBoole: function(row, column) {
+      return row.shifouyanzheng == true ? "是" : "否";
+    },
+    handleCurrentChange(val) {
+      this.filters.Page = val;
+      this.getDataList();
+    },
+    //获取菜单列表
+    getData() {
+      this.ObjButton.paraMenu.Code = this.bllCode.getListMenu;
+      // this.paraMenu.Code = "GetTreeMenu"
+      this.ObjButton.paraMenu.Data = "";
+      handlePost(this.ObjButton.paraMenu)
+        .then(res => {
+          if (res.IsSuccess == true) {
+            this.options = res.Data.List;
+            let addOptions = {
+              id: 0,
+              mingcheng: "无"
+            };
+            this.options.push(addOptions);
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+        //查询
+    getKeyList() {
+      // console.log("modelData:!!!!!", this.modelData);
+      // var filters = { a: 1 };
 
-  //===================删==========================
+      // if (this.modelData.length > 0) {
+      //   var target = { jiekoumingcheng: this.modelData };
+
+      //   console.log("098");
+      // }
+      // Object.assign(this.filters,target);
+      // filters // {a:1, b:2, c:3}
+
+      // this.page = 1;
+      this.getDataList();
+    },
+    // 获取列表
+    getDataList() {
+      this.getData();
+      // const paraSelect = {
+      //   jiekoumingcheng: this.modelData,
+      //   Page: this.page,
+      //   Size: 10
+      // };
+      this.formRemove.value1.key.jiekoumingcheng = this.formRemove.value1.inputData
+      this.ObjButton.para.Code = this.bllCode.getList;
+      this.ObjButton.para.Data = JSON.stringify(this.formRemove.value1.key);
+      // console.log("filters!!!", this.filters);
+      console.log("para!!!", this.para);
+      handlePost(this.ObjButton.para).then(res => {
+        if (res.IsSuccess == true) {
+          this.total = res.Data.Count;
+            console.log ("11111111111222",this.total)
+
+          this.dataList = res.Data.List;
+          this.filters = {
+            Page: 1,
+            Size: 15,
+          };
+        }
+      });
+    },
     // 删除
     handleDel(index, row) {
       this.$confirm("确认删除该记录吗?", "提示", {
@@ -551,113 +746,58 @@ export default {
           const paraId = {
             id: row.id
           };
-          this.para.Code = this.ObjButton.del.Code;          
-          this.para.Data = JSON.stringify(paraId);
-          handlePost(this.para)
-                .then(res => {
-                  if (res.IsSuccess == true) {
-                    this.dialogFormVisibleAdd = false;
-                    this.getDataList();
-                    this.$message({
-                      message: "添加成功！",
-                      type: "success"
-                    });
-                  } else {
-                    this.$message({
-                      message: res.Code +':'+ res.message,
-                      type: "warning"
-                    });
-                  }
-                })
+          this.ObjButton.delPara.Code = this.bllCode.del;
+          this.ObjButton.delPara.Data = JSON.stringify(paraId);
+          handlePost(this.ObjButton.delPara).then(res => {
+            if (res.IsSuccess == true) {
+              this.getDataList();
+              this.$message({
+                message: "删除成功！",
+                type: "success"
+              });
+            }
+          });
         })
-    },
-        // 批量删除
-    manyDel() {
-      var ids = this.sels.map(item => item.id);
-      this.$confirm("确认删除选中记录吗？", "提示", {
-        type: "warning",
-        confirmButtonText: "确定",
-        cancelButtonText: "取消"
-      })
-        .then(() => {
-          const paraId = {
-            ids: ids
-          };
-          this.ObjButton.para.Data = JSON.stringify(paraId);
-          this.ObjButton.para.Code = this.bllCode.del;
-          handlePost(this.ObjButton.para)
-            .then(res => {
-                  if (res.IsSuccess == true) {
-                    this.dialogFormVisibleAdd = false;
-                    this.getDataList();
-                    this.$message({
-                      message: "添加成功！",
-                      type: "success"
-                    });
-                  } else {
-                    this.$message({
-                      message: res.Code +':'+ res.message,
-                      type: "warning"
-                    });
-                  }
-                })
-        })
-    },
-  //===================查==========================
-      // 获取列表
-      getDataList() {
-        this.para.Code = this.ObjButton.query.Code;
-        this.para.Data = JSON.stringify(this.formRemove.value1.key);
-        handlePost(this.para).then(res => {
-          if (res.IsSuccess == true) {
-            this.total = res.Data.Count;
-            this.dataList = res.Data.List;
-            this.filters = {
-              Page: 1,
-              Size: 15,
-            };
-          }
+        .catch(err => {
+          console.log(err);
         });
-      },
-    //获取单条数据
-    getInfoData(id) {
-                this.para.Code = 'GetInterface'
-                this.para.Data = JSON.stringify(id);
-                handlePost(this.para).then(res => {
-                 if (res.IsSuccess == true) {
-                  this.editModel = res.Data;
-                   //弹窗
-                  } else {
-                    this.$message({
-                      message: res.Code +':'+ res.message,
-                      type: "warning"
-                    });
-                  }
-                }
-                )},
-      //刷新页面
-      Refresh(){
-        this.filters = {
-          Page: 1,
-          Size: 15
-        },
-        this.getDataList()
-      }, 
-      //分页查询
-      handleCurrentChange(val) {
-        this.filters.Page = val;
-        this.getDataList();
-      },
-  //===================改==========================
-      //双击编辑
-    Rowdblclick(id,val) {
-      if(id){
-      this.currentRow = val;
-      this.dialogFormVisibleEdit = true;
-      this.editModel = Object.assign({}, this.currentRow);
-      }
     },
-    // 更新
+    //双击编辑
+    Rowdblclick(val) {
+      this.currentRow = val;
+      console.log(this.currentRow);
+      this.getData();
+      // this.dialogStatus = "update";
+      this.dialogFormVisibleEdit = true;
+      this.editForm = Object.assign({}, this.currentRow);
+    },
+
+    //
+    checkbox(val) {
+      console.log("单击：", val);
+    },
+    // 显示编辑界面
+    handleEdit(index, row) {
+      this.getData();
+      // this.dialogStatus = "update";
+      this.dialogFormVisibleEdit = true;
+      this.editForm = Object.assign({}, row);
+    },
+    // 显示添加界面
+    handleAdd() {
+      this.editForm = {};
+      this.getData();
+      // this.dialogStatus = "create";
+      this.dialogFormVisibleAdd = true;
+      this.editForm = {
+        shifouyanzheng: true,
+        shifouxuyaodenglu: true,
+        shifouguanlihoutai: true,
+        caidanguanlian: 0,
+        shifouqiyong: true,
+      };
+    },
+    // 编辑
     updateData() {
       this.$refs.editForm.validate(valid => {
         if (valid) {
@@ -667,8 +807,8 @@ export default {
           })
             .then(() => {
               const paraId = Object.assign({}, this.editForm);
-              this.para.Code = this.ObjButton.edit.Code;
-              this.para.Data = JSON.stringify(paraId);
+              this.ObjButton.updatePara.Code = this.bllCode.edit;
+              this.ObjButton.updatePara.Data = JSON.stringify(paraId);
               handlePost(this.ObjButton.updatePara)
                 .then(res => {
                   if (res.IsSuccess == true) {
@@ -684,20 +824,100 @@ export default {
                     this.dialogFormVisibleEdit = false;
                   }
                 })
+                .catch(err => {
+                  // 打印一下错误
+                  console.log(err);
+                });
             })
+            .catch(e => {
+              // 打印一下错误
+              console.log(e);
+            });
         }
       });
     },
-  //===================操作类==========================
-    //选定筛选条件
-    conditionClick(val) {
-      this.elCard();
+    // 添加
+    createData: function() {
+      this.$refs.editForm.validate(valid => {
+        if (valid) {
+          this.$confirm("确认提交吗？", "提示", {
+            confirmButtonText: "确定",
+            cancelButtonText: "取消"
+          })
+            .then(() => {
+              this.editForm.id = parseInt(Math.random() * 100).toString(); // mock a id
+              const paraForm = Object.assign({}, this.editForm);
+              this.ObjButton.addPara.Data = JSON.stringify(paraForm);
+              this.ObjButton.addPara.Code = this.bllCode.add;
+              handlePost(this.ObjButton.addPara)
+                .then(res => {
+                  if (res.IsSuccess == true) {
+                    this.$refs["editForm"].resetFields();
+                    this.dialogFormVisibleAdd = false;
+                    this.getDataList();
+                    this.$message({
+                      message: "添加成功！",
+                      type: "success"
+                    });
+                  } else {
+                    this.$refs["editForm"].resetFields();
+                    this.dialogFormVisibleAdd = false;
+                  }
+                })
+                .catch(err => {
+                  console.log(err);
+                });
+            })
+            .catch(e => {
+              // 打印一下错误
+              console.log(e);
+            });
+        }
+      });
     },
     // 全选单选多选
     selsChange(sels) {
       this.sels = sels;
     },
+    // 批量删除
+    manyDel() {
+      var ids = this.sels.map(item => item.id);
+      this.$confirm("确认删除选中记录吗？", "提示", {
+        type: "warning",
+        confirmButtonText: "确定",
+        cancelButtonText: "取消"
+      })
+        .then(() => {
+          const paraId = {
+            ids: ids
+          };
+          this.ObjButton.para.Data = JSON.stringify(paraId);
+          this.ObjButton.para.Code = this.bllCode.del;
+          handlePost(this.ObjButton.para)
+            .then(res => {
+              if (res.IsSuccess == true) {
+                this.getDataList();
+                this.$message({
+                  message: "删除成功！",
+                  type: "success"
+                });
+              } else {
+              }
+            })
+            .catch(err => {
+              console.log(err);
+            });
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    }
   },
+  mounted() {
+    this.loadButton(store.getters.interfaces); //按钮显示
+
+    this.getDataList();
+  }
 };
 </script>
 
