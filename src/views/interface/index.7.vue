@@ -18,6 +18,9 @@
             <el-form-item>
               <el-button size="mini" v-if="ObjButton.query.isShow==true" icon="el-icon-refresh" type="info" v-on:click="Refresh"></el-button>
             </el-form-item>
+            <!-- <el-form-item>
+          <el-button size="mini" icon="el-icon-search" v-if="Obj_button.buttons.selectshow==true" type="primary" v-on:click="getKeyList">{{Obj_button.buttonText.query}}</el-button>
+        </el-form-item> -->
             <el-form-item>
               <el-button size="mini" icon="el-icon-zoom-in" v-if="ObjButton.query.isShow==true" type="primary"
                 v-on:click="elCard">{{ObjButton.query.text}}</el-button>
@@ -25,6 +28,12 @@
             <el-form-item>
               <el-button size="mini" icon="el-icon-plus" v-if="this.ObjButton.add.isShow==true" type="primary" @click="handleAdd">{{ObjButton.add.text}}</el-button>
             </el-form-item>
+            <!-- <el-form-item>
+          <el-button size="mini" icon="el-icon-edit" v-if="Obj_button.buttons.addshow==true" type="primary">{{Obj_button.buttonText.edit}}</el-button>
+        </el-form-item> -->
+            <!-- <el-form-item>
+      <el-button size="mini" icon="el-icon-menu" type="primary" @click="getKeyLists" v-if="Obj_button.buttons.selectshow==true">{{Obj_button.buttonText.query}}</el-button>
+        </el-form-item> -->
             <el-form-item>
               <el-button type="danger" icon="el-icon-delete" size="mini" v-if="ObjButton.del.isShow==true" @click="manyDel"
                 :disabled="this.sels.length===0">{{ObjButton.manyDel.text}}</el-button>
@@ -37,6 +46,7 @@
     <!-- 搜索筛选 -->
     <el-card class="box-card box-cardBox" v-if="elCardBox">
       <el-row>
+        <!-- <el-button size="mini" round v-for="item in tableLabel" :key="item.Label" @click="conditionClick(item.Label)">{{item.Label}}</el-button> -->
         <el-col :span="24" class="toolbar" style="height:100%; padding-bottom: 0px;">
           <el-form :model="filters" ref="filters" :inline="true" label-position label-width="120px"
             @submit.native.prevent>
@@ -78,10 +88,14 @@
                 <el-option label="否" :value='false'>否</el-option>
               </el-select>
             </el-form-item>
+            <!-- <div style="float: right;"> -->
             <el-form-item size="small">
               <el-button size="mini" type="primary" v-on:click="getKeyList">确定</el-button>
               <el-button size="mini" type="" @click="resetForm('filters')">重置</el-button>
             </el-form-item>
+            <!-- <el-form-item> -->
+            <!-- </el-form-item> -->
+            <!-- </div> -->
           </el-form>
         </el-col>
       </el-row>
@@ -89,9 +103,25 @@
 
     <el-table class="tablesSyl" fit @row-dblclick="Rowdblclick" stripe border :data="dataList" highlight-current-row
       @selection-change="selsChange">
+      <!-- <el-table-column type="selection" width="55">
+      </el-table-column> -->
       <el-table-column v-for="item in tableLabel" :key="item.Label" :label="item.Label" :prop="item.prop" :width='item.width'
         :type='item.type'>
       </el-table-column>
+      <!-- <el-table-column type="selection" width="55">
+      </el-table-column>
+      <el-table-column type="index" width="60">
+      </el-table-column>
+      <el-table-column prop="id" label="ID" width="60">
+      </el-table-column>
+      <el-table-column prop="jiekoumingcheng" show-overflow-tooltip label="接口名称" width="150">
+      </el-table-column>
+      <el-table-column prop="bllcode" label="接口标识" width="150" show-overflow-tooltip>
+      </el-table-column>
+      <el-table-column prop="caidanguanlian" label="菜单关联" min-width="160">
+      </el-table-column>
+      <el-table-column prop="beizhu" label="备注" min-width="160">
+      </el-table-column> -->
       <el-table-column v-if="ischeckshow==true" prop="shifouyanzheng" label="是否验证" width="100">
         <template slot-scope="scope">
           <el-switch v-model="scope.row.shifouyanzheng" @change="setIsCheckInterface(scope.row)">
@@ -162,6 +192,8 @@
                 <el-option v-for="item in options" :key="item.id" :label="item.mingcheng" :value="item.id">
                 </el-option>
               </el-select>
+              <!-- <el-cascader  expand-trigger="hover" :options="options" :v-model="selectedOptions"  :show-all-levels="false">
+          </el-cascader> -->
             </el-form-item>
             <el-form-item label="是否启用">
               <el-radio-group v-model="editForm.shifouqiyong">
@@ -199,6 +231,58 @@
           </el-row>
         </el-tab-pane>
       </el-tabs>
+
+
+
+
+      <!-- <el-form :model="editForm" label-width="100px" :rules="editFormRules" ref="editForm">
+        <el-form-item label="接口名称" prop="jiekoumingcheng">
+          <el-input v-model="editForm.jiekoumingcheng" auto-complete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="接口标识" prop="bllcode">
+          <el-input v-model="editForm.bllcode" auto-complete="off"></el-input>
+        </el-form-item>
+        <el-form-item hidden=true label="是否验证">
+          <el-radio-group v-model="editForm.shifouyanzheng">
+            <el-radio class="radio" :label=true>是</el-radio>
+            <el-radio class="radio" :label=false>否</el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item label="是否管理后台">
+          <el-radio-group v-model="editForm.shifouguanlihoutai">
+            <el-radio class="radio" :label=true>是</el-radio>
+            <el-radio class="radio" :label=false>否</el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item label="是否需要登录">
+          <el-radio-group v-model="editForm.shifouxuyaodenglu">
+            <el-radio class="radio" :label=true>是</el-radio>
+            <el-radio class="radio" :label=false>否</el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item label="菜单关联">
+          <el-select v-model="editForm.caidanguanlian" placeholder="请选择">
+            <el-option v-for="item in options" :key="item.id" :label="item.mingcheng" :value="item.id">
+            </el-option>
+          </el-select>
+          <el-cascader  expand-trigger="hover" :options="options" :v-model="selectedOptions"  :show-all-levels="false">
+          </el-cascader>
+        </el-form-item>
+        <el-form-item label="是否启用">
+          <el-radio-group v-model="editForm.shifouqiyong">
+            <el-radio class="radio" :label=true>是</el-radio>
+            <el-radio class="radio" :label=false>否</el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item label="备注">
+          <el-input type="textarea" v-model="editForm.beizhu"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button size="mini" @click.native="dialogFormVisibleAdd=false">取消</el-button>
+        <el-button size="mini" type="primary" @click="createData">添加</el-button>
+      </div> -->
+
     </el-dialog>
 
     <!--编辑界面-->
@@ -233,6 +317,8 @@
             <el-option v-for="item in options" :key="item.id" :label="item.mingcheng" :value="item.id">
             </el-option>
           </el-select>
+          <!-- <el-cascader  expand-trigger="hover" :options="options" :v-model="selectedOptions"  :show-all-levels="false">
+          </el-cascader> -->
         </el-form-item>
         <el-form-item label="是否启用">
           <el-radio-group v-model="editForm.shifouqiyong">
@@ -249,13 +335,22 @@
         <el-button size="mini" type="primary" @click="updateData">修改</el-button>
       </div>
     </el-dialog>
+
+
   </section>
 </template>
 
 <script>
+  import edit from './edit'
   import store from "@/store/index.js"; //引入本地存储
-  import {paraHelper} from "@/utils/para.js"; //请求参数格式
-  import {handlePost,handleGet} from "@/api/apihelper.js"; //统一操作api
+  import util from "@/utils/table.js";
+  import {
+    paraHelper
+  } from "@/utils/para.js"; //请求参数格式
+  import {
+    handlePost,
+    handleGet
+  } from "@/api/apihelper.js";
 
   export default {
     data() {
@@ -471,6 +566,7 @@
       handleAdd() {
         this.editForm = {};
         this.getData();
+        // this.dialogStatus = "create";
         this.dialogFormVisibleAdd = true;
         this.editForm = {
           shifouyanzheng: true,
@@ -718,9 +814,9 @@
           }
         });
       },
-      //显示所有 预留
+      //显示所有
       getKeyLists() {
-        this.filters.Page = 1;
+        this.page = 1;
         this.para.Code = this.ObjButton.query.Code;
         this.para.Data = "";
         handlePost(this.para).then(res => {
@@ -737,14 +833,6 @@
       handleCurrentChange(val) {
         this.filters.Page = val;
         this.getDataList();
-      },
-      //查询过滤
-      getKeyList() {
-        this.getDataList();
-      },
-      // 全选单选多选
-      selsChange(sels) {
-        this.sels = sels;
       },
       //获取菜单列表
       getData() {
@@ -765,6 +853,15 @@
             console.log(err);
           });
       },
+      //查询过滤
+      getKeyList() {
+        this.getDataList();
+      },
+      // 全选单选多选
+      selsChange(sels) {
+        this.sels = sels;
+      },
+
     },
   };
 
