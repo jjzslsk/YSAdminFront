@@ -37,26 +37,38 @@
               <el-button size="mini" icon="el-icon-more" v-if="this.ObjButton.add.isShow==true" type="success" @click="getKeyLists">全部显示</el-button>
             </el-form-item>
           </div>
-          <div style="float: right;">
+          <div style="float: right;line-height:40px;">
             <el-button-group>
-              <el-tooltip class="item" effect="light" content="切换" placement="bottom">
+              <!-- <el-tooltip class="item" effect="light" content="切换" placement="top">
               <el-button type="primary" size="mini" icon="el-icon-date"></el-button>
-              </el-tooltip>
-              <el-tooltip class="item" effect="light" content="列" placement="bottom">
-              <el-button type="primary" size="mini" icon="el-icon-menu"></el-button>
-              </el-tooltip>
+              </el-tooltip> -->
+              
               <el-dropdown trigger="click">
               <span class="el-dropdown-link">
-              <el-tooltip class="item el-dropdown-link" effect="light" content="导出数据" placement="bottom">
+              <el-tooltip class="item" effect="light" content="列" placement="top">
+              <el-button type="primary" size="mini" icon="el-icon-menu"></el-button>
+              </el-tooltip>
+              </span>
+              <el-dropdown-menu slot="dropdown">
+                <el-checkbox-group v-model="checkList">
+                  <el-checkbox v-for="item in tableLabel" :key="item.Label" :label="item.Label">{{item.Label}}</el-checkbox>
+                </el-checkbox-group>
+              </el-dropdown-menu>
+              </el-dropdown>
+
+              <el-dropdown trigger="click">
+              <span class="el-dropdown-link">
+              <el-tooltip class="item" effect="light" content="导出数据" placement="top">
               <el-button type="primary" size="mini" icon="el-icon-download"></el-button>
               </el-tooltip>
               </span>
               <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item>黄金糕</el-dropdown-item>
-                <el-dropdown-item>狮子头</el-dropdown-item>
-                <el-dropdown-item>螺蛳粉</el-dropdown-item>
-                <el-dropdown-item>双皮奶</el-dropdown-item>
-                <el-dropdown-item>蚵仔煎</el-dropdown-item>
+                <el-dropdown-item>JSON</el-dropdown-item>
+                <el-dropdown-item>XML</el-dropdown-item>
+                <el-dropdown-item>CSV</el-dropdown-item>
+                <el-dropdown-item>TXT</el-dropdown-item>
+                <el-dropdown-item>MS-Word</el-dropdown-item>
+                <el-dropdown-item>MS-Excel</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
             </el-button-group>
@@ -326,6 +338,7 @@
         total: 0, //分页
         dataList: [], //列表数据
         sels: [], // 列表选中列 全选
+        checkList: [],//存储列表字段隐藏，
         currentRow: null, //双击编辑 存列表数据
         tableLabel: [ //列表数组
           {

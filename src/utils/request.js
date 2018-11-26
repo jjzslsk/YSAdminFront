@@ -64,7 +64,7 @@ service.interceptors.response.use(
         var message = res.Message
         if (message == "" || message == null) message = "操作失败"
         Message({
-          message: message,
+          message: res.Code + ':' +message,
           type: 'error',
           duration: 5 * 1000
         })

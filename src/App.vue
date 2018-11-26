@@ -102,4 +102,15 @@ export default {
     background-color: #c8c9cc;
     border-color: #c8c9cc;
 }
+.el-dropdown-menu .el-checkbox {
+  display: block;
+  padding: 0rem 2rem;
+}
+.el-dropdown-menu .el-checkbox+.el-checkbox {
+    margin-left: 0px;
+}
+  .box-cardBox .el-form-item--small .el-form-item__content{
+    height: 41px;
+    line-height: 41px;
+  }
 </style>
