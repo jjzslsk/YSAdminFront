@@ -92,4 +92,14 @@ export default {
     color: #fff;
     font-size: 2rem;
 }
+.sectionBox .el-button--info {
+    color: #fff;
+    background-color: #2c3e50;
+    border-color: #2c3e50;
+}
+.sectionBox .el-button--info.is-disabled, .el-button--info.is-disabled:active, .el-button--info.is-disabled:focus, .el-button--info.is-disabled:hover {
+    color: #fff;
+    background-color: #c8c9cc;
+    border-color: #c8c9cc;
+}
 </style>
