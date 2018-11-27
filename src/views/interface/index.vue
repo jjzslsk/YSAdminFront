@@ -2,7 +2,7 @@
   <section class="app-container sectionBox">
 
 
-    <!--工具按钮-->
+    <!--左侧工具按钮-->
     <div class="toolBox">
       <el-col :span="24" class="toolbar" style="height:100%; padding-bottom: 0px;line-height:40px">
         <el-form :inline="true" :model="filters" label-position label-width="120px" @submit.native.prevent>
@@ -169,7 +169,7 @@
       </el-tabs>
     </el-dialog>
 
-    <!--编辑界面-->
+    <!--编辑界面 -->
     <el-dialog title="编辑" :visible.sync="dialogFormVisibleEdit" :close-on-click-modal="false">
       <el-form :model="getDataForm" label-width="100px"  ref="getDataForm">
         <el-form-item label="接口名称" prop="jiekoumingcheng">
