@@ -1,6 +1,14 @@
 <template>
   <section class="app-container sectionBox">
-
+    <!-- 头部文字说明 -->
+    <div class="panel-heading">
+      <div class="panel-lead">
+        <em>接口管理</em>
+        <span>
+          规则通常对应一个控制器的方法,同时左侧的菜单栏数据也从规则中体现,通常建议通过命令行进行生成规则节点
+        </span>
+      </div>
+    </div>
 
     <!--工具按钮-->
     <div class="toolBox">
@@ -69,7 +77,6 @@
     </div>
 
         <!-- 字段搜索# -->
-        
             <!-- 搜索筛选 -->
     <el-card class="box-card box-cardBox" v-if="elCardBox">
       <el-row>
@@ -94,10 +101,9 @@
       @selection-change="selsChange">
 
       <!-- 列表# -->
-      <el-table-column v-for="item in tableLabel" :key="item.Label" :label="item.Label" :prop="item.prop"
+      <el-table-column v-for="item in tableLabel" :key="item.Label" :label="item.Label" :prop="item.prop" :width='item.width'
         :type='item.type'>
       </el-table-column>
-
       <el-table-column v-if="ObjButton.edit.isShow==true||ObjButton.del.isShow==true" label="操作" fixed="right">
         <template slot-scope="scope">
           <el-button size="mini" style="padding: 7px 9px;margin-left: 0px;" icon="el-icon-edit" type="primary" v-if="ObjButton.query.isShow==true"
@@ -171,45 +177,45 @@
 
     <!--编辑界面-->
     <el-dialog title="编辑" :visible.sync="dialogFormVisibleEdit" :close-on-click-modal="false">
-      <el-form :model="getDataForm" label-width="100px"  ref="getDataForm">
+      <el-form :model="editForm" label-width="100px"  ref="editForm">
         <el-form-item label="接口名称" prop="jiekoumingcheng">
-          <el-input v-model="getDataForm.jiekoumingcheng" auto-complete="off"></el-input>
+          <el-input v-model="editForm.jiekoumingcheng" auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item label="接口标识" prop="bllcode">
-          <el-input v-model="getDataForm.bllcode" auto-complete="off"></el-input>
+          <el-input v-model="editForm.bllcode" auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item hidden=true label="是否验证">
-          <el-radio-group v-model="getDataForm.shifouyanzheng">
+          <el-radio-group v-model="editForm.shifouyanzheng">
             <el-radio class="radio" :label=true>是</el-radio>
             <el-radio class="radio" :label=false>否</el-radio>
           </el-radio-group>
         </el-form-item>
         <el-form-item label="是否管理后台">
-          <el-radio-group v-model="getDataForm.shifouguanlihoutai">
+          <el-radio-group v-model="editForm.shifouguanlihoutai">
             <el-radio class="radio" :label=true>是</el-radio>
             <el-radio class="radio" :label=false>否</el-radio>
           </el-radio-group>
         </el-form-item>
         <el-form-item label="是否需要登录">
-          <el-radio-group v-model="getDataForm.shifouxuyaodenglu">
+          <el-radio-group v-model="editForm.shifouxuyaodenglu">
             <el-radio class="radio" :label=true>是</el-radio>
             <el-radio class="radio" :label=false>否</el-radio>
           </el-radio-group>
         </el-form-item>
         <el-form-item label="菜单关联">
-          <el-select v-model="getDataForm.caidanguanlian" placeholder="请选择">
+          <el-select v-model="editForm.caidanguanlian" placeholder="请选择">
             <el-option v-for="item in options" :key="item.id" :label="item" :value="item">{{item}}
                 </el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="是否启用">
-          <el-radio-group v-model="getDataForm.shifouqiyong">
+          <el-radio-group v-model="editForm.shifouqiyong">
             <el-radio class="radio" :label=true>是</el-radio>
             <el-radio class="radio" :label=false>否</el-radio>
           </el-radio-group>
         </el-form-item>
         <el-form-item label="备注">
-          <el-input type="textarea" v-model="getDataForm.beizhu"></el-input>
+          <el-input type="textarea" v-model="editForm.beizhu"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -231,10 +237,9 @@
       //==================数据定义===========================
         //字段name code 
 
-        //添加 模型
+        //添加修改 模型
         editForm: {}, 
-        //修改 模型
-        getDataForm:{},
+        
         //搜索 模型
         filters: {
           Page: 1,
@@ -246,6 +251,7 @@
         dataList: [], //列表数据
         sels: [], // 列表选中列 全选
         currentRow: null, //双击编辑 存列表数据
+        options: [0,1043], //初始化菜单列表
         tableLabel: [ //列表数组
           {
             type: "selection",
@@ -261,15 +267,13 @@
         dialogFormVisibleAdd: false, //控制添加显示
         dialogFormVisibleEdit: false, //控制编辑显示
         para: paraHelper, //交互格式
-        options:[0],
-        checkList:{},
+        checkList: [],//存储列表字段隐藏，
 
         //权限
         interfaces: null, //初始值
 
       //===================按钮定义==========================
         ObjButton: {
-
           add: {
             text: '添加', //按钮文字
             Code: 'AddInterface',
@@ -279,10 +283,6 @@
             text: '查询',
             Code: 'GetListInterface',
             isShow: false,
-          },
-          details:{
-            text:'详情',
-            Code:'GetInterface'//获取单条数据
           },
           edit: {
             text: '编辑',
@@ -315,13 +315,10 @@
   //===================初始化 ==========================
     //初始化方法
     mounted() {
-      this.Init()
+      this.loadButton(store.getters.interfaces); //权限控制 按钮显示隐藏
+      this.getDataList(); //获取列表
     },
     methods: {
-      Init(){//初始化方法执行
-        this.loadButton(store.getters.interfaces); //权限控制 按钮显示隐藏
-        this.getDataList(); //获取列表
-      },
     //===================数据展示==========================
       //加载按钮
       loadButton(data) {
@@ -338,17 +335,10 @@
         }
       },
   //===================界面展示==========================
-      //点击编辑按钮,显示编辑
+      // 显示编辑界面
       handleEdit(index, row) {
-        this.getInfoData(row.id)
         this.dialogFormVisibleEdit = true;
-        this.$refs["getDataForm"].resetFields(); //重置getDataForm     
-      },
-      //双击列表,显示编辑
-      Rowdblclick(val) {
-        this.getInfoData(val.id)
-        this.dialogFormVisibleEdit = true;
-        this.$refs["getDataForm"].resetFields(); //重置getDataForm  
+        this.editForm = Object.assign({}, row);
       },
       // 显示添加界面
       handleAdd() {
@@ -362,7 +352,7 @@
           shifouqiyong: true,
         };
       },
-      //搜索显示隐藏
+      //条件显示隐藏
       elCard() {
         if (this.elCardBox == false) {
           this.elCardBox = true;
@@ -395,10 +385,8 @@
                         type: "success"
                       });
                     } else {
-                      this.$message({
-                        message: res.Code + ':' + res.Message,
-                        type: "warning"
-                      });
+                      this.$refs["editForm"].resetFields();
+                      this.dialogFormVisibleAdd = false;
                     }
                   })
               })
@@ -406,44 +394,55 @@
         });
       },
   //===================删==========================
-      //删除
-      del(val){
-          this.$confirm("确认删除该记录吗?", "提示", {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
-          type: "warning"
-        })
-        .then(() => {
-          this.para.Code = this.ObjButton.del.Code;
-          this.para.Data = JSON.stringify(val);
-          handlePost(this.para).then(res => {
-            if (res.IsSuccess == true) {
-              this.getDataList();
-              this.$message({
-                message: "删除成功！",
-                type: "success"
-              });
-            }
-            else
-            {
-              this.$message({
-                      message: res.Code + ':' + res.Message,
-                      type: "warning"
-                    });
-            }
-          });
-        })
-      },
-      // 单条记录删除
+      // 删除
       handleDel(index, row) {
-          const paraId = {id: row.id};
-          this.del(paraId)
+        this.$confirm("确认删除该记录吗?", "提示", {
+            confirmButtonText: "确定",
+            cancelButtonText: "取消",
+            type: "warning"
+          })
+          .then(() => {
+            const paraId = {
+              id: row.id
+            };
+            this.para.Code = this.ObjButton.del.Code;
+            this.para.Data = JSON.stringify(paraId);
+            handlePost(this.para).then(res => {
+              if (res.IsSuccess == true) {
+                this.getDataList();
+                this.$message({
+                  message: "删除成功！",
+                  type: "success"
+                });
+              }
+            });
+          })
       },
       // 批量删除
       manyDel() {
         var ids = this.sels.map(item => item.id);
-        const paraId = {ids: ids};
-        this.del(paraId)
+        this.$confirm("确认删除选中记录吗？", "提示", {
+            type: "warning",
+            confirmButtonText: "确定",
+            cancelButtonText: "取消"
+          })
+          .then(() => {
+            const paraId = {
+              ids: ids
+            };
+            this.para.Data = JSON.stringify(paraId);
+            this.para.Code = this.ObjButton.del.Code;
+            handlePost(this.para)
+              .then(res => {
+                if (res.IsSuccess == true) {
+                  this.getDataList();
+                  this.$message({
+                    message: "删除成功！",
+                    type: "success"
+                  });
+                }
+              })
+          })
       },
   //===================查==========================
       // 获取列表
@@ -455,42 +454,38 @@
             this.total = res.Data.Count;
             this.dataList = res.Data.List;
           }
-          else
-          {
-           this.$message({
-                        message: res.Code + ':' + res.Message,
-                        type: "warning"
-                      });
+        });
+      },
+      //显示所有列表
+      getKeyLists() {
+        this.filters = {
+          Page: 1,
+          Size:null
+        },
+        this.para.Code = this.ObjButton.query.Code;
+        this.para.Data = "";
+        handlePost(this.para).then(res => {
+          if (res.IsSuccess == true) {
+            this.total = res.Data.Count;
+            this.dataList = res.Data.List;
           }
         });
       },
       //获取单条数据
-      getInfoData(val) {
-        const paraId = {
-          id: val
-        };
-        this.para.Code = this.ObjButton.details.Code;
-        this.para.Data = JSON.stringify(paraId);
-        handlePost(this.para)
-          .then(res => {
-            if (res.IsSuccess == true) {
-              this.getDataForm = res.Data;
-            }
-              else {
-                this.$message({
-                message: res.Code + ':' + res.Message,
-                type: "warning"
-              });
-            }
-          })
-      },
-      //显示所有列表
-      getKeyLists() {
-       this.filters = {
-            Page: 1,
-            Size: 0,
-          },
-          this.getDataList()
+      getInfoData(id) {
+        this.para.Code = 'GetInterface'
+        this.para.Data = JSON.stringify(id);
+        handlePost(this.para).then(res => {
+          if (res.IsSuccess == true) {
+            this.editForm = res.Data;
+            //弹窗
+          } else {
+            this.$message({
+              message: res.Code + ':' + res.message,
+              type: "warning"
+            });
+          }
+        })
       },
       //刷新页面
       Refresh() {
@@ -506,22 +501,29 @@
         this.getDataList();
       },
   //===================改==========================
+      //双击编辑
+      Rowdblclick(val) {
+        this.currentRow = val;
+        this.dialogFormVisibleEdit = true;
+        this.editForm = Object.assign({}, this.currentRow);
+      },
       // 更新
       updateData() {
-        this.$refs.getDataForm.validate(valid => {
+        this.$refs.editForm.validate(valid => {
           if (valid) {
             this.$confirm("确认提交吗？", "提示", {
                 confirmButtonText: "确定",
                 cancelButtonText: "取消"
               })
               .then(() => {
-                const paraInfo = Object.assign({}, this.getDataForm);
+
+                const paraId = Object.assign({}, this.editForm);
                 this.para.Code = this.ObjButton.edit.Code;
-                this.para.Data = JSON.stringify(paraInfo);
+                this.para.Data = JSON.stringify(paraId);
                 handlePost(this.para)
                   .then(res => {
                     if (res.IsSuccess == true) {
-                      this.$refs["getDataForm"].resetFields(); //重置getDataForm
+                      this.$refs["editForm"].resetFields(); //重置editForm
                       this.dialogFormVisibleEdit = false;
                       this.getDataList();
                       this.$message({
@@ -529,11 +531,7 @@
                         type: "success"
                       });
                     } else {
-                      this.$refs["getDataForm"].resetFields();
-                      this.$message({
-                        message: res.Code + ':' + res.Message,
-                        type: "warning"
-                      });
+                      this.$refs["editForm"].resetFields();
                       this.dialogFormVisibleEdit = false;
                     }
                   })
