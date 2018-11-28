@@ -161,7 +161,7 @@
     </el-dialog>
 
     <!--编辑界面-->
-    <el-dialog class="roleCard transferWrap" title="编辑" :visible.sync="dialogFormVisibleEdit" :close-on-click-modal="false">
+    <el-dialog class="roleCard" title="编辑" :visible.sync="dialogFormVisibleEdit" :close-on-click-modal="false">
       <el-card class="box-card">
       <el-form :model="editForm" label-width="100px" :rules="editFormRules" ref="editForm">
         <el-form-item label="角色名称" prop="RoleName">
@@ -202,18 +202,15 @@
 
        <el-row class="tac tree-row">
         <el-col :span="24">
-       <div style="text-align: center" class="transferBox">
+       <div style="text-align: center">
           <el-transfer
-          
             style="text-align: left; display: inline-block"
             v-model="value3"
             filterable
-            filter-placeholder="请输入搜索内容"
             :left-default-checked="[2, 3]"
             :right-default-checked="[1]"
             :render-content="renderFunc"
             :titles="['所有菜单', '已有菜单']"
-            
             :format="{
               noChecked: '${total}',
               hasChecked: '${checked}/${total}'
@@ -264,6 +261,7 @@
 
             <!-- <el-checkbox v-model="defaultExpandAllX">展开全部</el-checkbox> -->
             <el-checkbox :change='checkboxChange(defaultExpandAllX)' v-model="defaultExpandAllX">展开全部</el-checkbox>
+
 
             <!-- {{this.$refs.treex.store.defaultExpandAll}} -->
 

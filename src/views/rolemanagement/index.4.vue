@@ -265,6 +265,7 @@
             <!-- <el-checkbox v-model="defaultExpandAllX">展开全部</el-checkbox> -->
             <el-checkbox :change='checkboxChange(defaultExpandAllX)' v-model="defaultExpandAllX">展开全部</el-checkbox>
 
+
             <!-- {{this.$refs.treex.store.defaultExpandAll}} -->
 
       <el-row class="tac tree-row">

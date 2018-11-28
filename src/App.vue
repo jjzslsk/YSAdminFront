@@ -113,4 +113,33 @@ export default {
     height: 41px;
     line-height: 41px;
   }
+  .transferBox .el-transfer__buttons {
+  padding: 0;
+}
+  .transferBox .el-transfer__buttons .el-button+.el-button{
+  margin-left:0;
+}
+  .transferBox .el-transfer__buttons .el-button{
+  padding: 5px 10px;
+  display: block;
+}
+.transferBox .el-transfer-panel__filter {
+  margin: 1rem 0 0 0;
+}
+.transferBox .el-checkbox+.el-checkbox {
+    margin-left: 0;
+}
+.transferBox .el-transfer-panel__filter .el-input__inner {
+  width: 90%;
+}
+.transferWrap .el-dialog__body{
+  line-height: 0px;
+  /* padding: 30px 20px 0 20px; */
+} 
+.transferWrap .el-dialog__body .transferBox label{
+  margin-bottom: 0px;
+} 
+.transferBox .el-transfer-panel__footer {
+  display: none;
+}
 </style>
