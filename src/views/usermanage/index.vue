@@ -17,6 +17,7 @@
         </el-form-item>
       </el-form>
     </el-col>
+    <!-- 部门树形 -->
   <el-col style="height:100%" :span="4">
   <el-card class="box-card">
   <!-- <div slot="header" class="clearfix">
@@ -32,10 +33,14 @@
       :data="menus"
       :props="defaultProps"
       default-expand-all
+      node-key="value"
+      :highlight-current='true'
       :filter-node-method="filterNode"
+      @node-click='changeClick'
       ref="tree2">
     </el-tree>
   </div>
+  {{data9}}
 </el-card>
 
     </el-col>
@@ -264,6 +269,7 @@ import { paraHelper } from "@/utils/para.js"; //请求参数格式
 export default {
   data() {
     return {
+      data9:null,
       TreeData: [
         {
           label: "所有部门",
@@ -435,6 +441,12 @@ export default {
     }
   },
   methods: {
+    nodeClick(data9){
+      // console.log ('vaaaaaaaaaaaaaaa',data9)      
+    },
+    changeClick(data){
+      console.log(data);
+      },
     filterNode(value, data) {
       if (!value) return true;
       return data.label.indexOf(value) !== -1;
