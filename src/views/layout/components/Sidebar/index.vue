@@ -10,6 +10,8 @@
       text-color="#fff"
       active-text-color="#3c8dbc"
     >
+
+    <!-- 通行路由表 -->
       <sidebar-item :routes="permission_routers"></sidebar-item>
     </el-menu>
   </el-scrollbar>

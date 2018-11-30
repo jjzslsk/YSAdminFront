@@ -1,25 +1,13 @@
 <template >
 <div>
-    <!-- <el-scrollbar wrapClass="scrollbar-wrapper">
-    <logo :isCollapse="isCollapse"></logo>
-    <el-menu
-      mode="vertical"
-      :show-timeout="200"
-      :default-active="$route.path"
-      :collapse="isCollapse"
-      background-color="#6959CD"
-      text-color="white"
-      active-text-color="#42b983"
-    >
-      <sidebar-item :routes="permission_routers"></sidebar-item>
-    </el-menu>
-  </el-scrollbar> -->
 
-    <!-- Left side column. contains the logo and sidebar -->
+        <!-- <template v-for="item in routes" v-if="!item.hidden&&item.children">
+          111
+
+        </template> -->
+    
         <aside class="main-sidebar">
-          <!-- sidebar: style can be found in sidebar.less -->
           <section class="sidebar">
-            <!-- Sidebar user panel -->
             <div class="user-panel">
               <div class="pull-left image">
                 <img src="/src/assets/img/user2-160x160.jpg" class="img-circle" alt="User Image">
@@ -29,7 +17,6 @@
                 <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
               </div>
             </div>
-            <!-- search form -->
             <form action="#" method="get" class="sidebar-form">
               <div class="input-group">
                 <input type="text" name="q" class="form-control" placeholder="Search...">
@@ -39,25 +26,27 @@
                     </span>
               </div>
             </form>
-            <!-- /.search form -->
-            
-            <template>
-            <!-- sidebar menu: : style can be found in sidebar.less -->
+
             <ul class="sidebar-menu" data-widget="tree">
 
               <li class="header">MAIN NAVIGATION</li>
+
               <li class="active treeview">
+                <!-- 一级 -->
                 <a href="#">
                   <i class="fa fa-dashboard"></i> <span>系统设置</span>
                   <span class="pull-right-container">
                     <i class="fa fa-angle-left pull-right"></i>
                   </span>
                 </a>
-                <ul class="treeview-menu">
-                  <li class="active"><a href="index.html"><i class="fa fa-circle-o"></i> Dashboard v1</a></li>
-                  <li><a href="index2.html"><i class="fa fa-circle-o"></i> Dashboard v2</a></li>
+
+                <!-- 二级 -->
+                <ul class="treeview-menu" v-for="item in routes" :key="item.name">
+                  <li class="active"><a><i class="fa fa-circle-o"></i> {{item.name}}</a></li>
+                  <!-- <li><a href="index2.html"><i class="fa fa-circle-o"></i> Dashboard v2</a></li> -->
                 </ul>
               </li>
+
               <li class="treeview">
                 <a href="#">
                   <i class="fa fa-files-o"></i>
@@ -215,7 +204,6 @@
               <li><a href="#"><i class="fa fa-circle-o text-yellow"></i> <span>Warning</span></a></li>
               <li><a href="#"><i class="fa fa-circle-o text-aqua"></i> <span>Information</span></a></li> -->
             </ul>
-          </template>
           </section>
           <!-- /.sidebar -->
         </aside>
@@ -223,20 +211,67 @@
   </div>
 </template>
 <script>
+// import { mapGetters } from 'vuex'
+// import SidebarItem from './../../views/layout/components/Sidebar/SidebarItem'
+// import logo from './../../views/layout/components/Sidebar/logo'
+// export default {
+//   name:'mainSidebar',
+//   components: { SidebarItem, logo },
+//   computed: {
+//     ...mapGetters([
+//       'sidebar',
+//       'permission_routers'
+//     ]),
+//     isCollapse() {
+//       return !this.sidebar.opened
+//     }
+//   }
+// }
+
+import { generateTitle } from '@/utils/i18n'
 import { mapGetters } from 'vuex'
-import SidebarItem from './../../views/layout/components/Sidebar/SidebarItem'
-import logo from './../../views/layout/components/Sidebar/logo'
 export default {
-  name:'mainSidebar',
-  components: { SidebarItem, logo },
-  computed: {
+  name: 'SidebarItem',
+    computed: {
     ...mapGetters([
       'sidebar',
       'permission_routers'
-    ]),
-    isCollapse() {
-      return !this.sidebar.opened
+    ])
+  },
+  props: {
+    routes: {
+      type: Array
+    },
+    isNest: {
+      type: Boolean,
+      default: false
     }
+  },
+  methods: {
+    generateTitle,
+    hasOneShowingChildren(children) {
+      const showingChildren = children.filter(item => {
+        return !item.hidden
+      })
+      if (showingChildren.length === 1) {
+        return true
+      }
+      return false
+    }
+  },
+  created() {
+    // console.log ('permission_routers::1',permission_routers)
+
+    for (const o in this.routes) {
+      const obj = this.routes[o]
+      if (obj.path.indexOf('myiframe') >= 0) {
+        obj.children[0].path = 'urlPath?src=https://www.baidu.com'
+      }
+    }
+  },
+  mounted() {
+    // console.log ('123123llOO',this.routes)
+    // console.log ('permission_routers::2',this.permission_routers)
   }
 }
 </script>

@@ -1,12 +1,27 @@
 <template>
   <div class="app-wrapper" :class="classObj">
+    
+    <!-- 隐藏 左侧导航 按钮 -->
     <div v-if="device==='mobile'&&sidebar.opened" class="drawer-bg" @click="handleClickOutside"></div>
+    
+    <!-- 左侧导航 -->
     <sidebar class="sidebar-container"></sidebar>
+    <!-- style="display: none;" -->
+
+    <!-- 右侧main -->
     <div class="main-container">
+      
+      <!-- 顶部 -->
       <navbar></navbar>
-      <tags-view></tags-view>
+
+      <!-- 头部标签TAB -->
+      <!-- <tags-view></tags-view> -->
+
+      <!-- 主体内容 -->
       <app-main></app-main>
+
     </div>
+
 </div>
 </template>
 
@@ -40,6 +55,7 @@ export default {
   },
   methods: {
     handleClickOutside() {
+      console.log (111111111111)
       this.$store.dispatch('CloseSideBar', { withoutAnimation: false })
     }
   }
