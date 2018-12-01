@@ -1,32 +1,32 @@
 <template>
   <div id="app">
         <!--登入动画-->
-    <!-- <transition name="rotate-fall">
+    <transition name="rotate-fall">
     <router-view  class="app-router-view"></router-view>
-    </transition> -->
+    </transition>
 
-  <body class="hold-transition skin-blue sidebar-mini">
-     <div class="wrapper">
+  <!-- <body class="hold-transition skin-blue sidebar-mini">
+     <div class="wrapper"> -->
 
         <!-- 左侧导航 -->
-        <main-sidebar></main-sidebar>
+        <!-- <main-sidebar></main-sidebar> -->
 
         <!-- 上部色条 -->
-        <header-top></header-top>
+        <!-- <header-top></header-top> -->
 
         <!-- 下部 -->
-        <content-wrapper></content-wrapper>
+        <!-- <content-wrapper></content-wrapper> -->
 
         <!-- 底部版权 -->
-        <main-footer></main-footer>
+        <!-- <main-footer></main-footer> -->
 
         <!-- 右侧导航 -->        
-        <control-sidebar></control-sidebar>
+        <!-- <control-sidebar></control-sidebar> -->
         
         <!-- 右侧导航必须的 背景颜色 -->
-        <div class="control-sidebar-bg"></div>
+        <!-- <div class="control-sidebar-bg"></div>
       </div>
-  </body>
+  </body> -->
   </div>
 </template>
 <script>
