@@ -16,6 +16,10 @@ import {
   getStore,
   removeStore
 } from '@/utils/store'
+import {
+  Message,
+  MessageBox
+} from 'element-ui'
 const user = {
   state: {
     token: getToken(),
@@ -100,12 +104,13 @@ const user = {
 
       console.log ('username::::::1',userInfo)
 
-      const username = userInfo.username.trim()
+      const username = userInfo.username.trim()//去除两端空格
 
       return new Promise((resolve, reject) => {
         // console.log("addrss in user.login")
         login(username, userInfo.password).then(response => {
           console.log (6)
+      console.log ('response::::::4',response)
           if (response.IsSuccess == true) {
       console.log ('response::::::3',response)
 
@@ -116,6 +121,12 @@ const user = {
             // setToken("admin")//设置token
             // commit('SET_TOKEN', "admin")//设置token
             resolve()
+          }
+          else {
+            Message({
+              message: response.Code + ':' + response.Message,
+              type: "warning"
+            })
           }
         }).catch(error => {
           reject(error)

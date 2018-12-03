@@ -29,11 +29,11 @@ export const constantRouterMap = [
     component: Layout,
     redirect: '/dashboard/dashboard'
   },
-  {
-    path: 'index',
-    component: Layout,
-    redirect: '/index'
-  },
+  // {
+  //   path: '',
+  //   component: Layout,
+  //   redirect: '/index/index'
+  // },
   // 错误日志
   {
     path: '/errorLog',
@@ -48,6 +48,7 @@ export const constantRouterMap = [
       }
     ]
   },
+
   { path: '/login', component: () => import('@/views/login'), name: '登录', hidden: true },
   { path: '/404', component: () => import('@/views/errorPage/404'), hidden: true },
   { path: '/401', component: () => import('@/views/errorPage/401'), hidden: true },

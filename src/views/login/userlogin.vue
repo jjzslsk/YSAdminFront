@@ -53,12 +53,12 @@ export default {
       },
       loginRules: {
         username: [
-          // { required: true, trigger: 'blur', validator: validateUsername }
+          // { required: true, trigger: 'blur', validator: validateUsername },
           { required: true,message: '请输入账户', trigger: 'blur'}
         ],
         password: [
           { required: true, message: '请输入密码', trigger: 'blur' },
-          //{ min: 6, message: '密码长度最少为6位', trigger: 'blur' }
+          // { min: 6, message: '密码长度最少为6位', trigger: 'blur' }
         ],
         code: [
           { required: true, message: '请输入验证码', trigger: 'blur' },
@@ -85,10 +85,11 @@ export default {
       console.log (1)
       this.$refs.loginForm.validate(valid => {
         if (valid) {
+          console.log ('valid``',valid)
           console.log ('userlogin::',this.loginForm)
           this.$store.dispatch('Login', this.loginForm).then(res => {
             console.log(7)
-            console.log('userlogin::res',res)
+            console.log('userlogin::res1',res)
             this.$router.push({ path: '/' })
           })
         }
