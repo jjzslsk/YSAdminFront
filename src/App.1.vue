@@ -2,16 +2,16 @@
   <div id="app">
     <!--登入动画-->
     <transition name="rotate-fall">
-    <router-view  class="app-router-view"></router-view>
+      <router-view class="app-router-view"></router-view>
     </transition>
   </div>
 </template>
 
 <script>
-import 'vue-transition.css'
-export default {
-  name: 'App'
-}
+  import 'vue-transition.css'
+  export default {
+    name: 'App'
+  }
 
 </script>
 <style>
@@ -27,4 +27,5 @@ export default {
     transform-style: preserve-3d;
     visibility: visible;
   }
+
 </style>

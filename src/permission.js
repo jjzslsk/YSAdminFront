@@ -12,14 +12,17 @@ import {
   setTitle
 } from '@/utils/util' // 设置浏览器头部标题
 
-// permission judge function
+// permission judge function 权限判断函数
 function hasPermission(roles, permissionRoles) {
+  console.log (11)
   if (roles.indexOf('admin') >= 0) return true // admin permission passed directly
   if (!permissionRoles) return true
   return roles.some(role => permissionRoles.indexOf(role) >= 0)
 }
 const whiteList = ['/login'] // 不重定向白名单
 router.beforeEach((to, from, next) => {
+  console.log (22)
+
   NProgress.start()
   if (getToken()) {
     // 设置浏览器头部标题
@@ -40,6 +43,8 @@ router.beforeEach((to, from, next) => {
       NProgress.done() // if current page is dashboard will not trigger	afterEach hook, so manually handle it
     } else {
       if (store.getters.roles.length === 0) {
+  console.log (33)
+
         store.dispatch('GetInfo').then(res => { // 拉取用户信息
           console.log('拉取用户信息=', res)
           // const roles = res.roles // note: roles must be a array! such as: ['editor','develop']
