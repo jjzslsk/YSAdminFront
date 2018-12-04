@@ -194,9 +194,9 @@
         <el-form-item label="名称:" prop="mingcheng">
           <el-input v-model="editForm.mingcheng" auto-complete="off"></el-input>
         </el-form-item>
-        <!-- <el-form-item label="账号:" prop="zhanghao">
+        <el-form-item label="账号:" prop="zhanghao">
           <el-input v-model="editForm.zhanghao" auto-complete="off" :disabled="disabledZhangHao" placeholder="设置后不可更改"></el-input>
-        </el-form-item> -->
+        </el-form-item>
         <el-form-item label="密码:" prop="mima">
           <el-input type="password" :disabled="disabledMima" v-model="editForm.mima" auto-complete="off"></el-input>
         </el-form-item>
@@ -574,9 +574,9 @@ export default {
     // 显示编辑界面
     handleEdit(index, row) {
       this.dialogStatus = "update";
-      this.dialogFormVisibleAdd = true;
+      this.dialogFormVisibleAddEdit = true;
       this.disabledZhangHao = true;
-      // this.disabledMima = true;
+      this.disabledMima = true;
       this.editForm = Object.assign({}, row);
       this.para.Data = "";
       this.para.Code = this.bllCode.getListDepartment;
@@ -597,8 +597,6 @@ export default {
     handleAdd() {
       this.dialogStatus = "create";
       this.dialogFormVisibleAdd = true;
-      // this.disabledZhangHao = false;
-      // this.disabledMima = false;
       this.editForm = {
         shifouchaoguan: true,
         shifouqiyong: true

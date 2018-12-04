@@ -97,22 +97,17 @@ const user = {
 
   actions: {
     // 登录
-    Login({
-      commit
-    }, userInfo) {
-  console.log (2)
-
+    Login({commit}, userInfo) {
+      console.log (2)
       console.log ('username::::::1',userInfo)
-
       const username = userInfo.username.trim()//去除两端空格
-
       return new Promise((resolve, reject) => {
         // console.log("addrss in user.login")
         login(username, userInfo.password).then(response => {
           console.log (6)
-      console.log ('response::::::4',response)
+          console.log ('response::::::4',response)
           if (response.IsSuccess == true) {
-      console.log ('response::::::3',response)
+          console.log ('response::::::3',response)
 
             setId(response.Data.MId)
             setToken(response.Data.Token)

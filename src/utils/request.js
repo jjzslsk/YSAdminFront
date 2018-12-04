@@ -24,7 +24,6 @@ service.interceptors.request.use(config => {
   console.log('service.interceptors.request',config)
   return config
 }, error => {
-  // Do something with request error
   console.log('request拦截器err', error) // for debug
   Promise.reject(error)
 })
@@ -37,7 +36,7 @@ service.interceptors.response.use(
      * code为非20000是抛错 可结合自己业务进行修改
      */
     const res = response.data
-    //console.log('service.interceptors.response', response) 
+    console.log('service.interceptors.response', response) 
     if (res.Code === 408 || response.code === 50008 || response.code === 50012 || response.code === 50014) {
         MessageBox.confirm('你已被登出，可以取消继续留在该页面，或者重新登录', '确定登出', {
           confirmButtonText: '重新登录',
