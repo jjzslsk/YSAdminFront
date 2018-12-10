@@ -133,8 +133,10 @@ const user = {
       commit,
       state
     }) {
+      console.log ('11',state.token)
       return new Promise((resolve, reject) => {
         getInfo(state.token).then(response => {
+          console.log ('33返回数据',response)
           console.log('getInfo=>res', response)
           const data = response.Data
           if (data.roles && data.roles.length > 0) { // 验证返回的roles是否是一个非空数组

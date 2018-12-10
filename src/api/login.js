@@ -29,6 +29,7 @@ export function login(username, password) {
 }
 //获取用户信息
 export function getInfo(token) {
+  console.log ('22',token)
   let para = {
     Code: 'GetAdminInfo',
     Data: '',

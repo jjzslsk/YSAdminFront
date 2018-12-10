@@ -144,6 +144,7 @@ const permission = {
     GenerateRoutes({
       commit
     }, data) {
+      console.log ('55GenerateRoutes路由表',data)
       return new Promise(resolve => {
         //let accessedRouters =data
 

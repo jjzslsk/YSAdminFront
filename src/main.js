@@ -54,6 +54,11 @@ import 'admin-lte/dist/js/demo.js'//
 // import 'bootstrap-vue/dist/bootstrap-vue.css'
 // Vue.use(BootstrapVue);
 
+// -----------------------------------------
+import Antd from 'ant-design-vue'
+import 'ant-design-vue/dist/antd.css'
+Vue.config.productionTip = false
+Vue.use(Antd)
 
 // 地图
 import BaiduMap from 'vue-baidu-map'

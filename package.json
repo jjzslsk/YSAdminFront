@@ -35,6 +35,7 @@
     "url": "https://github.com/mgbq/Fast-Admin/issues"
   },
   "dependencies": {
+    "ant-design-vue": "^1.1.10",
     "axios": "0.17.1",
     "better-scroll": "^1.12.4",
     "bootstrap": "^3.3.7",
