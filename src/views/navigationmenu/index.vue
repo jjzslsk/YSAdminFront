@@ -1,5 +1,14 @@
 <template>
   <section class="app-container">
+        <div class="panel-heading">
+        <div class="panel-lead">
+        <em>角色组</em>
+        <span>
+        角色组可以有多个,角色有上下级层级关系,如果子角色有角色组和管理员的权限则可以派生属于自己组别的下级角色组或管理员
+        </span>
+        </div>
+        </div>
+        
     <!--工具条-->
     <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
       <el-form :inline="true" :model="filters" @submit.native.prevent>
@@ -18,7 +27,6 @@
       </el-form>
     </el-col>
 
-    <div class="panel-heading"><div class="panel-lead"><em>角色组</em>角色组可以有多个,角色有上下级层级关系,如果子角色有角色组和管理员的权限则可以派生属于自己组别的下级角色组或管理员</div></div>
 
     <!--列表--> 
     <el-table @row-dblclick='Rowdblclick' stripe border :data="dataList" highlight-current-row @selection-change="selsChange" style="width: 100%;">
