@@ -2,51 +2,51 @@ import Vue from 'vue'
 
 import VCharts from 'v-charts'
 
-//bootstrap
-import 'bootstrap'
-import 'bootstrap/dist/css/bootstrap.css'
-import 'bootstrap/dist/js/bootstrap.min.js'
-//jquery
-import 'jquery/dist/jquery.js'
-//font-awesome
-import 'font-awesome/css/font-awesome.css'
-//AdminLTE
-import 'admin-lte'
-import 'admin-lte/dist/css/skins/_all-skins.min.css'
-import 'admin-lte/dist/css/AdminLTE.min.css'
-import './assets/css/skins/_all-skins.min.css'
-import './assets/css/AdminLTE.min.css'
-//bower
-// import 'admin-lte/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.min.js'
+// //bootstrap
+// import 'bootstrap'
+// import 'bootstrap/dist/css/bootstrap.css'
+// import 'bootstrap/dist/js/bootstrap.min.js'
+// //jquery
+// import 'jquery/dist/jquery.js'
+// //font-awesome
+// import 'font-awesome/css/font-awesome.css'
+// //AdminLTE
+// import 'admin-lte'
+// import 'admin-lte/dist/css/skins/_all-skins.min.css'
+// import 'admin-lte/dist/css/AdminLTE.min.css'
+// import './assets/css/skins/_all-skins.min.css'
+// import './assets/css/AdminLTE.min.css'
+// //bower
+// // import 'admin-lte/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.min.js'
 
 
-import 'admin-lte/bower_components/Ionicons/css/ionicons.min.css'
-import 'admin-lte/bower_components/morris.js/morris.css'
-import 'admin-lte/bower_components/jvectormap/jquery-jvectormap.css'
-import 'admin-lte/bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css'
-import 'admin-lte/bower_components/bootstrap-daterangepicker/daterangepicker.css'
-//plugins
-import 'admin-lte/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css'
-import 'admin-lte/bower_components/raphael/raphael.min.js'
-import 'admin-lte/bower_components/morris.js/morris.min.js'
-import 'admin-lte/bower_components/jquery-sparkline/dist/jquery.sparkline.min.js'
-import 'admin-lte/bower_components/jquery-knob/dist/jquery.knob.min.js'
-// import 'admin-lte/bower_components/moment/min/moment.min.js'
-import 'admin-lte/bower_components/bootstrap-daterangepicker/daterangepicker.js'
-import 'admin-lte/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js'
-import 'admin-lte/bower_components/jquery-slimscroll/jquery.slimscroll.min.js'
-import 'admin-lte/bower_components/fastclick/lib/fastclick.js'
+// import 'admin-lte/bower_components/Ionicons/css/ionicons.min.css'
+// import 'admin-lte/bower_components/morris.js/morris.css'
+// import 'admin-lte/bower_components/jvectormap/jquery-jvectormap.css'
+// import 'admin-lte/bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css'
+// import 'admin-lte/bower_components/bootstrap-daterangepicker/daterangepicker.css'
+// //plugins
+// import 'admin-lte/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css'
+// import 'admin-lte/bower_components/raphael/raphael.min.js'
+// import 'admin-lte/bower_components/morris.js/morris.min.js'
+// import 'admin-lte/bower_components/jquery-sparkline/dist/jquery.sparkline.min.js'
+// import 'admin-lte/bower_components/jquery-knob/dist/jquery.knob.min.js'
+// // import 'admin-lte/bower_components/moment/min/moment.min.js'
+// import 'admin-lte/bower_components/bootstrap-daterangepicker/daterangepicker.js'
+// import 'admin-lte/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js'
+// import 'admin-lte/bower_components/jquery-slimscroll/jquery.slimscroll.min.js'
+// import 'admin-lte/bower_components/fastclick/lib/fastclick.js'
 
-import 'admin-lte/plugins/jvectormap/jquery-jvectormap-1.2.2.min.js'
-import 'admin-lte/plugins/jvectormap/jquery-jvectormap-world-mill-en.js'
-// import './assets/js/bootstrap3-wysihtml5.all.min.js'
-// import 'admin-lte/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.min.js'
-// import 'admin-lte/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.min.js'
+// import 'admin-lte/plugins/jvectormap/jquery-jvectormap-1.2.2.min.js'
+// import 'admin-lte/plugins/jvectormap/jquery-jvectormap-world-mill-en.js'
+// // import './assets/js/bootstrap3-wysihtml5.all.min.js'
+// // import 'admin-lte/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.min.js'
+// // import 'admin-lte/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.min.js'
 
-import 'admin-lte/dist/js/adminlte.min.js'
-// import 'admin-lte/dist/js/pages/dashboard.js'
-//主题
-import 'admin-lte/dist/js/demo.js'//
+// import 'admin-lte/dist/js/adminlte.min.js'
+// // import 'admin-lte/dist/js/pages/dashboard.js'
+// //主题
+// import 'admin-lte/dist/js/demo.js'//
 
 //BootstrapVue
 // import BootstrapVue from 'bootstrap-vue'

@@ -14,7 +14,7 @@
       <!-- <nx-help class="nx-help right-menu-item" /> -->
       <el-tooltip style="height:50px;line-height:50px" effect="dark" content="首页" placement="bottom">
       <router-link to="/" tag="span"><span data-v-bb4f6990="" class="nx-help" style="margin: 0 8px;cursor: pointer;">
-        <i class="fa fa-home" style="margin-top: 1.25rem;font-size: 21px;" aria-hidden="true"></i>
+        <i class="fa fa-home" style="margin-top: 1.25rem;font-size: 21px;color:#727272" aria-hidden="true"></i>
       </span></router-link>
       </el-tooltip>
 
@@ -26,7 +26,7 @@
 
       <el-tooltip style="height:50px;line-height:50px" effect="dark" content="退出" placement="bottom">
       <span @click="logout" data-v-bb4f6990="" class="nx-help" style="margin: 0 8px; cursor: pointer;">
-        <i class="fa fa-arrow-right" style="margin-top: 1.25rem;font-size: 21px;" aria-hidden="true"></i>
+        <i class="fa fa-arrow-right" style="margin-top: 1.25rem;font-size: 21px;color:#727272" aria-hidden="true"></i>
       </span>
       </el-tooltip>
 
@@ -104,8 +104,8 @@ export default {
 
 <style rel="stylesheet/scss" lang="scss" scoped>
 .navbar {
-  background: #3c8dbc;
-  color: #fff;
+  background: #fff;
+  color: #727272;
   height: 50px;
   line-height: 50px;
   border-radius: 0px !important;

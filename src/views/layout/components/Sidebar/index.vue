@@ -6,9 +6,8 @@
       :show-timeout="200"
       :default-active="$route.path"
       :collapse="isCollapse"
-      background-color="#222d32"
-      text-color="#fff"
-      active-text-color="#3c8dbc"
+      background-color="#001529"
+      text-color="#ADB5BB"
     >
 
     <!-- 通行路由表 -->

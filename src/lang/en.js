@@ -17,6 +17,7 @@ export default {
     actionbutton:'actionbutton',
     parametersetting:'parametersetting',
     navigationmenu:'navigationmenu',
+    button:'button',
     rolemanagement:'rolemanagement',
     usersmanage:'usersmanage',
     myinfo:'myinfo',

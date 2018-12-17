@@ -36,6 +36,9 @@
             <el-form-item>
               <el-button size="mini" icon="el-icon-more" v-if="this.ObjButton.add.isShow==true" type="success" @click="getKeyLists">全部显示</el-button>
             </el-form-item>
+            <el-form-item>
+              <el-button size="mini" icon="el-icon-more" v-if="this.ObjButton.add.isShow==true" type="success" @click="iconLists">图标</el-button>
+            </el-form-item>
           </div>
           <div style="float: right;line-height:40px;">
             <el-button-group>
@@ -169,10 +172,17 @@
 
     <!--工具条-->
     <el-col :span="24" class="toolbar">
-      <el-pagination layout="prev, pager, next" @current-change="handleCurrentChange" background :page-size="15" :total="total"
+      <!-- <el-pagination layout="prev, pager, next" @current-change="handleCurrentChange" background :page-size="15" :total="total"
         style="float:right;">
-      </el-pagination>
+      </el-pagination> -->
+          <el-pagination style="float:right;" @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage4" :page-sizes="[100, 200, 300, 400]" :page-size="100" layout="total, sizes, prev, pager, next, jumper" :total="400">
+          </el-pagination>
     </el-col>
+
+        <!--添加界面-->
+    <el-dialog title="添加" :visible.sync="dialogFormVisibleIcon" :close-on-click-modal="false">
+      <h1>123</h1>
+    </el-dialog>
 
     <!--添加界面-->
     <el-dialog title="添加" :visible.sync="dialogFormVisibleAdd" :close-on-click-modal="false">
@@ -336,6 +346,10 @@
 
         //分页 列表 
         total: 0, //分页
+        currentPage1: 5,
+        currentPage2: 5,
+        currentPage3: 5,
+        currentPage4: 4,//分页
         dataList: [], //列表数据
         sels: [], // 列表选中列 全选
         checkList: [],//存储列表字段隐藏，
@@ -369,6 +383,7 @@
         //控制模块显示隐藏
         elCardBox: false, //搜索模块显示隐藏
         dialogFormVisibleAdd: false, //控制添加显示
+        // dialogFormVisibleIcon: true, //控制添加显示
         dialogFormVisibleEdit: false, //控制编辑显示
         para: paraHelper, //交互格式
 
@@ -671,6 +686,9 @@
       handleCurrentChange(val) {
         this.filters.Page = val;
         this.getDataList();
+      },
+       handleSizeChange(val) {
+        console.log(`每页 ${val} 条`);
       },
   //===================改==========================
       //双击编辑

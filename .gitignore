@@ -7,7 +7,6 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 package-lock.json
-config/prod.env.js
 
 
 # Editor directories and files
@@ -17,4 +16,3 @@ config/prod.env.js
 *.ntvs*
 *.njsproj
 *.sln
-config/prod.env.js

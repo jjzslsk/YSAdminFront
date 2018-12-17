@@ -43,6 +43,7 @@
           <el-button size="mini" v-if="buttons.updateshow==true" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
           <el-button size="mini" v-if="buttons.menushow==true" @click="handlePermissionMenu(scope.$index, scope.row)">菜单权限</el-button>
           <el-button size="mini" v-if="buttons.interfaceshow==true" @click="handlePermissionInterface(scope.$index, scope.row)">接口权限</el-button>
+          <el-button size="mini" v-if="buttons.interfaceshow==true" @click="handlePermissionData(scope.$index, scope.row)">接口权限1</el-button>
           <el-button size="mini" v-if="buttons.delshow==true" type="danger" @click="handleDel(scope.$index, scope.row)">删除</el-button>
         </template>
       </el-table-column>
@@ -144,6 +145,47 @@
       </div>
     </el-dialog>
 
+      <!-- 分配接口权限1 -->
+    <el-dialog width="80%" style="Height:400px" title="1接口分配" :visible.sync="dialogFormVisibleData"
+      :close-on-click-modal="false" @open="callbackUp(dialogStatus)">
+      <!--工具条-->
+      <!-- <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
+        <el-form :inline="true" :model="filters" @submit.native.prevent>
+          <el-form-item>
+            <el-input size="mini" v-model="editForm.juesemingcheng" placeholder="角色名称"><template slot="prepend">
+                当前选中角色为：</template></el-input>
+          </el-form-item>
+        </el-form>
+      </el-col> -->
+      <div class="table-operations">
+        <el-button size="mini" type="primary">全选</el-button>
+        <el-button size="mini" type="primary">应用</el-button>        
+      </div>
+    <!--列表--> 
+      <template>
+        <a-table defaultExpandAllRows :pagination="false" size="small" :columns="columnsTree" :dataSource="dataTree" :rowSelection="rowSelectionTree">
+          <a slot="name" slot-scope="text" href="javascript:;">{{text}}1</a>
+          <span slot="customTitle">
+            <!-- <a-checkbox></a-checkbox>  -->
+            菜单名称</span>
+          <span slot="tags" slot-scope="tags">
+            <!-- <a-tag v-for="tag in tags" color="blue" :key="tag">{{tag}}</a-tag> -->
+            <a-checkbox></a-checkbox>
+          </span>
+        </a-table>
+        <!-- <template slot-scope="scope">
+          <el-switch>
+          </el-switch>
+        </template> -->
+      </template>
+
+
+      <div slot="footer" class="dialog-footer">
+        <el-button size="mini" @click.native="dialogFormVisibleData=false">取消</el-button>
+        <el-button size="mini" type="primary">保存</el-button>
+      </div>
+    </el-dialog>
+
     <!-- 分配接口权限 -->
     <el-dialog style="Height:400px" title="接口分配" :visible.sync="dialogFormPermissionVisibleInterface"
       :close-on-click-modal="false" @open="callbackUp(dialogStatus)">
@@ -192,10 +234,127 @@ import util from "@/utils/table.js";
 import { paraHelper } from "@/utils/para.js"; //请求参数格式
 import { handlePost, handleGet } from "@/api/apihelper.js";
 
+const columnsTree = [{
+  dataIndex: 'name',
+  key: 'name',
+  slots: { title: 'customTitle' },
+  scopedSlots: { customRender: 'name' },
+},{
+  title: '浏览',
+  key: 'tags',
+  dataIndex: 'tags',
+  scopedSlots: { customRender: 'tags' },
+},{
+  title: '添加',
+  key: 'tags',
+  dataIndex: 'tags',
+  scopedSlots: { customRender: 'tags' },
+},{
+  title: '编辑',
+  key: 'tags',
+  dataIndex: 'tags',
+  scopedSlots: { customRender: 'tags' },
+},{
+  title: '删除',
+  key: 'tags',
+  dataIndex: 'tags',
+  scopedSlots: { customRender: 'tags' },
+},{
+  title: '导入',
+  key: 'tags',
+  dataIndex: 'tags',
+  scopedSlots: { customRender: 'tags' },
+},{
+  title: '导出',
+  key: 'tags',
+  dataIndex: 'tags',
+  scopedSlots: { customRender: 'tags' },
+},{
+  title: '下话单',
+  key: 'tags',
+  dataIndex: 'tags',
+  scopedSlots: { customRender: 'tags' },
+},{
+  title: '重发通知',
+  key: 'tags',
+  dataIndex: 'tags',
+  scopedSlots: { customRender: 'tags' },
+},{
+  title: '重置',
+  key: 'tags',
+  dataIndex: 'tags',
+  scopedSlots: { customRender: 'tags' },
+}];
+
+const dataTree = [{
+  key: 1,
+  name: '系统设置',
+  age: 60,
+  add: 'New York No. 1 Lake Park',
+  edit:'编辑1',
+  del:'删除1',
+  children: [{
+    key: 11,
+    name: '导航菜单',
+    age: 42,
+    add: 'New York No. 2 Lake Park',
+    edit:'编辑1',
+    del:'删除1',
+  }, {
+    key: 12,
+    name: '用户管理',
+    age: 30,
+    add: 'New York No. 3 Lake Park',
+    edit:'编辑1',
+    del:'删除1',
+    tags: ['nice', 'developer','111'],
+  }, {
+    key: 13,
+    name: '部门管理',
+    age: 72,
+    add: 'London No. 1 Lake Park',
+    edit:'编辑1',
+    del:'删除1',
+  }],
+}, {
+  key: 2,
+  name: '财务管理',
+  age: 32,
+  add: 'Sidney No. 1 Lake Park',
+  edit:'编辑1',
+  del:'删除1',
+  children: [{
+    key: 22,
+    name: '奖金明细',
+    age: 42,
+    add: 'New York No. 2 Lake Park',
+    edit:'编辑1',
+    del:'删除1',
+  }
+  ]
+}];
+
+const rowSelectionTree = {
+  onChange: (selectedRowKeys, selectedRows) => {
+    console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
+  },
+  onSelect: (record, selected, selectedRows) => {
+    console.log(record, selected, selectedRows);
+  },
+  onSelectAll: (selected, selectedRows, changeRows) => {
+    console.log(selected, selectedRows, changeRows);
+  },
+};
+
 export default {
   data() {
     return {
+      // tree列表
+      dataTree,
+      columnsTree,
+      rowSelectionTree,
       bllCode: {
+        
         //接口标识，由后端提供
         add: "AddRole", //添加
         edit: "UpdateRole", //修改
@@ -241,6 +400,7 @@ export default {
         updatePermissionMenu: "菜单分配",
         updatePermissionInterface: "接口分配"
       },
+      dialogFormVisibleData: true, //添加权限
       dialogFormVisibleAdd: false, //添加角色显示
       dialogFormVisibleEdit: false, //编辑角色显示
       dialogFormPermissionVisibleMenu: false, //分配菜单权限显示
@@ -445,6 +605,12 @@ export default {
       this.editForm = Object.assign({}, row);
       this.getMenuList();
     },
+        // -----------------------------------权限Data
+    handlePermissionData(index, row) {
+      this.editForm = Object.assign({}, row);
+      this.dialogFormVisibleData = true;
+      // this.getInterfaceList();
+    },
     // 显示接口权限界面
     handlePermissionInterface(index, row) {
       this.editForm = Object.assign({}, row);
@@ -639,5 +805,7 @@ export default {
 </script>
 
 <style scoped>
-
+.table-operations {
+  margin-bottom: 16px;
+}
 </style>

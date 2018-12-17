@@ -33,6 +33,15 @@ const userMap = {
             }
           },
           {
+            path: 'button',
+            name: 'button',
+            component: 'button',
+            meta: {
+              title: 'button',
+              icon: 'tab'
+            }
+          },
+          {
             path: 'myinfo',
             name: 'myinfo',
             component: 'myinfo',
@@ -112,6 +121,15 @@ const userMap = {
             component: 'navigationmenu',
             meta: {
               title: 'navigationmenu',
+              icon: 'tab'
+            }
+          },
+          {
+            path: 'button',
+            name: 'button',
+            component: 'button',
+            meta: {
+              title: 'button',
               icon: 'tab'
             }
           },

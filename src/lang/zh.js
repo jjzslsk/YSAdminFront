@@ -19,6 +19,7 @@ export default {
     actionbutton:'操作按钮',
     parametersetting:'参数设置',
     navigationmenu:'导航菜单',
+    button:'操作按钮',
     rolemanagement:'角色管理',
     usersmanage:'用户管理',
     myinfo:'我的信息',

@@ -11,20 +11,6 @@
         </div>
         
     <!--工具条-->
-    <div style="margin-top: 15px;">
-      <el-input size="mini" v-if="buttons.selectshow==true" v-model="filters.name" :placeholder="filtersName" class="input-with-select">
-        <el-select v-model="select" slot="prepend" placeholder="请选择">
-          <el-option label="ID" value="1"></el-option>
-          <el-option label="接口名称" value="2"></el-option>
-          <el-option label="上级菜单" value="3"></el-option>
-          <el-option label="链接地址" value="4"></el-option>
-          <el-option label="页面标识" value="5"></el-option>
-          <el-option label="排序" value="6"></el-option>
-        </el-select>
-        <el-button size="mini" v-if="buttons.selectshow==true" v-on:click="getKeyList" slot="append" icon="el-icon-search"></el-button>
-      </el-input>
-    </div>
-
     <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
       <el-form :inline="true" :model="filters" @submit.native.prevent>
         <el-form-item>
@@ -35,8 +21,6 @@
         </el-form-item>
         <el-form-item>
           <el-button size="mini" v-if="buttons.addshow==true" type="primary" @click="handleAdd">{{button.add}}</el-button>
-        </el-form-item><el-form-item>
-          <el-button size="mini" v-if="buttons.addshow==true" type="primary" @click="handleAdd">分配按钮</el-button>
         </el-form-item>
         <el-form-item>
       <el-button type="danger" size="mini" @click="batchRemove" :disabled="this.sels.length===0">{{button.batchRemove}}</el-button>
@@ -44,12 +28,14 @@
       </el-form>
     </el-col>
 
-    <!--列表--> 
-      <!-- <template>
-      <a-table style="margin-top:10rem" :columns="columnsTree" :dataSource="dataTree" :rowSelection="rowSelectionTree" />
-    </template> -->
+    <template>
+      <a-table :columns="columnsTree" :dataSource="dataTree" :rowSelection="rowSelectionTree" />
+    </template>
 
-        <el-table @row-dblclick='Rowdblclick' stripe border :data="dataList" highlight-current-row @selection-change="selsChange" style="width: 100%;">
+
+
+    <!--列表--> 
+    <el-table @row-dblclick='Rowdblclick' stripe border :data="dataList" highlight-current-row @selection-change="selsChange" style="width: 100%;">
       <el-table-column v-for="item in tableLabel" :key="item.Label" :label="item.Label" :prop="item.prop" :width='item.width' :type='item.type'>
       </el-table-column>
       <!-- <el-table-column type="selection" width="55">
@@ -74,8 +60,8 @@
       </el-table-column>
     </el-table>
 
-          <!-- 分页 -->
-        <el-col :span="24" class="toolbar">
+    <!--工具条-->
+    <el-col :span="24" class="toolbar">
       <el-pagination layout="prev, pager, next" @current-change="handleCurrentChange" :page-size="10" :total="total"
         style="float:right;">
       </el-pagination>
@@ -245,12 +231,6 @@ const rowSelectionTree = {
 export default {
   data() {
     return {
-      //搜索
-      input3: '',
-      input4: '',
-      input5: '',
-      select: '',
-
       // tree列表
       dataTree,
       columnsTree,
@@ -631,10 +611,4 @@ export default {
 .app-container {
   background: #F0F2F5;
 }
-.el-select .el-input {
-    width: 130px;
-  }
-  .input-with-select .el-input-group__prepend {
-    background-color: #fff;
-  }
 </style>
