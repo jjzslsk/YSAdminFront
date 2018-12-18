@@ -24,11 +24,11 @@ const userMap = {
             }
           },
           {
-            path: 'navigationmenu',
-            name: 'navigationmenu',
-            component: 'navigationmenu',
+            path: 'YsdatabaseYsButton',
+            name: 'YsdatabaseYsButton',
+            component: 'YsdatabaseYsButton',
             meta: {
-              title: 'navigationmenu',
+              title: 'YsdatabaseYsButton',
               icon: 'tab'
             }
           },
@@ -116,11 +116,11 @@ const userMap = {
             }
           },
           {
-            path: 'navigationmenu',
-            name: 'navigationmenu',
-            component: 'navigationmenu',
+            path: 'YsdatabaseYsButton',
+            name: 'YsdatabaseYsButton',
+            component: 'YsdatabaseYsButton',
             meta: {
-              title: 'navigationmenu',
+              title: 'YsdatabaseYsButton',
               icon: 'tab'
             }
           },

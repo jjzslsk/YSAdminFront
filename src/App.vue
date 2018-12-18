@@ -71,7 +71,7 @@ export default {
     padding: 0;
 } */
 .sectionBox .el-card__body {
-    padding: 0;
+    /* padding: 0; */
 } 
 .sectionBox .el-form--inline .el-form-item {
     margin-right: 1px;

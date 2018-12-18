@@ -25,7 +25,7 @@ import { endianness } from 'os';
 **/
 export const constantRouterMap = [
   {
-    path: '',
+    path: '/',
     component: Layout,
     redirect: '/dashboard/dashboard'
   },
@@ -51,6 +51,8 @@ export const constantRouterMap = [
 
   { path: '/login', component: () => import('@/views/login'), name: '登录', hidden: true },
   { path: '/404', component: () => import('@/views/errorPage/404'), hidden: true },
+  { path: '/404', component: () => import('@/views/errorPage/404'), hidden: true },
+
   { path: '/401', component: () => import('@/views/errorPage/401'), hidden: true },
   { path: '/index', component: () => import('@/views/index'), hidden: true },
   // 锁屏

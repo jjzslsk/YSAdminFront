@@ -1,5 +1,7 @@
 <template>
   <section class="app-container">
+    <el-card class="box-card">
+
     <!--工具条-->
     <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
       <el-form :inline="true" :model="filters" @submit.native.prevent>
@@ -119,6 +121,8 @@
         style="float:right;">
       </el-pagination>
     </el-col>
+
+    </el-card>
 
     <!--添加界面-->
     <el-dialog title="添加用户" :visible.sync="dialogFormVisibleAdd" :close-on-click-modal="false">
@@ -749,6 +753,6 @@ export default {
 } */
 .box-card {
   /* width: 480px; */
-  height: 40.625rem;
+  /* height: 40.625rem; */
 }
 </style>

@@ -16,7 +16,7 @@ function hasPermission(roles, route) {
 //系统菜单
 import layout from '@/views/layout/Layout' //Layout 是架构组件，不在后台返回，在文件里单独引入
 import interfacemanagement from '@/views/interface/index'
-import navigationmenu from '@/views/navigationmenu/index'
+import YsdatabaseYsButton from '@/views/YsdatabaseYsButton/index'
 import button from '@/views/button/index'
 import rolemanagement from '@/views/rolemanagement/index'
 import usermanage from '@/views/usermanage/index'
@@ -49,8 +49,8 @@ function loadLayout(name) {
     return layout
   } else if (name == 'rolemanagement') {
     return rolemanagement
-  } else if (name == 'navigationmenu') {
-    return navigationmenu
+  } else if (name == 'YsdatabaseYsButton') {
+    return YsdatabaseYsButton
   }else if (name == 'button') {
     return button
   } else if (name == 'interface') {

@@ -46,7 +46,7 @@ router.beforeEach((to, from, next) => {
         console.log ('00',)
         console.log (33)
         store.dispatch('GetInfo').then(res => { // 拉取用户信息
-          console.log ('441',res)
+          console.log ('44',res)
           console.log('拉取用户信息=', res)
           // const roles = res.roles // note: roles must be a array! such as: ['editor','develop']
           // store.dispatch('GenerateRoutes', { roles }).then(() => { // 根据roles权限生成可访问的路由表

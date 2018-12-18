@@ -39,6 +39,14 @@
           </template>
         </div>
       </template>
+          <!--添加界面-->
+    <el-dialog title="添加" :visible.sync="dialogFormVisibleIcon" :close-on-click-modal="false">
+      <h1>123123</h1>
+      <div slot="footer" class="dialog-footer">
+        <el-button size="mini" @click.native="dialogFormVisibleIcon=false">取消</el-button>
+        <el-button size="mini" type="primary" @click.native="dialogFormVisibleIcon=false">确认</el-button>
+      </div>
+    </el-dialog>
     </el-card>
   </section>
 </template>

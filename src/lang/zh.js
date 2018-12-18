@@ -18,7 +18,7 @@ export default {
     sys_manage: '系统设置',
     actionbutton:'操作按钮',
     parametersetting:'参数设置',
-    navigationmenu:'导航菜单',
+    YsdatabaseYsButton:'导航菜单',
     button:'操作按钮',
     rolemanagement:'角色管理',
     usersmanage:'用户管理',

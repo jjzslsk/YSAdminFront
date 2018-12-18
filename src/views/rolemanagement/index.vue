@@ -1,5 +1,7 @@
 <template>
   <section class="app-container">
+    <el-card class="box-card">
+
     <!--工具条-->
     <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
       <el-form :inline="true" :model="filters" @submit.native.prevent>
@@ -15,11 +17,15 @@
         <el-form-item>
       <el-button type="danger" size="mini" @click="batchRemove" :disabled="this.sels.length===0">{{button.batchRemove}}</el-button>
         </el-form-item>
+        <el-form-item>
+      <el-button size="mini" v-if="buttons.addshow==true" type="primary" @click="handlePermissionData">分配权限</el-button>
+        </el-form-item>
       </el-form>
     </el-col>
 
     <!--列表-->
-    <el-table @row-dblclick='Rowdblclick' :data="dataList" highlight-current-row @selection-change="selsChange" style="width: 100%;">
+      
+    <el-table class="tablesSyl" @row-dblclick='Rowdblclick' :data="dataList" stripe border fit  highlight-current-row @selection-change="selsChange" style="width: 100%;">
       <el-table-column type="selection" width="55">
       </el-table-column>
       <el-table-column type="index" label="#" width="60">
@@ -41,9 +47,9 @@
       <el-table-column v-if="buttons.updateshow==true||buttons.delshow==true||buttons.interfaceshow==true||buttons.menushow==true" label="操作" width="400">
         <template slot-scope="scope">
           <el-button size="mini" v-if="buttons.updateshow==true" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-          <el-button size="mini" v-if="buttons.menushow==true" @click="handlePermissionMenu(scope.$index, scope.row)">菜单权限</el-button>
-          <el-button size="mini" v-if="buttons.interfaceshow==true" @click="handlePermissionInterface(scope.$index, scope.row)">接口权限</el-button>
-          <el-button size="mini" v-if="buttons.interfaceshow==true" @click="handlePermissionData(scope.$index, scope.row)">接口权限1</el-button>
+          <!-- <el-button size="mini" v-if="buttons.menushow==true" @click="handlePermissionMenu(scope.$index, scope.row)">菜单权限</el-button> -->
+          <!-- <el-button size="mini" v-if="buttons.interfaceshow==true" @click="handlePermissionInterface(scope.$index, scope.row)">接口权限</el-button> -->
+          <!-- <el-button size="mini" v-if="buttons.interfaceshow==true" @click="handlePermissionData(scope.$index, scope.row)">接口权限1</el-button> -->
           <el-button size="mini" v-if="buttons.delshow==true" type="danger" @click="handleDel(scope.$index, scope.row)">删除</el-button>
         </template>
       </el-table-column>
@@ -55,6 +61,8 @@
         style="float:right;">
       </el-pagination>
     </el-col>
+
+    </el-card>
 
         <!--添加界面-->
     <el-dialog title="添加" :visible.sync="dialogFormVisibleAdd" :close-on-click-modal="false">
@@ -400,7 +408,7 @@ export default {
         updatePermissionMenu: "菜单分配",
         updatePermissionInterface: "接口分配"
       },
-      dialogFormVisibleData: true, //添加权限
+      dialogFormVisibleData: false, //添加权限
       dialogFormVisibleAdd: false, //添加角色显示
       dialogFormVisibleEdit: false, //编辑角色显示
       dialogFormPermissionVisibleMenu: false, //分配菜单权限显示

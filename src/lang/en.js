@@ -16,7 +16,7 @@ export default {
     sys_manage: 'sys_manage',
     actionbutton:'actionbutton',
     parametersetting:'parametersetting',
-    navigationmenu:'navigationmenu',
+    YsdatabaseYsButton:'YsdatabaseYsButton',
     button:'button',
     rolemanagement:'rolemanagement',
     usersmanage:'usersmanage',
