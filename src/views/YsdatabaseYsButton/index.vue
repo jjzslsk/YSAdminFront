@@ -241,18 +241,18 @@ export default {
         add: "AddMenu", //添加
         edit: "UpdateMenu", //修改
         del: "DelMenu", //删除
-        getList: "GetListMenu", //获取列表
+        getList: "GetListYsdatabaseYsMenu", //获取列表
         getObj: "GetMenu", //获取对象（单个）
         getRolesList: "GetListRole" //获取角色
       },
       tableLabel: [
         { type: "selection", width: "50" },
         { Label: "ID", prop: "id", width: "50", type: "index" },
-        { Label: "接口名称", prop: "mingcheng", width: "100" },
+        { Label: "菜单名称", prop: "Name", width: "100" },
         { Label: "上级菜单", prop: "shangjimingcheng", width: "100" },
-        { Label: "链接地址", prop: "lianjie" },
+        { Label: "链接地址", prop: "Url" },
         { Label: "页面标识", prop: "code", width: "180" },
-        { Label: "排序", prop: "paixu", width: "50" }
+        { Label: "排序", prop: "Sort", width: "50" }
         // {Label:'是否管理后台',prop:"shifouguanlihoutai",width:'150'},
         // {Label:'是否需要登录',prop:"shifouxuyaodenglu",width:'150'},
         // {Label:'创建时间',prop:"beizhu",width:'150'},

@@ -3,21 +3,22 @@
     <el-card class="box-card">
         
     <!--工具条-->
+    <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
       <el-form :inline="true" :model="filters" @submit.native.prevent>
         <!-- <el-form-item>
           <el-button size="mini" v-if="buttons.selectshow==true" type="primary" v-on:click="getKeyList">刷新</el-button>
         </el-form-item> -->
         <el-form-item>
-          <el-button size="mini" type="primary" @click="handleAdd">{{button.add}}</el-button>
+          <el-button size="mini" v-if="buttons.addshow==true" type="primary" @click="handleAdd">{{button.add}}</el-button>
         </el-form-item>
         <el-form-item>
-          <el-button size="mini" type="primary" @click="handleAdd">编辑</el-button>
+          <el-button size="mini" v-if="buttons.addshow==true" type="primary" @click="handleAdd">编辑</el-button>
         </el-form-item>
         <el-form-item>
       <el-button type="danger" size="mini" @click="batchRemove" :disabled="this.sels.length===0">{{button.batchRemove}}</el-button>
         </el-form-item>
         <el-form-item style="float: right;">
-          <el-input size="mini" v-model="filters.name" :placeholder="filtersName" class="input-with-select">
+          <el-input size="mini" v-if="buttons.selectshow==true" v-model="filters.name" :placeholder="filtersName" class="input-with-select">
         <el-select v-model="select" slot="prepend" placeholder="请选择">
           <el-option label="ID" value="1"></el-option>
           <el-option label="接口名称" value="2"></el-option>
@@ -26,36 +27,44 @@
           <el-option label="页面标识" value="5"></el-option>
           <el-option label="排序" value="6"></el-option>
         </el-select>
-        <el-button size="mini" v-on:click="getKeyList" slot="append" icon="el-icon-search"></el-button>
+        <el-button size="mini" v-if="buttons.selectshow==true" v-on:click="getKeyList" slot="append" icon="el-icon-search"></el-button>
       </el-input>
         </el-form-item>
         <el-form-item>
-          <el-button size="mini" type="primary" @click="allotButton">分配按钮</el-button>
+          <el-button size="mini" v-if="buttons.addshow==true" type="primary" @click="allotButton">分配按钮</el-button>
         </el-form-item>
       </el-form>
+    </el-col>
 
     <!--列表--> 
-      <!-- <a-table defaultExpandAllRows :pagination="false" size="small" :columns="columnsTree" :dataSource="dataTree" :rowSelection="rowSelectionTree">
-          <span slot="tags" slot-scope="tags">
-            <a-checkbox></a-checkbox>
-          </span>
-          <span slot="action" slot-scope="text, record">
-            <a href="javascript:;">{{record.edit}}</a>
-            <a-divider type="vertical" />
-            <a href="javascript:;">{{record.del}}</a>
-          </span>
-      </a-table> -->
+      <!-- <template>
+      <a-table style="margin-top:10rem" :columns="columnsTree" :dataSource="dataTree" :rowSelection="rowSelectionTree" />
+    </template> -->
 
-          <el-table @row-dblclick='Rowdblclick' stripe border :data="dataList" highlight-current-row @selection-change="selsChange" style="width: 100%;">
-            <el-table-column v-for="item in tableLabel" :key="item.Label" :label="item.Label" :prop="item.prop" :width='item.width' :type='item.type'>
-            </el-table-column>
-            <el-table-column label="操作" width="150">
-              <template slot-scope="scope">
-                <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">{{button.edit}}</el-button>
-                <el-button size="mini" type="danger" @click="handleDel(scope.$index, scope.row)">{{button.del}}</el-button>
-              </template>
-            </el-table-column>
-          </el-table>
+        <el-table @row-dblclick='Rowdblclick' stripe border :data="dataList" highlight-current-row @selection-change="selsChange" style="width: 100%;">
+      <el-table-column v-for="item in tableLabel" :key="item.Label" :label="item.Label" :prop="item.prop" :width='item.width' :type='item.type'>
+      </el-table-column>
+      <!-- <el-table-column type="selection" width="55">
+      </el-table-column>
+      <el-table-column label="ID" type="index" width="60">
+      </el-table-column>
+      <el-table-column prop="mingcheng" label="菜单名称" width="120">
+      </el-table-column>
+      <el-table-column prop="shangjimingcheng" label="上级菜单" width="120">
+      </el-table-column>
+      <el-table-column prop="lianjie" label="链接地址" min-width="160">
+      </el-table-column>
+      <el-table-column prop="code" label="页面标识" min-width="160">
+      </el-table-column>
+      <el-table-column prop="paixu" label="排序" min-width="160">
+      </el-table-column> -->
+      <el-table-column v-if="buttons.updateshow==true||buttons.delshow==true" label="操作" width="150">
+        <template slot-scope="scope">
+          <el-button size="mini" v-if="buttons.updateshow==true" @click="handleEdit(scope.$index, scope.row)">{{button.edit}}</el-button>
+          <el-button size="mini" type="danger" v-if="buttons.delshow==true" @click="handleDel(scope.$index, scope.row)">{{button.del}}</el-button>
+        </template>
+      </el-table-column>
+    </el-table>
 
           <!-- 分页 -->
         <el-col :span="24" class="toolbar">
@@ -155,19 +164,10 @@
     <!--添加界面-->
     <el-dialog title="添加菜单" :visible.sync="dialogFormVisibleAdd" :close-on-click-modal="false">
       <el-form :model="editForm" label-width="100px" :rules="editFormRules" ref="editForm">
-        <el-form-item label="菜单名称:" prop="Name">
-          <el-input v-model="editForm.Name" auto-complete="off"></el-input>
+        <el-form-item label="菜单名称:" prop="mingcheng">
+          <el-input v-model="editForm.mingcheng" auto-complete="off"></el-input>
         </el-form-item>
-        <el-form-item label="图标:" prop="Icon">
-          <el-input v-model="editForm.Icon" auto-complete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="参数:" prop="Param">
-          <el-input v-model="editForm.Param" auto-complete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="备注:" prop="Memo">
-          <el-input v-model="editForm.Memo" auto-complete="off"></el-input>
-        </el-form-item>
-        <!-- <el-form-item label="小图标:" prop="">
+        <el-form-item label="小图标:" prop="">
           <el-input placeholder="请输入内容" v-model="input5" class="input-with-select">
             <el-button slot="append" icon="el-icon-search" @click="allotIcon"></el-button>
           </el-input>
@@ -176,32 +176,28 @@
           <el-input placeholder="请输入内容" v-model="input5" class="input-with-select">
             <el-button slot="append" icon="el-icon-search" @click="allotIcon"></el-button>
           </el-input>
-        </el-form-item> -->
-        <!-- <el-form-item label="页面标识:" prop="code">
+        </el-form-item>
+        <el-form-item label="页面标识:" prop="code">
           <el-input v-model="editForm.code" auto-complete="off"></el-input>
-        </el-form-item> -->
-        <el-form-item label="上级菜单:" prop="Pid">
-          <el-select v-model="editForm.Pid" placeholder="请选择">
+        </el-form-item>
+        <el-form-item label="上级菜单:" prop="shangjiid">
+          <el-select v-model="editForm.shangjiid" placeholder="请选择">
               <el-option
                 v-for="item in ListsuperiorMenu"
-                :key="item.Id"
-                :label="item.Name"
-                :value="item.Id">
+                :key="item.id"
+                :label="item.mingcheng"
+                :value="item.id">
               </el-option>
             </el-select>
-            {{editForm.Pid}}
         </el-form-item>
-        <el-form-item label="链接地址:">
-          <el-input v-model="editForm.Url" auto-complete="off"></el-input>
+        <el-form-item label="链接地址:" prop="lianjie">
+          <el-input v-model="editForm.lianjie" auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item label="排序:">
-          <el-input-number v-model="editForm.Sort"></el-input-number>
+          <el-input-number v-model="editForm.paixu"></el-input-number>
         </el-form-item>
         <el-form-item label="显示菜单:">
-          <el-checkbox v-model="editForm.Isvisiable">显示</el-checkbox>
-        </el-form-item>
-        <el-form-item label="显示菜单:">
-          <el-checkbox v-model="editForm.State">显示</el-checkbox>
+          <el-checkbox v-model="editForm.shifouxianshi">显示</el-checkbox>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -213,40 +209,30 @@
     <!--编辑界面-->
     <el-dialog title="编辑菜单" :visible.sync="dialogFormVisibleEdit" :close-on-click-modal="false">
       <el-form :model="editForm" label-width="100px" :rules="editFormRules" ref="editForm">
-        <el-form-item label="菜单名称:" prop="Name">
-          <el-input v-model="editForm.Name" auto-complete="off"></el-input>
+        <el-form-item label="菜单名称:" prop="name">
+          <el-input v-model="editForm.mingcheng" auto-complete="off"></el-input>
         </el-form-item>
-        <el-form-item label="图标:" prop="Icon">
-          <el-input v-model="editForm.Icon" auto-complete="off"></el-input>
+        <el-form-item label="页面标识:">
+          <el-input v-model="editForm.code" auto-complete="off"></el-input>
         </el-form-item>
-        <el-form-item label="参数:" prop="Param">
-          <el-input v-model="editForm.Param" auto-complete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="备注:" prop="Memo">
-          <el-input v-model="editForm.Memo" auto-complete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="上级菜单:" prop="Pid">
-          <el-select v-model="editForm.Pid" placeholder="请选择">
+        <el-form-item label="上级菜单:">
+          <el-select v-model="editForm.shangjiid" placeholder="请选择">
               <el-option
                 v-for="item in ListsuperiorMenu"
-                :key="item.Id"
-                :label="item.Name"
-                :value="item.Id">
+                :key="item.id"
+                :label="item.mingcheng"
+                :value="item.id">
               </el-option>
             </el-select>
-            {{editForm.Pid}}
         </el-form-item>
         <el-form-item label="链接地址:">
-          <el-input v-model="editForm.Url" auto-complete="off"></el-input>
+          <el-input v-model="editForm.lianjie" auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item label="排序:">
-          <el-input-number v-model="editForm.Sort"></el-input-number>
+          <el-input-number v-model="editForm.paixu"></el-input-number>
         </el-form-item>
         <el-form-item label="显示菜单:">
-          <el-checkbox v-model="editForm.Isvisiable">显示</el-checkbox>
-        </el-form-item>
-        <el-form-item label="显示菜单:">
-          <el-checkbox v-model="editForm.State">显示</el-checkbox>
+          <el-checkbox v-model="editForm.shifouxianshi">显示</el-checkbox>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -267,108 +253,71 @@ import util from "@/utils/table.js";
 import { paraHelper } from "@/utils/para.js"; //请求参数格式
 import { handlePost, handleGet } from "@/api/apihelper.js";
 
-const columnsTree = [
-//   {
-//   dataIndex: 'name',
-//   key: 'name',
-//   slots: { title: 'customTitle' },
-// }
-,{
-  title: '菜单名称',
-  key: 'name',
+const columnsTree = [{
+  title: 'Name',
   dataIndex: 'name',
-},{
-  title: '图标',
-  key: 'icon',
-  dataIndex: 'icon',
-},{
-  title: '标记',
-  key: 'code',
-  dataIndex: 'code',
-},{
-  title: '链接地址',
-  key: 'url',
-  dataIndex: 'url',
-},{
-  title: '是否显示',
-  key: 'show',
-  dataIndex: 'show',
-  scopedSlots: { customRender: 'tags' },
-},{
-  title: '排序',
-  key: 'sort',
-  dataIndex: 'sort',
-},{
-  title: '操作',
-  key: 'action',
-  dataIndex: 'action',
-  scopedSlots: { customRender: 'action' },
+  key: 'name',
+}, {
+  title: 'Age',
+  dataIndex: 'age',
+  key: 'age',
+  width: '12%',
+}, {
+  title: 'Address',
+  dataIndex: 'address',
+  width: '30%',
+  key: 'address',
 }];
 
 const dataTree = [{
   key: 1,
-  name: '系统设置',
-  icon:'icon',
-  code:'Button',
-  url:'sys/ButtonList',
-  sort:'1',
+  name: 'John Brown sr.',
   age: 60,
-  edit:'编辑',
-  del:'删除',
+  address: 'New York No. 1 Lake Park',
   children: [{
     key: 11,
-    name: '导航菜单',
-    icon:'icon',
-    code:'Button',
-    url:'sys/ButtonList',
-    sort:'1',
+    name: 'John Brown',
     age: 42,
-    edit:'编辑',
-    del:'删除',
+    address: 'New York No. 2 Lake Park',
   }, {
     key: 12,
-    name: '用户管理',
-    icon:'icon',
-    code:'Button',
-    url:'sys/ButtonList',
-    sort:'1',
+    name: 'John Brown jr.',
     age: 30,
-    edit:'编辑',
-    del:'删除',
-    tags: ['nice', 'developer','111'],
+    address: 'New York No. 3 Lake Park',
+    children: [{
+      key: 121,
+      name: 'Jimmy Brown',
+      age: 16,
+      address: 'New York No. 3 Lake Park',
+    }],
   }, {
     key: 13,
-    name: '部门管理',
-    icon:'icon',
-    code:'Button',
-    url:'sys/ButtonList',
-    sort:'1',
+    name: 'Jim Green sr.',
     age: 72,
-    edit:'编辑',
-    del:'删除',
+    address: 'London No. 1 Lake Park',
+    children: [{
+      key: 131,
+      name: 'Jim Green',
+      age: 42,
+      address: 'London No. 2 Lake Park',
+      children: [{
+        key: 1311,
+        name: 'Jim Green jr.',
+        age: 25,
+        address: 'London No. 3 Lake Park',
+      }, {
+        key: 1312,
+        name: 'Jimmy Green sr.',
+        age: 18,
+        address: 'London No. 4 Lake Park',
+      }],
+    }],
   }],
 }, {
   key: 2,
-  name: '财务管理',
-  icon:'icon',
-  code:'Button',
-  url:'sys/ButtonList',
-  sort:'1',
+  name: 'Joe Black',
   age: 32,
-  edit:'编辑',
-  del:'删除',
-  children: [{
-    key: 22,
-    name: '奖金明细',
-    icon:'icon',
-    code:'Button',
-    url:'sys/ButtonList',
-    sort:'1',
-    age: 42,
-    edit:'编辑',
-    del:'删除',
-  }
-  ]
+  address: 'Sidney No. 1 Lake Park',
 }];
 
 const rowSelectionTree = {
@@ -419,22 +368,21 @@ export default {
       
       bllCode: {
         //接口标识，由后端提供
-        add: "AddYsdatabaseYsMenu", //添加
-        edit: "UpdateYsdatabaseYsMenu", //修改
-        del: "DelYsdatabaseYsMenu", //删除
-        getList: "GetListYsdatabaseYsMenu", //获取列表
-        getObj: "GetYsdatabaseYsMenu", //获取对象（单个）
-        getRolesList: "GetListYsdatabaseYsRole" //获取角色
+        add: "AddMenu", //添加
+        edit: "UpdateMenu", //修改
+        del: "DelMenu", //删除
+        getList: "GetListMenu", //获取列表
+        getObj: "GetMenu", //获取对象（单个）
+        getRolesList: "GetListRole" //获取角色
       },
       tableLabel: [
         { type: "selection", width: "50" },
         { Label: "ID", prop: "id", width: "50", type: "index" },
-        { Label: "名称", prop: "Name", width: "100" },
-        { Label: "上级菜单", prop: "Pid", width: "100" },
-        { Label: "链接地址", prop: "Url" },
-        { Label: "标识", prop: "Param" },
-        { Label: "图标", prop: "Icon", width: "180" },
-        { Label: "排序", prop: "Sort", width: "50" }
+        { Label: "接口名称", prop: "mingcheng", width: "100" },
+        { Label: "上级菜单", prop: "shangjimingcheng", width: "100" },
+        { Label: "链接地址", prop: "lianjie" },
+        { Label: "页面标识", prop: "code", width: "180" },
+        { Label: "排序", prop: "paixu", width: "50" }
         // {Label:'是否管理后台',prop:"shifouguanlihoutai",width:'150'},
         // {Label:'是否需要登录',prop:"shifouxuyaodenglu",width:'150'},
         // {Label:'创建时间',prop:"beizhu",width:'150'},
@@ -474,7 +422,7 @@ export default {
       page: 1,
       sels: [], // 列表选中列
       editFormRules: {
-        Name: [
+        mingcheng: [
           {
             required: true,
             message: "菜单名称必填",
@@ -506,10 +454,9 @@ export default {
 
       // 编辑界面数据
       editForm: {
-        Name: "",
-        Url:'',
         id: "",
         shangjiid: "",
+        mingcheng: "",
         lianjie: "",
         shifouxianshi: "",
         paixu: "",
@@ -567,27 +514,27 @@ export default {
     },
 
     // 删除
-    // handleDel(index, row) {
-    //   this.$confirm("确认删除该记录吗?", "提示", {
-    //     type: "warning",
-    //     confirmButtonText: "确定",
-    //     cancelButtonText: "取消"
-    //   })
-    //     .then(() => {
-    //       const paraId = {
-    //         Id: row.id
-    //       };
-    //       this.para.Code = this.bllCode.del;
-    //       this.para.Data = JSON.stringify(paraId);
-    //       console.log(this.para.Data);
-    //       handlePost(this.para).then(res => {
-    //         if (res.IsSuccess == true) {
-    //           this.getDataList();
-    //         }
-    //       });
-    //     })
-    //     .catch(() => {});
-    // },
+    handleDel(index, row) {
+      this.$confirm("确认删除该记录吗?", "提示", {
+        type: "warning",
+        confirmButtonText: "确定",
+        cancelButtonText: "取消"
+      })
+        .then(() => {
+          const paraId = {
+            id: row.id
+          };
+          this.para.Code = this.bllCode.del;
+          this.para.Data = JSON.stringify(paraId);
+          console.log(this.para.Data);
+          handlePost(this.para).then(res => {
+            if (res.IsSuccess == true) {
+              this.getDataList();
+            }
+          });
+        })
+        .catch(() => {});
+    },
     handleCurrentChange(val) {
       this.page = val;
       this.getDataList();
@@ -618,10 +565,11 @@ export default {
       })
         .then(() => {
           const paraId = {
-            Id: row.Id
+            id: row.id
           };
           this.para.Code = this.bllCode.del;
           this.para.Data = JSON.stringify(paraId);
+          console.log(this.para.Data);
           handlePost(this.para).then(res => {
             if (res.IsSuccess == true) {
               this.getDataList();
@@ -638,10 +586,9 @@ export default {
     handleEdit(index, row) {
       this.dialogStatus = "update";
       this.dialogFormVisibleEdit = true;
-      // this.$refs["editForm"].resetFields(); //重置editForm
       this.editForm = Object.assign({}, row);
       let paert = {
-        Pid: -1
+        shangjiid: -1
       };
       this.para.Data = JSON.stringify(paert);
       this.para.Code = this.bllCode.getList;
@@ -649,8 +596,8 @@ export default {
         if (res.IsSuccess == true) {
           this.ListsuperiorMenu = res.Data.List;
           let top = {
-            Id: 0,
-            Name: "无"
+            id: 0,
+            mingcheng: "无"
           };
           this.ListsuperiorMenu.push(top);
         }
@@ -661,13 +608,17 @@ export default {
     handleAdd() {
       this.dialogStatus = "create";
       this.dialogFormVisibleAdd = true;
-      // this.$refs["editForm"].resetFields(); //重置editForm
       this.editForm = {
-
+        id: "",
+        shangjiid: 0,
+        mingcheng: "",
+        lianjie: "",
+        shifouxianshi: true,
+        paixu: ""
       };
 
       let paert = {
-        Pid: -1
+        shangjiid: -1
       };
       this.para.Data = JSON.stringify(paert);
       this.para.Code = this.bllCode.getList;
@@ -676,8 +627,8 @@ export default {
         if (res.IsSuccess == true) {
           this.ListsuperiorMenu = res.Data.List;
           let top = {
-            Id: 0,
-            Name: "无"
+            id: 0,
+            mingcheng: "无"
           };
           this.ListsuperiorMenu.push(top);
         }
