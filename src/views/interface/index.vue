@@ -58,7 +58,7 @@
                 @click="getKeyLists"
               >全部显示</el-button>
             </el-form-item>
-            <!-- <el-form-item>
+            <el-form-item>
               <el-button
                 size="mini"
                 icon="el-icon-more"
@@ -66,7 +66,7 @@
                 type="success"
                 @click="allotButton"
               >图标</el-button>
-            </el-form-item> -->
+            </el-form-item>
             <el-form-item style="float: right;">
               <el-input size="mini" v-model="filters.jiekoumingcheng" class="input-with-select">
                 <el-select v-model="selectValue" slot="prepend" placeholder="请选择">

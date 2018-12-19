@@ -1,41 +1,55 @@
 <template>
   <section class="app-container">
     <el-card class="box-card">
-        <div class="panel-heading">
+        <!-- <div class="panel-heading">
         <div class="panel-lead">
         <em>1角色组</em>
         <span>
-        12角色组可以有多个,角色有上下级层级关系,如果子角色有角色组和管理员的权限则可以派生属于自己组别的下级角色组或管理员
+        11角色组可以有多个,角色有上下级层级关系,如果子角色有角色组和管理员的权限则可以派生属于自己组别的下级角色组或管理员
         </span>
         </div>
-        </div>
+        </div> -->
         
     <!--工具条-->
     <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
       <el-form :inline="true" :model="filters" @submit.native.prevent>
-        <el-form-item>
-          <el-input size="mini" v-if="buttons.selectshow==true" v-model="filters.name" :placeholder="filtersName"></el-input>
-        </el-form-item>
-        <el-form-item>
-          <el-button size="mini" v-if="buttons.selectshow==true" type="primary" v-on:click="getKeyList">{{button.query}}</el-button>
-        </el-form-item>
+        <!-- <el-form-item>
+          <el-button size="mini" v-if="buttons.selectshow==true" type="primary" v-on:click="getKeyList">刷新</el-button>
+        </el-form-item> -->
         <el-form-item>
           <el-button size="mini" v-if="buttons.addshow==true" type="primary" @click="handleAdd">{{button.add}}</el-button>
         </el-form-item>
         <el-form-item>
+          <el-button size="mini" v-if="buttons.addshow==true" type="primary" @click="handleAdd">编辑</el-button>
+        </el-form-item>
+        <el-form-item>
       <el-button type="danger" size="mini" @click="batchRemove" :disabled="this.sels.length===0">{{button.batchRemove}}</el-button>
+        </el-form-item>
+        <el-form-item style="float: right;">
+          <el-input size="mini" v-if="buttons.selectshow==true" v-model="filters.name" :placeholder="filtersName" class="input-with-select">
+        <el-select v-model="select" slot="prepend" placeholder="请选择">
+          <el-option label="ID" value="1"></el-option>
+          <el-option label="接口名称" value="2"></el-option>
+          <el-option label="上级菜单" value="3"></el-option>
+          <el-option label="链接地址" value="4"></el-option>
+          <el-option label="页面标识" value="5"></el-option>
+          <el-option label="排序" value="6"></el-option>
+        </el-select>
+        <el-button size="mini" v-if="buttons.selectshow==true" v-on:click="getKeyList" slot="append" icon="el-icon-search"></el-button>
+      </el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-button size="mini" v-if="buttons.addshow==true" type="primary" @click="allotButton">分配按钮</el-button>
         </el-form-item>
       </el-form>
     </el-col>
 
-    <template>
-      <a-table :columns="columnsTree" :dataSource="dataTree" :rowSelection="rowSelectionTree" />
-    </template>
-
-
-
     <!--列表--> 
-    <el-table @row-dblclick='Rowdblclick' stripe border :data="dataList" highlight-current-row @selection-change="selsChange" style="width: 100%;">
+      <!-- <template>
+      <a-table style="margin-top:10rem" :columns="columnsTree" :dataSource="dataTree" :rowSelection="rowSelectionTree" />
+    </template> -->
+
+        <el-table @row-dblclick='Rowdblclick' stripe border :data="dataList" highlight-current-row @selection-change="selsChange" style="width: 100%;">
       <el-table-column v-for="item in tableLabel" :key="item.Label" :label="item.Label" :prop="item.prop" :width='item.width' :type='item.type'>
       </el-table-column>
       <!-- <el-table-column type="selection" width="55">
@@ -60,18 +74,116 @@
       </el-table-column>
     </el-table>
 
-    <!--工具条-->
-    <el-col :span="24" class="toolbar">
+          <!-- 分页 -->
+        <el-col :span="24" class="toolbar">
       <el-pagination layout="prev, pager, next" @current-change="handleCurrentChange" :page-size="10" :total="total"
         style="float:right;">
       </el-pagination>
     </el-col>
+
+        <!--图标-->
+    <el-dialog title="添加" :visible.sync="dialogFormVisibleIcon" :close-on-click-modal="false">
+      <ul class="anticons-list">
+        <li class><i class="anticon anticon-lock"></i></li>
+        <li class><i class="anticon anticon-unlock"></i></li>
+        <li class><i class="anticon anticon-bars"></i></li>
+        <li class><i class="anticon anticon-lock"></i></li>
+        <li class><i class="anticon anticon-unlock"></i></li>
+        <li class><i class="anticon anticon-bars"></i></li>
+        <li class><i class="anticon anticon-lock"></i></li>
+        <li class><i class="anticon anticon-unlock"></i></li>
+        <li class><i class="anticon anticon-bars"></i></li>
+        <li class><i class="anticon anticon-lock"></i></li>
+        <li class><i class="anticon anticon-unlock"></i></li>
+        <li class><i class="anticon anticon-bars"></i></li>
+        <li class><i class="anticon anticon-lock"></i></li>
+        <li class><i class="anticon anticon-unlock"></i></li>
+        <li class><i class="anticon anticon-bars"></i></li>
+        <li class><i class="anticon anticon-lock"></i></li>
+        <li class><i class="anticon anticon-unlock"></i></li>
+        <li class><i class="anticon anticon-bars"></i></li>
+        <li class><i class="anticon anticon-lock"></i></li>
+        <li class><i class="anticon anticon-unlock"></i></li>
+        <li class><i class="anticon anticon-bars"></i></li>
+        <li class><i class="anticon anticon-lock"></i></li>
+        <li class><i class="anticon anticon-unlock"></i></li>
+        <li class><i class="anticon anticon-bars"></i></li>
+        <li class><i class="anticon anticon-lock"></i></li>
+        <li class><i class="anticon anticon-unlock"></i></li>
+        <li class><i class="anticon anticon-bars"></i></li>
+        <li class><i class="anticon anticon-lock"></i></li>
+        <li class><i class="anticon anticon-unlock"></i></li>
+        <li class><i class="anticon anticon-bars"></i></li>
+        <li class><i class="anticon anticon-lock"></i></li>
+        <li class><i class="anticon anticon-unlock"></i></li>
+        <li class><i class="anticon anticon-bars"></i></li>
+        <li class><i class="anticon anticon-lock"></i></li>
+        <li class><i class="anticon anticon-unlock"></i></li>
+        <li class><i class="anticon anticon-bars"></i></li>
+        <li class><i class="anticon anticon-lock"></i></li>
+        <li class><i class="anticon anticon-unlock"></i></li>
+        <li class><i class="anticon anticon-bars"></i></li>
+        <li class><i class="anticon anticon-lock"></i></li>
+        <li class><i class="anticon anticon-unlock"></i></li>
+        <li class><i class="anticon anticon-bars"></i></li>
+        <li class><i class="anticon anticon-lock"></i></li>
+        <li class><i class="anticon anticon-unlock"></i></li>
+        <li class><i class="anticon anticon-bars"></i></li>
+        <li class><i class="anticon anticon-lock"></i></li>
+        <li class><i class="anticon anticon-unlock"></i></li>
+        <li class><i class="anticon anticon-bars"></i></li>
+      </ul>
+      <div slot="footer" class="dialog-footer">
+        <el-button size="mini" @click.native="dialogFormVisibleIcon=false">取消</el-button>
+        <el-button size="mini" type="primary" @click.native="dialogFormVisibleIcon=false">确认</el-button>
+      </div>
+    </el-dialog>
+
+            <!--按钮-->
+    <el-dialog title="添加" :visible.sync="dialogFormVisibleButton" :close-on-click-modal="false">
+             <div style="text-align: center" class="transferBox">
+          <el-transfer
+          
+            style="text-align: left; display: inline-block"
+            v-model="value3"
+            filterable
+            filter-placeholder="请输入搜索内容"
+            :left-default-checked="[2, 3]"
+            :right-default-checked="[1]"
+            :render-content="renderFunc"
+            :titles="['所有菜单', '已有菜单']"
+            
+            :format="{
+              noChecked: '${total}',
+              hasChecked: '${checked}/${total}'
+            }"
+            @change="handleChange"
+            :data="data">
+            <el-button class="transfer-footer" slot="left-footer" size="small">操作</el-button>
+            <el-button class="transfer-footer" slot="right-footer" size="small">操作</el-button>
+          </el-transfer>
+      </div>
+      <div slot="footer" class="dialog-footer">
+        <el-button size="mini" @click.native="dialogFormVisibleButton=false">取消</el-button>
+        <el-button size="mini" type="primary" @click.native="dialogFormVisibleButton=false">确认</el-button>
+      </div>
+    </el-dialog>
 
     <!--添加界面-->
     <el-dialog title="添加菜单" :visible.sync="dialogFormVisibleAdd" :close-on-click-modal="false">
       <el-form :model="editForm" label-width="100px" :rules="editFormRules" ref="editForm">
         <el-form-item label="菜单名称:" prop="mingcheng">
           <el-input v-model="editForm.mingcheng" auto-complete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="小图标:" prop="">
+          <el-input placeholder="请输入内容" v-model="input5" class="input-with-select">
+            <el-button slot="append" icon="el-icon-search" @click="allotIcon"></el-button>
+          </el-input>
+        </el-form-item>
+        <el-form-item label="大图标:" prop="">
+          <el-input placeholder="请输入内容" v-model="input5" class="input-with-select">
+            <el-button slot="append" icon="el-icon-search" @click="allotIcon"></el-button>
+          </el-input>
         </el-form-item>
         <el-form-item label="页面标识:" prop="code">
           <el-input v-model="editForm.code" auto-complete="off"></el-input>
@@ -230,7 +342,33 @@ const rowSelectionTree = {
 
 export default {
   data() {
+        // 穿梭框
+        const generateData = _ => {
+        const data = [];
+        
+        for (let i = 1; i <= 10; i++) {
+          data.push({
+            key: i,
+            label: `备选项 ${ i }`,
+            disabled: i % 4 === 0
+          });
+        }
+        return data;
+      };
     return {
+            //穿梭框
+        data: generateData(),
+        value3: [1],
+        value4: [1],
+        renderFunc(h, option) {
+          return <span>{ option.key } - { option.label }</span>;
+        },
+      //搜索
+      input3: '',
+      input4: '',
+      input5: '',
+      select: '',
+
       // tree列表
       dataTree,
       columnsTree,
@@ -279,6 +417,8 @@ export default {
       },
       // para: paraHelper,
       dialogStatus: "",
+      dialogFormVisibleButton:false,
+      dialogFormVisibleIcon:false,
       dialogFormVisibleAdd: false,
       dialogFormVisibleEdit: false,
       filters: {
@@ -351,6 +491,17 @@ export default {
     };
   },
   methods: {
+        //穿梭框
+    handleChange(value, direction, movedKeys) {
+        console.log(value, direction, movedKeys);
+      },
+    //图标
+    allotIcon() {
+      this.dialogFormVisibleIcon = true;
+    },
+    allotButton() {
+      this.dialogFormVisibleButton = true;
+    },
     //行点击事件
     Rowdblclick() {
       this.handleAdd();
@@ -610,5 +761,45 @@ export default {
 }
 .app-container {
   background: #F0F2F5;
+}
+.el-select .el-input {
+    width: 130px;
+  }
+  .input-with-select .el-input-group__prepend {
+    background-color: #fff;
+  }
+  .tablesSyl td,
+.tablesSyl th {
+  padding: 5px 0;
+}
+.anticons-list {
+  overflow: hidden;
+  padding-left: 0px;
+}
+.anticons-list li {
+  float: left;
+  /* width: 16.66%; */
+  text-align: center;
+  list-style: none;
+  cursor: pointer;
+  /* height: 100px; */
+  color: #555;
+  -webkit-transition: color 0.3s ease-in-out, background-color 0.3s ease-in-out;
+  transition: color 0.3s ease-in-out, background-color 0.3s ease-in-out;
+  position: relative;
+  /* margin: 3px 0; */
+  /* border-radius: 4px; */
+  background-color: #fff;
+  overflow: hidden;
+  /* padding: 10px 0 0; */
+}
+.anticons-list li .anticon {
+    font-size: 36px;
+    /* margin: 12px 0 8px; */
+    -webkit-transition: -webkit-transform .3s ease-in-out;
+    transition: -webkit-transform .3s ease-in-out;
+    transition: transform .3s ease-in-out;
+    transition: transform .3s ease-in-out,-webkit-transform .3s ease-in-out;
+    will-change: transform;
 }
 </style>

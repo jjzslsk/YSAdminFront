@@ -7,10 +7,10 @@ import {
 export function login(username, password) {
   console.log (3)
   let para = {
-    Code: 'YsAdminLogin',
+    Code: 'Login',
     Data: JSON.stringify({
-      Username: username,
-      Password: password
+      zhanghao: username,
+      mima: password
     })
   }
   return request({
@@ -31,7 +31,7 @@ export function login(username, password) {
 export function getInfo(token) {
   console.log ('22',token)
   let para = {
-    Code: 'YsAdminGetInfo',
+    Code: 'GetAdminInfo',
     Data: '',
     User: {
       Id: getId(),

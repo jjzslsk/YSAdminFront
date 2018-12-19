@@ -144,11 +144,11 @@ const user = {
           } else {
             reject('getInfo: roles must be a non-null array !')
           }
-           if (data.MenuButtons && data.MenuButtons.length > 0) { // 验证返回的接口是否是一个非空数组
-             commit('SET_INTERFACE', data.MenuButtons)//
+           if (data.jiekou && data.jiekou.length > 0) { // 验证返回的接口是否是一个非空数组
+             commit('SET_INTERFACE', data.jiekou)//
              console.log('SET_INTERFACE', state.interface)
            } else {
-             reject('getInfo: MenuButtons must be a non-null array !')
+             reject('getInfo: jiekou must be a non-null array !')
            }
           commit('SET_NAME', data.name)
           commit('SET_ROUTERMAP', [{
