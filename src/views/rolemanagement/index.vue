@@ -1,343 +1,314 @@
 <template>
   <section class="app-container">
     <el-card class="box-card">
-
+        
     <!--工具条-->
-    <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
       <el-form :inline="true" :model="filters" @submit.native.prevent>
+        <!-- <el-form-item>
+          <el-button size="mini" v-if="buttons.selectshow==true" type="primary" v-on:click="getKeyList">刷新</el-button>
+        </el-form-item> -->
         <el-form-item>
-          <el-input size="mini" v-if="buttons.selectshow==true" v-model="filters.name" :placeholder="filtersName"></el-input>
+          <a-button type="primary" @click="handleAdd">{{button.add}}</a-button>
         </el-form-item>
         <el-form-item>
-          <el-button size="mini" v-if="buttons.selectshow==true" type="primary" v-on:click="getKeyList">{{button.query}}</el-button>
+          <a-button type="primary" @click="handleAdd">编辑</a-button>
         </el-form-item>
         <el-form-item>
-          <el-button size="mini" v-if="buttons.addshow==true" type="primary" @click="handleAdd">{{button.add}}</el-button>
+          <a-button type="primary" @click="Refresh">刷新</a-button>
         </el-form-item>
         <el-form-item>
-      <el-button type="danger" size="mini" @click="batchRemove" :disabled="this.sels.length===0">{{button.batchRemove}}</el-button>
+          <a-button type="primary" @click="allotButton">分配按钮</a-button>
         </el-form-item>
         <el-form-item>
-      <el-button size="mini" v-if="buttons.addshow==true" type="primary" @click="handlePermissionData">分配权限</el-button>
+      <a-button type="danger" @click="batchRemove" :disabled="this.sels.length===0">{{button.batchRemove}}</a-button>
         </el-form-item>
+        <el-form-item style="float: right;">
+          <a-button type="primary" @click="getKeyList">查询</a-button>
+        </el-form-item>
+        <el-form-item style="float: right;">
+          <el-input v-model="filters.Name" :placeholder="filtersName" class="input-with-select">
+        <el-select v-model="select" slot="prepend" placeholder="请选择">
+          <el-option label="ID" value="1"></el-option>
+          <el-option label="接口名称" value="2"></el-option>
+          <el-option label="上级菜单" value="3"></el-option>
+          <el-option label="链接地址" value="4"></el-option>
+          <el-option label="页面标识" value="5"></el-option>
+          <el-option label="排序" value="6"></el-option>
+        </el-select>
+        <!-- <el-button size="mini" v-on:click="getKeyList" slot="append" icon="el-icon-search"></el-button> -->
+      </el-input>
+        </el-form-item>
+        
       </el-form>
-    </el-col>
 
-    <!--列表-->
-      
-    <el-table class="tablesSyl" @row-dblclick='Rowdblclick' :data="dataList" stripe border fit  highlight-current-row @selection-change="selsChange" style="width: 100%;">
-      <el-table-column type="selection" width="55">
-      </el-table-column>
-      <el-table-column type="index" label="#" width="60">
-      </el-table-column>
-      <el-table-column prop="id" label="ID" width="60">
-      </el-table-column>
-      <el-table-column prop="juesemingcheng" label="角色名称" width="120">
-      </el-table-column>
-      <el-table-column prop="paixu" label="排序" width="120">
-      </el-table-column>
-      <!-- <el-table-column prop="moren" label="默认" width="120">
-        <template slot-scope="scope">
-          <el-switch v-model="scope.row.moren" @change="setMorenRole(scope.row)">
-          </el-switch>
-        </template>
-      </el-table-column> -->
-      <el-table-column prop="beizhu" label="备注" min-width="160">
-      </el-table-column>
-      <el-table-column v-if="buttons.updateshow==true||buttons.delshow==true||buttons.interfaceshow==true||buttons.menushow==true" label="操作" width="400">
-        <template slot-scope="scope">
-          <el-button size="mini" v-if="buttons.updateshow==true" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-          <!-- <el-button size="mini" v-if="buttons.menushow==true" @click="handlePermissionMenu(scope.$index, scope.row)">菜单权限</el-button> -->
-          <!-- <el-button size="mini" v-if="buttons.interfaceshow==true" @click="handlePermissionInterface(scope.$index, scope.row)">接口权限</el-button> -->
-          <!-- <el-button size="mini" v-if="buttons.interfaceshow==true" @click="handlePermissionData(scope.$index, scope.row)">接口权限1</el-button> -->
-          <el-button size="mini" v-if="buttons.delshow==true" type="danger" @click="handleDel(scope.$index, scope.row)">删除</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
+    <!--列表--> 
+      <!-- <a-table defaultExpandAllRows :pagination="false" size="small" :columns="columnsTree" :dataSource="dataTree" :rowSelection="rowSelectionTree">
+          <span slot="tags" slot-scope="tags">
+            <a-checkbox></a-checkbox>
+          </span>
+          <span slot="action" slot-scope="text, record">
+            <a href="javascript:;">{{record.edit}}</a>
+            <a-divider type="vertical" />
+            <a href="javascript:;">{{record.del}}</a>
+          </span>
+      </a-table> -->
 
-    <!--工具条-->
-    <el-col :span="24" class="toolbar">
+          <el-table @row-dblclick='Rowdblclick' stripe :data="dataList" highlight-current-row @selection-change="selsChange" style="width: 100%;">
+            <el-table-column v-for="item in tableLabel" :key="item.Label" :label="item.Label" :prop="item.prop" :width='item.width' :type='item.type'>
+            </el-table-column>
+            <el-table-column label="操作" width="100" fixed="right">
+              <template slot-scope="scope">
+                <el-button type="text" size="mini" @click="handleEdit(scope.$index, scope.row)">{{button.edit}}</el-button>
+                <el-button type="text" ssize="mini" @click="handleDel(scope.$index, scope.row)">{{button.del}}</el-button>
+              </template>
+            </el-table-column>
+          </el-table>
+
+          <!-- 分页 -->
+        <el-col :span="24" class="toolbar">
       <el-pagination layout="prev, pager, next" @current-change="handleCurrentChange" :page-size="10" :total="total"
         style="float:right;">
       </el-pagination>
     </el-col>
 
-    </el-card>
+        <!--图标-->
+    <el-dialog title="添加" :visible.sync="dialogFormVisibleIcon" :close-on-click-modal="false">
+      <ul class="anticons-list">
+        <li class><i class="anticon anticon-lock"></i></li>
+        <li class><i class="anticon anticon-unlock"></i></li>
+        <li class><i class="anticon anticon-bars"></i></li>
+        <li class><i class="anticon anticon-lock"></i></li>
+        <li class><i class="anticon anticon-unlock"></i></li>
+        <li class><i class="anticon anticon-bars"></i></li>
+        <li class><i class="anticon anticon-lock"></i></li>
+        <li class><i class="anticon anticon-unlock"></i></li>
+        <li class><i class="anticon anticon-bars"></i></li>
+        <li class><i class="anticon anticon-lock"></i></li>
+        <li class><i class="anticon anticon-unlock"></i></li>
+        <li class><i class="anticon anticon-bars"></i></li>
+        <li class><i class="anticon anticon-lock"></i></li>
+        <li class><i class="anticon anticon-unlock"></i></li>
+        <li class><i class="anticon anticon-bars"></i></li>
+        <li class><i class="anticon anticon-lock"></i></li>
+        <li class><i class="anticon anticon-unlock"></i></li>
+        <li class><i class="anticon anticon-bars"></i></li>
+        <li class><i class="anticon anticon-lock"></i></li>
+        <li class><i class="anticon anticon-unlock"></i></li>
+        <li class><i class="anticon anticon-bars"></i></li>
+        <li class><i class="anticon anticon-lock"></i></li>
+        <li class><i class="anticon anticon-unlock"></i></li>
+        <li class><i class="anticon anticon-bars"></i></li>
+        <li class><i class="anticon anticon-lock"></i></li>
+        <li class><i class="anticon anticon-unlock"></i></li>
+        <li class><i class="anticon anticon-bars"></i></li>
+        <li class><i class="anticon anticon-lock"></i></li>
+        <li class><i class="anticon anticon-unlock"></i></li>
+        <li class><i class="anticon anticon-bars"></i></li>
+        <li class><i class="anticon anticon-lock"></i></li>
+        <li class><i class="anticon anticon-unlock"></i></li>
+        <li class><i class="anticon anticon-bars"></i></li>
+        <li class><i class="anticon anticon-lock"></i></li>
+        <li class><i class="anticon anticon-unlock"></i></li>
+        <li class><i class="anticon anticon-bars"></i></li>
+        <li class><i class="anticon anticon-lock"></i></li>
+        <li class><i class="anticon anticon-unlock"></i></li>
+        <li class><i class="anticon anticon-bars"></i></li>
+        <li class><i class="anticon anticon-lock"></i></li>
+        <li class><i class="anticon anticon-unlock"></i></li>
+        <li class><i class="anticon anticon-bars"></i></li>
+        <li class><i class="anticon anticon-lock"></i></li>
+        <li class><i class="anticon anticon-unlock"></i></li>
+        <li class><i class="anticon anticon-bars"></i></li>
+        <li class><i class="anticon anticon-lock"></i></li>
+        <li class><i class="anticon anticon-unlock"></i></li>
+        <li class><i class="anticon anticon-bars"></i></li>
+      </ul>
+      <div slot="footer" class="dialog-footer">
+        <a-button @click.native="dialogFormVisibleIcon=false">取消</a-button>
+        <a-button type="primary" @click.native="dialogFormVisibleIcon=false">确认</a-button>
+      </div>
+    </el-dialog>
 
-        <!--添加界面-->
-    <el-dialog title="添加" :visible.sync="dialogFormVisibleAdd" :close-on-click-modal="false">
+            <!--按钮-->
+    <el-dialog title="添加" :visible.sync="dialogFormVisibleButton" :close-on-click-modal="false">
+             <div style="text-align: center" class="transferBox">
+          <el-transfer
+          
+            style="text-align: left; display: inline-block"
+            v-model="value3"
+            filterable
+            filter-placeholder="请输入搜索内容"
+            :left-default-checked="[2, 3]"
+            :right-default-checked="[1]"
+            :render-content="renderFunc"
+            :titles="['所有菜单', '已有菜单']"
+            
+            :format="{
+              noChecked: '${total}',
+              hasChecked: '${checked}/${total}'
+            }"
+            @change="handleChange"
+            :data="data">
+            <a-button class="transfer-footer" slot="left-footer" size="small">操作</a-button>
+            <a-button class="transfer-footer" slot="right-footer" size="small">操作</a-button>
+          </el-transfer>
+      </div>
+      <div slot="footer" class="dialog-footer">
+        <a-button @click.native="dialogFormVisibleButton=false">取消</a-button>
+        <a-button type="primary" @click.native="dialogFormVisibleButton=false">确认</a-button>
+      </div>
+    </el-dialog>
+
+    <!--添加界面-->
+    <el-dialog title="添加角色" :visible.sync="dialogFormVisibleAdd" :close-on-click-modal="false">
       <el-form :model="editForm" label-width="100px" :rules="editFormRules" ref="editForm">
-        <el-form-item label="角色名称" prop="RoleName">
-          <el-input v-model="editForm.juesemingcheng" auto-complete="off"></el-input>
+        <el-form-item label="角色名称:" prop="Name">
+          <el-input v-model="editForm.Name" auto-complete="off"></el-input>
         </el-form-item>
-        <el-form-item label="排序">
-          <el-input-number v-model="editForm.paixu"></el-input-number>
+        <el-form-item label="排序:">
+          <el-input-number v-model="editForm.Sort"></el-input-number>
         </el-form-item>
-        <!-- <el-form-item label="默认">
-          <el-radio-group v-model="editForm.moren">
-            <el-radio class="radio" :label=true>是</el-radio>
-            <el-radio class="radio" :label=false>否</el-radio>
-          </el-radio-group>
-        </el-form-item> -->
-        <!-- <el-form-item label="权限">
-          <el-select v-model="value11" multiple collapse-tags style="margin-left: 20px;" placeholder="请选择">
-            <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
-            </el-option>
-          </el-select>
-        </el-form-item> -->
-        <el-form-item label="备注">
-          <el-input type="textarea" v-model="editForm.beizhu"></el-input>
+        <el-form-item label="备注:" prop="Memo">
+          <el-input v-model="editForm.Memo" auto-complete="off"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button size="mini" @click.native="dialogFormVisibleAdd=false">取消</el-button>
-        <el-button size="mini" type="primary" @click="createData">添加</el-button>
+        <a-button @click.native="dialogFormVisibleAdd=false">{{button.cancel}}</a-button>
+        <a-button type="primary" @click="createData">{{button.add}}</a-button>
       </div>
     </el-dialog>
 
     <!--编辑界面-->
-    <el-dialog title="编辑" :visible.sync="dialogFormVisibleEdit" :close-on-click-modal="false">
+    <el-dialog title="编辑角色" :visible.sync="dialogFormVisibleEdit" :close-on-click-modal="false">
       <el-form :model="editForm" label-width="100px" :rules="editFormRules" ref="editForm">
-        <el-form-item label="角色名称" prop="RoleName">
-          <el-input v-model="editForm.juesemingcheng" auto-complete="off"></el-input>
+        <el-form-item label="角色名称:" prop="Name">
+          <el-input v-model="editForm.Name" auto-complete="off"></el-input>
         </el-form-item>
-        <el-form-item label="排序">
-          <el-input-number v-model="editForm.paixu"></el-input-number>
+        <el-form-item label="排序:">
+          <el-input-number v-model="editForm.Sort"></el-input-number>
         </el-form-item>
-        <!-- <el-form-item label="默认">
-          <el-radio-group v-model="editForm.moren">
-            <el-radio class="radio" :label=true>是</el-radio>
-            <el-radio class="radio" :label=false>否</el-radio>
-          </el-radio-group>
-        </el-form-item> -->
-        <!-- <el-form-item label="权限">
-          <el-select v-model="value11" multiple collapse-tags style="margin-left: 20px;" placeholder="请选择">
-            <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
-            </el-option>
-          </el-select>
-        </el-form-item> -->
-        <el-form-item label="备注">
-          <el-input type="textarea" v-model="editForm.beizhu"></el-input>
+        <el-form-item label="备注:" prop="Memo">
+          <el-input v-model="editForm.Memo" auto-complete="off"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button size="mini" @click.native="dialogFormVisibleEdit=false">取消</el-button>
-        <el-button size="mini" type="primary" @click="updateData">修改</el-button>
+        <a-button @click.native="dialogFormVisibleEdit=false">{{button.cancel}}</a-button>        
+        <a-button type="primary" @click="updateData">{{button.modify}}</a-button>        
       </div>
     </el-dialog>
-
-
-
-    <!-- 分配菜单权限 -->
-    <el-dialog style="Height:400px" title="菜单分配" :visible.sync="dialogFormPermissionVisibleMenu"
-      :close-on-click-modal="false" @open="callbackUp(dialogStatus)">
-      <!--工具条-->
-      <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
-        <el-form :inline="true" :model="filters" @submit.native.prevent>
-          <el-form-item>
-            <el-input size="mini" v-model="editForm.juesemingcheng" placeholder="角色名称"><template slot="prepend">
-                当前选中角色为：</template></el-input>
-          </el-form-item>
-        </el-form>
-      </el-col>
-      <el-row class="tac tree-row">
-        <el-col :span="24">
-          <el-tree :data="menus" ref="tree" show-checkbox node-key="value" :default-expanded-keys="[2, 3]"
-            :default-checked-keys="this.editForm.caidanguanlian" :props="defaultProps" default-expand-all>
-          </el-tree>
-        </el-col>
-      </el-row>
-      <div slot="footer" class="dialog-footer">
-        <el-button size="mini" @click.native="dialogFormPermissionVisibleMenu=false">取消</el-button>
-        <el-button size="mini" type="primary" @click="SetMenuRole">保存</el-button>
-      </div>
-    </el-dialog>
-
-      <!-- 分配接口权限1 -->
-    <el-dialog width="80%" style="Height:400px" title="1接口分配" :visible.sync="dialogFormVisibleData"
-      :close-on-click-modal="false" @open="callbackUp(dialogStatus)">
-      <!--工具条-->
-      <!-- <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
-        <el-form :inline="true" :model="filters" @submit.native.prevent>
-          <el-form-item>
-            <el-input size="mini" v-model="editForm.juesemingcheng" placeholder="角色名称"><template slot="prepend">
-                当前选中角色为：</template></el-input>
-          </el-form-item>
-        </el-form>
-      </el-col> -->
-      <div class="table-operations">
-        <el-button size="mini" type="primary">全选</el-button>
-        <el-button size="mini" type="primary">应用</el-button>        
-      </div>
-    <!--列表--> 
-      <template>
-        <a-table defaultExpandAllRows :pagination="false" size="small" :columns="columnsTree" :dataSource="dataTree" :rowSelection="rowSelectionTree">
-          <a slot="name" slot-scope="text" href="javascript:;">{{text}}1</a>
-          <span slot="customTitle">
-            <!-- <a-checkbox></a-checkbox>  -->
-            菜单名称</span>
-          <span slot="tags" slot-scope="tags">
-            <!-- <a-tag v-for="tag in tags" color="blue" :key="tag">{{tag}}</a-tag> -->
-            <a-checkbox></a-checkbox>
-          </span>
-        </a-table>
-        <!-- <template slot-scope="scope">
-          <el-switch>
-          </el-switch>
-        </template> -->
-      </template>
-
-
-      <div slot="footer" class="dialog-footer">
-        <el-button size="mini" @click.native="dialogFormVisibleData=false">取消</el-button>
-        <el-button size="mini" type="primary">保存</el-button>
-      </div>
-    </el-dialog>
-
-    <!-- 分配接口权限 -->
-    <el-dialog style="Height:400px" title="接口分配" :visible.sync="dialogFormPermissionVisibleInterface"
-      :close-on-click-modal="false" @open="callbackUp(dialogStatus)">
-      <!--工具条-->
-      <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
-        <el-form :inline="true" :model="filters" @submit.native.prevent>
-          <el-form-item>
-            <el-input size="mini" v-model="editForm.juesemingcheng" placeholder="角色名称"><template slot="prepend">
-                当前选中角色为：</template></el-input>
-          </el-form-item>
-        </el-form>
-      </el-col>
-      <el-row class="tac">
-        <el-col :span="24">
-          <!--列表-->
-          <el-table :data="this.interface" ref="table" highlight-current-row @selection-change="selsChangeInterface"
-            :max-height="400" style="width: 100%;">
-            <el-table-column type="selection" width="55">
-            </el-table-column>
-            <el-table-column type="index" width="60">
-            </el-table-column>
-            <el-table-column prop="id" label="ID" width="40">
-            </el-table-column>
-            <el-table-column prop="jiekoumingcheng" label="接口名称" width="150">
-            </el-table-column>
-            <el-table-column prop="bllcode" label="接口标识" width="150">
-            </el-table-column>
-            <el-table-column prop="beizhu" label="备注" min-width="160">
-            </el-table-column>
-            <el-table-column prop="chuangjianriqi" label="创建时间" width="100">
-            </el-table-column>
-          </el-table>
-        </el-col>
-      </el-row>
-      <div slot="footer" class="dialog-footer">
-        <el-button size="mini" @click.native="dialogFormPermissionVisibleInterface=false">取消</el-button>
-        <el-button size="mini" type="primary" @click="SetInterfaceRole">保存</el-button>
-      </div>
-    </el-dialog>
+    </el-card>
   </section>
 </template>
-
 <script>
+// import script from "./script";
+// export default {
+//   ...script
+// };
 import store from "@/store/index.js"; //引入本地存储
 import util from "@/utils/table.js";
 import { paraHelper } from "@/utils/para.js"; //请求参数格式
 import { handlePost, handleGet } from "@/api/apihelper.js";
 
-const columnsTree = [{
-  dataIndex: 'name',
+const columnsTree = [
+//   {
+//   dataIndex: 'name',
+//   key: 'name',
+//   slots: { title: 'customTitle' },
+// }
+,{
+  title: '菜单名称',
   key: 'name',
-  slots: { title: 'customTitle' },
-  scopedSlots: { customRender: 'name' },
+  dataIndex: 'name',
 },{
-  title: '浏览',
-  key: 'tags',
-  dataIndex: 'tags',
+  title: '图标',
+  key: 'icon',
+  dataIndex: 'icon',
+},{
+  title: '标记',
+  key: 'code',
+  dataIndex: 'code',
+},{
+  title: '链接地址',
+  key: 'url',
+  dataIndex: 'url',
+},{
+  title: '是否显示',
+  key: 'show',
+  dataIndex: 'show',
   scopedSlots: { customRender: 'tags' },
 },{
-  title: '添加',
-  key: 'tags',
-  dataIndex: 'tags',
-  scopedSlots: { customRender: 'tags' },
+  title: '排序',
+  key: 'sort',
+  dataIndex: 'sort',
 },{
-  title: '编辑',
-  key: 'tags',
-  dataIndex: 'tags',
-  scopedSlots: { customRender: 'tags' },
-},{
-  title: '删除',
-  key: 'tags',
-  dataIndex: 'tags',
-  scopedSlots: { customRender: 'tags' },
-},{
-  title: '导入',
-  key: 'tags',
-  dataIndex: 'tags',
-  scopedSlots: { customRender: 'tags' },
-},{
-  title: '导出',
-  key: 'tags',
-  dataIndex: 'tags',
-  scopedSlots: { customRender: 'tags' },
-},{
-  title: '下话单',
-  key: 'tags',
-  dataIndex: 'tags',
-  scopedSlots: { customRender: 'tags' },
-},{
-  title: '重发通知',
-  key: 'tags',
-  dataIndex: 'tags',
-  scopedSlots: { customRender: 'tags' },
-},{
-  title: '重置',
-  key: 'tags',
-  dataIndex: 'tags',
-  scopedSlots: { customRender: 'tags' },
+  title: '操作',
+  key: 'action',
+  dataIndex: 'action',
+  scopedSlots: { customRender: 'action' },
 }];
 
 const dataTree = [{
   key: 1,
   name: '系统设置',
+  icon:'icon',
+  code:'Button',
+  url:'sys/ButtonList',
+  sort:'1',
   age: 60,
-  add: 'New York No. 1 Lake Park',
-  edit:'编辑1',
-  del:'删除1',
+  edit:'编辑',
+  del:'删除',
   children: [{
     key: 11,
     name: '导航菜单',
+    icon:'icon',
+    code:'Button',
+    url:'sys/ButtonList',
+    sort:'1',
     age: 42,
-    add: 'New York No. 2 Lake Park',
-    edit:'编辑1',
-    del:'删除1',
+    edit:'编辑',
+    del:'删除',
   }, {
     key: 12,
     name: '用户管理',
+    icon:'icon',
+    code:'Button',
+    url:'sys/ButtonList',
+    sort:'1',
     age: 30,
-    add: 'New York No. 3 Lake Park',
-    edit:'编辑1',
-    del:'删除1',
+    edit:'编辑',
+    del:'删除',
     tags: ['nice', 'developer','111'],
   }, {
     key: 13,
     name: '部门管理',
+    icon:'icon',
+    code:'Button',
+    url:'sys/ButtonList',
+    sort:'1',
     age: 72,
-    add: 'London No. 1 Lake Park',
-    edit:'编辑1',
-    del:'删除1',
+    edit:'编辑',
+    del:'删除',
   }],
 }, {
   key: 2,
   name: '财务管理',
+  icon:'icon',
+  code:'Button',
+  url:'sys/ButtonList',
+  sort:'1',
   age: 32,
-  add: 'Sidney No. 1 Lake Park',
-  edit:'编辑1',
-  del:'删除1',
+  edit:'编辑',
+  del:'删除',
   children: [{
     key: 22,
     name: '奖金明细',
+    icon:'icon',
+    code:'Button',
+    url:'sys/ButtonList',
+    sort:'1',
     age: 42,
-    add: 'New York No. 2 Lake Park',
-    edit:'编辑1',
-    del:'删除1',
+    edit:'编辑',
+    del:'删除',
   }
   ]
 }];
@@ -356,105 +327,150 @@ const rowSelectionTree = {
 
 export default {
   data() {
+        // 穿梭框
+        const generateData = _ => {
+        const data = [];
+        
+        for (let i = 1; i <= 10; i++) {
+          data.push({
+            key: i,
+            label: `备选项 ${ i }`,
+            disabled: i % 4 === 0
+          });
+        }
+        return data;
+      };
     return {
+            //穿梭框
+        data: generateData(),
+        value3: [1],
+        value4: [1],
+        renderFunc(h, option) {
+          return <span>{ option.key } - { option.label }</span>;
+        },
+      //搜索
+      input3: '',
+      input4: '',
+      input5: '',
+      select: '',
+
       // tree列表
       dataTree,
       columnsTree,
       rowSelectionTree,
+      
       bllCode: {
-        
         //接口标识，由后端提供
-        add: "AddRole", //添加
-        edit: "UpdateRole", //修改
-        del: "DelRole", //删除
-        getList: "GetListRole", //获取列表
-        getObj: "GetRole", //获取对象（单个）
-        getInterfaceList: "GetListInterface", //获取接口列表
-        setInterfaceRole: "SetInterfaceRole", //提交接口分配
-        setMorenRole: "SetMorenRole", //设置默认角色
-        getTreeMenu: "GetTreeMenu", //获取树形菜单
-        setMenuRole: "SetMenuRole" //提交菜单分配
+        add: "AddYsdatabaseYsRole", //添加
+        edit: "UpdateYsdatabaseYsRole", //修改
+        del: "DelYsdatabaseYsRole", //删除
+        getList: "GetListYsdatabaseYsRole", //获取列表
+        getObj: "GetYsdatabaseYsRole", //获取对象（单个）
+        getRolesList: "GetListYsdatabaseYsRole" //获取角色
       },
+      tableLabel: [
+        { type: "selection", width: "50" },
+        { Label: "ID", prop: "id", width: "50", type: "index" },
+        { Label: "名称", prop: "Name", width: "100" },
+        // { Label: "上级菜单", prop: "Pid", width: "80" },
+        // { Label: "链接地址", prop: "Url"},
+        // { Label: "页面标识", prop: "Param",width: "150"},
+        // { Label: "图标", prop: "Icon", width: "50" },
+        { Label: "排序", prop: "Sort", width: "50" },
+        // {Label:'是否管理后台',prop:"shifouguanlihoutai",width:'150'},
+        // {Label:'是否需要登录',prop:"shifouxuyaodenglu",width:'150'},
+        // {Label:'创建时间',prop:"beizhu",width:'150'},
+        {Label:'备注',prop:"Memo"},
+      ],
       filtersName: "角色名称",
       button: {
         query: "查询",
         add: "添加",
-        batchRemove: "批量删除"
+        batchRemove: "批量删除",
+        edit: "编辑",
+        del: "删除",
+        cancel: "取消",
+        modify: "修改"
       },
+
+      para: paraHelper, //列表
       buttons: {
-        //按钮的权限控制
+        //按钮去权限控制
         selectshow: false,
         addshow: false,
         updateshow: false,
-        delshow: false,
-        menushow: false,
-        interfaceshow: false
+        delshow: false
       },
-      paraSwitch: paraHelper, //开关按钮使用
-      paraInterface: paraHelper, //获取interface
-      paraMenu: paraHelper, //获取menus
-      para: paraHelper, //获取主list
-      addPara: paraHelper, //添加参数
-      editPara: paraHelper, //编辑参数
-      delPara: paraHelper, //删除参数
-      defaultProps: {
-        children: "children",
-        label: "label"
-      },
+      // para: paraHelper,
       dialogStatus: "",
-      textMap: {
-        update: "编辑角色",
-        create: "添加角色",
-        updatePermissionMenu: "菜单分配",
-        updatePermissionInterface: "接口分配"
-      },
-      dialogFormVisibleData: false, //添加权限
-      dialogFormVisibleAdd: false, //添加角色显示
-      dialogFormVisibleEdit: false, //编辑角色显示
-      dialogFormPermissionVisibleMenu: false, //分配菜单权限显示
-      dialogFormPermissionVisibleInterface: false, //分配接口权限显示
+      dialogFormVisibleButton:false,
+      dialogFormVisibleIcon:false,
+      dialogFormVisibleAdd: false,
+      dialogFormVisibleEdit: false,
       filters: {
-        juesemingcheng: ""
+        name: ""
       },
-      dataList: [],
-      menus: [], //菜单列表
-      interface: [], //接口列表
+      ListsuperiorMenu: [],
+      dataList: [], //主页数据
       total: 0,
       page: 1,
       sels: [], // 列表选中列
-      selsInterface: [], //选中接口列表
       editFormRules: {
-        juesemingcheng: [
+        Name: [
           {
             required: true,
-            message: "请输入名称",
+            message: "菜单名称必填",
+            trigger: "blur"
+          }
+        ],
+        code: [
+          {
+            required: true,
+            message: "标识必填",
+            trigger: "blur"
+          }
+        ],
+        shangjiid: [
+          {
+            required: true,
+            message: "上级菜单必填",
+            trigger: "blur"
+          }
+        ],
+        lianjie: [
+          {
+            required: true,
+            message: "链接必填",
             trigger: "blur"
           }
         ]
       },
+
       // 编辑界面数据
       editForm: {
+        Name: "",
+        Url:'',
         id: "",
-        juesemingcheng: "",
-        caidanguanlian: [],
-        jiekouguanlian: [],
-        paixu: 1,
-        moren: true,
-        beizhu: ""
+        shangjiid: "",
+        lianjie: "",
+        shifouxianshi: "",
+        paixu: "",
+        tubiao: ""
       },
+
+      filterdataListData: [],
       //查询条件
-      selectData: {
-        juesemingcheng: null,
-        Page: 1,
-        Size: 10
+      filters: {
+        name: ""
       },
-      list: [],
+      ids: [],
+      page: 1,
       addFormVisible: false, // 添加界面是否显示
       addFormRules: {
-        RoleName: [
+        name: [
           {
             required: true,
-            message: "请输入名称",
+            message: "请输入姓名",
             trigger: "blur"
           }
         ]
@@ -462,22 +478,29 @@ export default {
     };
   },
   methods: {
-    // //设置默认角色
-    // setMorenRole(rowdata) {
-    //   // console.log('setIsCheckInterface--rowdata===',rowdata)
-    //   this.paraSwitch.Code = this.bllCode.setMorenRole
-    //   let data = {
-    //     id: rowdata.id,
-    //     moren: rowdata.moren
-    //   }
-    //   this.paraSwitch.Data = JSON.stringify(data)
-    //   handlePost(this.paraSwitch).then(res => {
-    //     if (res.IsSuccess == true) {
-    //       this.getDataList()
-    //     }
-    //   })
-    // },
-
+        //刷新页面
+    Refresh() {
+      (this.filters = {
+        Page: 1,
+        Size: 15
+      }),
+        this.getDataList();
+    },
+        //穿梭框
+    handleChange(value, direction, movedKeys) {
+        console.log(value, direction, movedKeys);
+      },
+    //图标
+    allotIcon() {
+      this.dialogFormVisibleIcon = true;
+    },
+    allotButton() {
+      this.dialogFormVisibleButton = true;
+    },
+    //行点击事件
+    Rowdblclick() {
+      this.handleAdd();
+    },
     //加载按钮
     loadButton(data) {
       if (data && data.length > 0) {
@@ -490,153 +513,125 @@ export default {
           this.interfaces.indexOf(this.bllCode.edit) > 0 ? true : false;
         this.buttons.delshow =
           this.interfaces.indexOf(this.bllCode.del) > 0 ? true : false;
-        this.buttons.menushow =
-          this.interfaces.indexOf(this.bllCode.getTreeMenu) > 0 ? true : false;
-        this.buttons.interfaceshow =
-          this.interfaces.indexOf(this.bllCode.getInterfaceList) > 0
-            ? true
-            : false;
-        //console.log('this.interfaces.show', this.interfaces)
-        //console.log('this.bllCode.add',this.bllCode.add)
       }
     },
 
-    //查询
-    getKeyList() {
-      this.selectData.Page = 1;
-      this.getDataList();
-    },
-    handleNodeClick(data) {
-      console.log(data);
-    },
+    // 删除
+    // handleDel(index, row) {
+    //   this.$confirm("确认删除该记录吗?", "提示", {
+    //     type: "warning",
+    //     confirmButtonText: "确定",
+    //     cancelButtonText: "取消"
+    //   })
+    //     .then(() => {
+    //       const paraId = {
+    //         Id: row.id
+    //       };
+    //       this.para.Code = this.bllCode.del;
+    //       this.para.Data = JSON.stringify(paraId);
+    //       console.log(this.para.Data);
+    //       handlePost(this.para).then(res => {
+    //         if (res.IsSuccess == true) {
+    //           this.getDataList();
+    //         }
+    //       });
+    //     })
+    //     .catch(() => {});
+    // },
     handleCurrentChange(val) {
-      this.selectData.Page = val;
+      this.page = val;
       this.getDataList();
     },
-    // 获取接口列表
-    getInterfaceList() {
-      this.paraInterface.Code = this.bllCode.getInterfaceList;
-      this.paraInterface.Data = "";
-      handlePost(this.paraInterface).then(res => {
+    // 获取列表
+    getDataList() {
+      const paraId = {
+        Page: this.page,
+        Name: this.filters.Name,
+        Size: 10
+      };
+      // this.dataList = [];
+      this.para.Code = this.bllCode.getList;
+      this.para.Data = JSON.stringify(paraId);
+      handlePost(this.para).then(res => {
         if (res.IsSuccess == true) {
-          this.interface = res.Data.List;
-          this.dialogStatus = "updatePermissionInterface";
-          this.dialogFormPermissionVisibleInterface = true;
+          this.total = res.Data.Count;
+          this.dataList = res.Data.List;
         }
       });
-    },
-    //加载选中
-    callbackUp(val) {
-      if (val == "updatePermissionInterface") {
-        let selected = this.editForm.jiekouguanlian;
-        this.$nextTick(function() {
-          selected.forEach(i => {
-            this.$refs.table.toggleRowSelection(
-              this.interface.find(d => d.id == i),
-              true
-            ); // 设置默认选中
-          });
-        });
-      }
-    },
-    //获取菜单列表
-    getMenuList() {
-      this.paraMenu.Code = this.bllCode.getTreeMenu;
-      this.paraMenu.Data = "";
-      handlePost(this.paraMenu)
-        .then(res => {
-          if (res.IsSuccess == true) {
-            this.menus = res.Data;
-            this.dialogStatus = "updatePermissionMenu";
-            this.dialogFormPermissionVisibleMenu = true;
-          }
-        })
-        .catch(err => {
-          console.log(err);
-        });
-    },
-    // 获取角色列表
-    getDataList() {
-      this.dataList = [];
-      this.para.Data = JSON.stringify(this.selectData);
-      this.para.Code = this.bllCode.getList;
-      handlePost(this.para)
-        .then(res => {
-          if (res.IsSuccess == true) {
-            this.dataList = res.Data.List;
-            this.total = res.Data.Count;
-          }
-        })
-        .catch(err => {
-          console.log(err);
-        });
     },
     // 删除
     handleDel(index, row) {
       this.$confirm("确认删除该记录吗?", "提示", {
+        type: "warning",
         confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning"
+        cancelButtonText: "取消"
       })
         .then(() => {
           const paraId = {
-            id: row.id
+            Id: row.Id
           };
-          this.delPara.Code = this.bllCode.del;
-          this.delPara.Data = JSON.stringify(paraId);
-          handlePost(this.delPara)
-            .then(res => {
-              if (res.IsSuccess == true) {
-                this.getDataList();
-              }
-            })
-            .catch(err => {
-              console.log(err);
-            });
+          this.para.Code = this.bllCode.del;
+          this.para.Data = JSON.stringify(paraId);
+          handlePost(this.para).then(res => {
+            if (res.IsSuccess == true) {
+              this.getDataList();
+              this.$message({
+                message: "删除成功！",
+                type: "success"
+              });
+            }
+          });
         })
-        .catch(() => {
-          console.log(err);
-        });
-    },
-        //行点击事件
-    Rowdblclick(index, row) {
-      this.handleEdit(index, row);
+        .catch(() => {});
     },
     // 显示编辑界面
     handleEdit(index, row) {
       this.dialogStatus = "update";
       this.dialogFormVisibleEdit = true;
+      // this.$refs["editForm"].resetFields(); //重置editForm
       this.editForm = Object.assign({}, row);
+      let paert = {
+        Pid: -1
+      };
+      this.para.Data = JSON.stringify(paert);
+      this.para.Code = this.bllCode.getList;
+      handlePost(this.para).then(res => {
+        if (res.IsSuccess == true) {
+          this.ListsuperiorMenu = res.Data.List;
+          let top = {
+            Id: 0,
+            Name: "无"
+          };
+          this.ListsuperiorMenu.push(top);
+        }
+      });
     },
-    // 显示菜单权限界面
-    handlePermissionMenu(index, row) {
-      this.editForm = Object.assign({}, row);
-      this.getMenuList();
-    },
-        // -----------------------------------权限Data
-    handlePermissionData(index, row) {
-      this.editForm = Object.assign({}, row);
-      this.dialogFormVisibleData = true;
-      // this.getInterfaceList();
-    },
-    // 显示接口权限界面
-    handlePermissionInterface(index, row) {
-      this.editForm = Object.assign({}, row);
-      this.getInterfaceList();
-    },
+
     // 显示添加界面
     handleAdd() {
       this.dialogStatus = "create";
       this.dialogFormVisibleAdd = true;
+      // this.$refs["editForm"].resetFields(); //重置editForm
       this.editForm = {
-        id: "",
-        juesemingcheng: "",
-        caidanguanlian: [],
-        jiekouguanlian: [],
-        paixu: 1,
-        moren: true,
-        beizhu: ""
+
       };
+
+      let paert = {
+        Pid: -1
+      };
+      this.para.Data = JSON.stringify(paert);
+      this.para.Code = this.bllCode.getList;
+      console.log(this.para);
+      handlePost(this.para).then(res => {
+        if (res.IsSuccess == true) {
+          this.ListsuperiorMenu = res.Data.List;
+          let top = {
+            Id: 0,
+            Name: "无"
+          };
+          this.ListsuperiorMenu.push(top);
+        }
+      });
     },
     // 编辑
     updateData() {
@@ -645,28 +640,35 @@ export default {
           this.$confirm("确认提交吗？", "提示", {
             confirmButtonText: "确定",
             cancelButtonText: "取消"
-          })
-            .then(() => {
-              this.editPara.Code = this.bllCode.edit;
-              this.editPara.Data = JSON.stringify(this.editForm);
-              handlePost(this.editPara)
-                .then(res => {
-                  if (res.IsSuccess == true) {
-                    this.getDataList();
-                    this.$refs["editForm"].resetFields();
-                    this.dialogFormVisibleEdit = false;
-                  }
-                })
-                .catch(err => {
-                  console.log(err);
+          }).then(() => {
+            let paert = {
+              shangjiid: -1
+            };
+            this.para.Data = JSON.stringify(this.paert);
+            this.para.Code = this.bllCode.edit;
+            this.para.Data = JSON.stringify(this.editForm);
+            handlePost(this.para).then(res => {
+              if (res.IsSuccess == true) {
+                this.$refs["editForm"].resetFields(); //重置editForm
+                this.dialogFormVisibleEdit = false;
+                this.getDataList();
+                this.$message({
+                  message: "修改成功！",
+                  type: "success"
                 });
-            })
-            .catch(e => {
-              // 打印一下错误
-              console.log(e);
+              } else {
+                this.$refs["editForm"].resetFields();
+                this.dialogFormVisibleEdit = false;
+              }
             });
+          });
         }
       });
+    },
+    //查询
+    getKeyList() {
+      this.page = 1;
+      this.getDataList();
     },
     // 添加
     createData: function() {
@@ -677,103 +679,35 @@ export default {
             cancelButtonText: "取消"
           })
             .then(() => {
-              this.editForm.id = 0;
-              this.addPara.Code = this.bllCode.add;
-              this.addPara.Data = JSON.stringify(this.editForm);
-              handlePost(this.addPara)
-                .then(res => {
-                  if (res.IsSuccess == true) {
-                    this.getDataList();
-                    this.$refs["editForm"].resetFields();
-                    this.dialogFormVisibleAdd = false;
-                  }
-                })
-                .catch(err => {
-                  console.log(err);
-                });
+              this.para.Code = this.bllCode.add;
+              this.para.Data = JSON.stringify(this.editForm);
+              handlePost(paraHelper).then(res => {
+                if (res.IsSuccess == true) {
+                  this.$refs["editForm"].resetFields();
+                  this.dialogFormVisibleAdd = false;
+                  this.getDataList();
+                  this.$message({
+                    message: "添加成功！",
+                    type: "success"
+                  });
+                } else {
+                  this.$refs["editForm"].resetFields();
+                  this.dialogFormVisibleAdd = false;
+                }
+              });
             })
-            .catch(e => {
-              // 打印一下错误
-              console.log(e);
-            });
+            .catch(e => {});
         }
       });
-    },
-    //取出id数组
-    changeHelp(array) {
-      this.list = array.map(item => item.id);
-      return this.list;
-    },
-    //菜单分配保存
-    SetMenuRole() {
-      this.$confirm("确认提交吗？", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消"
-      })
-        .then(() => {
-          //console.log(this.$refs.tree.getCheckedKeys());
-          this.paraMenu.Code = this.bllCode.setMenuRole;
-          this.editForm.caidanguanlian = this.$refs.tree.getCheckedKeys();
-          //console.log('this.editForm.jiekouguanlian',this.editForm.caidanguanlian)
-          this.paraMenu.Data = JSON.stringify(this.editForm);
-          handlePost(this.paraMenu)
-            .then(res => {
-              if (res.IsSuccess == true) {
-                let ift = this.$store.dispatch("GetInfo"); //更新用户权限信息
-                this.getDataList();
-                this.dialogFormPermissionVisibleMenu = false;
-              }
-            })
-            .catch(err => {
-              console.log(err);
-            });
-        })
-        .catch(e => {
-          // 打印一下错误
-          console.log(e);
-        });
-    },
-    //接口分配保存
-    SetInterfaceRole() {
-      this.$confirm("确认提交吗？", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消"
-      })
-        .then(() => {
-          this.paraInterface.Code = this.bllCode.setInterfaceRole;
-          this.editForm.jiekouguanlian = this.changeHelp(this.selsInterface);
-          console.log("this.editForm", this.editForm);
-          this.paraInterface.Data = JSON.stringify(this.editForm);
-          handlePost(this.paraInterface)
-            .then(res => {
-              if (res.IsSuccess == true) {
-                let ift = this.$store.dispatch("GetInfo"); //更新用户权限信息
-                this.getDataList();
-                this.dialogFormPermissionVisibleInterface = false;
-              }
-            })
-            .catch(err => {
-              console.log(err);
-            });
-        })
-        .catch(e => {
-          // 打印一下错误
-          console.log(e);
-        });
     },
     // 全选单选多选
     selsChange(sels) {
       this.sels = sels;
-      //console.log(this.sels)
-    },
-    // 接口全选单选多选
-    selsChangeInterface(sels) {
-      this.selsInterface = sels;
-      //console.log('this.selsInterface ',this.selsInterface )
     },
     // 批量删除
     batchRemove() {
-      var ids = this.sels.map(item => item.id);
+      // this.idData = this.sels.map(item => item.id).toString();//转换为字符串
+      var Ids = this.sels.map(item => item.Id);
       this.$confirm("确认删除选中记录吗？", "提示", {
         type: "warning",
         confirmButtonText: "确定",
@@ -781,39 +715,82 @@ export default {
       })
         .then(() => {
           const paraId = {
-            ids: ids
+            Ids: Ids
           };
-          this.para.Data = JSON.stringify(paraId);
           this.para.Code = this.bllCode.del;
-          handlePost(this.para)
-            .then(res => {
-              if (res.IsSuccess == true) {
-                this.getDataList();
-                this.$message({
-                  message: "删除成功！",
-                  type: "success"
-                });
-              } else {
-              }
-            })
-            .catch(err => {
-              console.log(err);
+          this.para.Data = JSON.stringify(paraId);
+          handlePost(this.para).then(res => {
+            this.getDataList();
+            this.$message({
+              message: "删除成功！",
+              type: "success"
             });
+          });
         })
-        .catch(err => {
-          console.log(err);
-        });
+        .catch(() => {});
     }
   },
   mounted() {
-    this.loadButton(store.getters.interfaces); //按钮显示
+    this.loadButton(store.getters.interfaces); //按权限加载按钮
     this.getDataList();
   }
 };
 </script>
-
 <style scoped>
-.table-operations {
-  margin-bottom: 16px;
+.panel-heading {
+  padding: 15px;
+    padding-bottom: 0;
+    background: #e8edf0;
+    border-color: #e8edf0;
+    position: relative;
+    border-bottom: 1px solid transparent;
+    border-top-right-radius: 2px;
+    border-top-left-radius: 2px;
+}
+.panel-lead {
+    margin-bottom: 15px;
+}
+.app-container {
+  background: #F0F2F5;
+}
+.el-select .el-input {
+    width: 130px;
+  }
+  .input-with-select .el-input-group__prepend {
+    background-color: #fff;
+  }
+  .tablesSyl td,
+.tablesSyl th {
+  padding: 5px 0;
+}
+.anticons-list {
+  overflow: hidden;
+  padding-left: 0px;
+}
+.anticons-list li {
+  float: left;
+  /* width: 16.66%; */
+  text-align: center;
+  list-style: none;
+  cursor: pointer;
+  /* height: 100px; */
+  color: #555;
+  -webkit-transition: color 0.3s ease-in-out, background-color 0.3s ease-in-out;
+  transition: color 0.3s ease-in-out, background-color 0.3s ease-in-out;
+  position: relative;
+  /* margin: 3px 0; */
+  /* border-radius: 4px; */
+  background-color: #fff;
+  overflow: hidden;
+  /* padding: 10px 0 0; */
+}
+.anticons-list li .anticon {
+    font-size: 36px;
+    /* margin: 12px 0 8px; */
+    -webkit-transition: -webkit-transform .3s ease-in-out;
+    transition: -webkit-transform .3s ease-in-out;
+    transition: transform .3s ease-in-out;
+    transition: transform .3s ease-in-out,-webkit-transform .3s ease-in-out;
+    will-change: transform;
 }
 </style>

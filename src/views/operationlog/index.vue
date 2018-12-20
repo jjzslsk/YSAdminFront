@@ -5,7 +5,7 @@
     <!--工具条-->
       <el-form :inline="true" :model="filters" @submit.native.prevent>
         <!-- <el-form-item>
-          <el-button v-if="buttons.selectshow==true" type="primary" v-on:click="getKeyList">刷新</el-button>
+          <a-button v-if="buttons.selectshow==true" type="primary" v-on:click="getKeyList">刷新</a-button>
         </el-form-item> -->
         <el-form-item>
           <a-button type="primary" @click="handleAdd">{{button.add}}</a-button>
@@ -17,10 +17,7 @@
           <a-button type="primary" @click="Refresh">刷新</a-button>
         </el-form-item>
         <el-form-item>
-          <a-button type="primary" @click="allotButton">分配按钮</a-button>
-        </el-form-item>
-        <el-form-item>
-          <a-button type="primary" @click="allotIcon">图标</a-button>
+          <!-- <a-button type="primary" @click="allotButton">分配按钮</a-button> -->
         </el-form-item>
         <el-form-item>
       <a-button type="danger" @click="batchRemove" :disabled="this.sels.length===0">{{button.batchRemove}}</a-button>
@@ -38,7 +35,7 @@
           <el-option label="页面标识" value="5"></el-option>
           <el-option label="排序" value="6"></el-option>
         </el-select>
-        <!-- <el-button v-on:click="getKeyList" slot="append" icon="el-icon-search"></el-button> -->
+        <!-- <a-button v-on:click="getKeyList" slot="append" icon="el-icon-search"></a-button> -->
       </el-input>
         </el-form-item>
         
@@ -75,7 +72,7 @@
     </el-col>
 
         <!--图标-->
-    <a-modal title="添加图标" @ok="handleOk" @click="allotIcon" v-model="dialogFormVisibleIcon" >
+    <el-dialog title="添加" :visible.sync="dialogFormVisibleIcon" :close-on-click-modal="false">
       <ul class="anticons-list">
         <li class><i class="anticon anticon-lock"></i></li>
         <li class><i class="anticon anticon-unlock"></i></li>
@@ -130,10 +127,10 @@
         <a-button @click.native="dialogFormVisibleIcon=false">取消</a-button>
         <a-button type="primary" @click.native="dialogFormVisibleIcon=false">确认</a-button>
       </div>
-    </a-modal>
+    </el-dialog>
 
             <!--按钮-->
-    <a-modal title="添加" v-model="dialogFormVisibleButton" @ok="handleOkButton" @click="allotIcon">
+    <el-dialog title="添加" :visible.sync="dialogFormVisibleButton" :close-on-click-modal="false">
              <div style="text-align: center" class="transferBox">
           <el-transfer
           
@@ -160,99 +157,57 @@
         <a-button @click.native="dialogFormVisibleButton=false">取消</a-button>
         <a-button type="primary" @click.native="dialogFormVisibleButton=false">确认</a-button>
       </div>
-    </a-modal>
+    </el-dialog>
 
     <!--添加界面-->
-    <a-modal title="添加菜单" :visible.sync="dialogFormVisibleAdd" :close-on-click-modal="false">
+    <el-dialog title="添加部门" :visible.sync="dialogFormVisibleAdd" :close-on-click-modal="false">
       <el-form :model="editForm" label-width="100px" :rules="editFormRules" ref="editForm">
-        <el-form-item label="菜单名称:" prop="Name">
-          <el-input v-model="editForm.Name" auto-complete="off"></el-input>
+        <el-form-item label="用户名:" prop="Username">
+          <el-input v-model="editForm.Username" auto-complete="off"></el-input>
         </el-form-item>
-        <el-form-item label="参数:" prop="Param">
-          <el-input v-model="editForm.Param" auto-complete="off"></el-input>
+        <el-form-item label="真实姓名:" prop="Pid">
+          <el-input v-model="editForm.Pid" auto-complete="off"></el-input>
         </el-form-item>
-        <el-form-item label="备注:" prop="Memo">
-          <el-input v-model="editForm.Memo" auto-complete="off"></el-input>
+        <el-form-item label="密码:" prop="Pid">
+          <el-input type="psaa" v-model="editForm.Pid" auto-complete="off"></el-input>
         </el-form-item>
-        <el-form-item label="图标:" prop="">
-          <el-input placeholder="请输入内容" v-model="editForm.Icon" class="input-with-select">
-            <a-button slot="append" icon="el-icon-search" @click="allotIcon"></a-button>
-          </el-input>
-        </el-form-item>
-        <el-form-item label="上级菜单:" prop="Pid">
-          <el-select v-model="editForm.Pid" placeholder="请选择">
-              <el-option
-                v-for="item in ListsuperiorMenu"
-                :key="item.Id"
-                :label="item.Name"
-                :value="item.Id">
-              </el-option>
-            </el-select>
-            {{editForm.Pid}}
-        </el-form-item>
-        <el-form-item label="链接地址:">
-          <el-input v-model="editForm.Url" auto-complete="off"></el-input>
+        <el-form-item label="所属部门:" prop="Pid">
+          <el-input v-model="editForm.Pid" auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item label="排序:">
           <el-input-number v-model="editForm.Sort"></el-input-number>
         </el-form-item>
-        <el-form-item label="显示菜单:">
-          <el-checkbox v-model="editForm.Isvisiable">显示</el-checkbox>
-        </el-form-item>
-        <el-form-item label="是否启用:">
-          <el-checkbox v-model="editForm.State">显示</el-checkbox>
+        <el-form-item label="备注:" prop="Memo">
+          <el-input v-model="editForm.Memo" auto-complete="off"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <a-button @click.native="dialogFormVisibleAdd=false">{{button.cancel}}</a-button>
         <a-button type="primary" @click="createData">{{button.add}}</a-button>
       </div>
-    </a-modal>
+    </el-dialog>
 
     <!--编辑界面-->
-    <a-modal title="编辑菜单" :visible.sync="dialogFormVisibleEdit" :close-on-click-modal="false">
+    <el-dialog title="编辑部门" :visible.sync="dialogFormVisibleEdit" :close-on-click-modal="false">
       <el-form :model="editForm" label-width="100px" :rules="editFormRules" ref="editForm">
-        <el-form-item label="菜单名称:" prop="Name">
+        <el-form-item label="部门名称:" prop="Name">
           <el-input v-model="editForm.Name" auto-complete="off"></el-input>
         </el-form-item>
-        <el-form-item label="图标:" prop="Icon">
-          <el-input v-model="editForm.Icon" auto-complete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="参数:" prop="Param">
-          <el-input v-model="editForm.Param" auto-complete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="备注:" prop="Memo">
-          <el-input v-model="editForm.Memo" auto-complete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="上级菜单:" prop="Pid">
-          <el-select v-model="editForm.Pid" placeholder="请选择">
-              <el-option
-                v-for="item in ListsuperiorMenu"
-                :key="item.Id"
-                :label="item.Name"
-                :value="item.Id">
-              </el-option>
-            </el-select>
-            {{editForm.Pid}}
-        </el-form-item>
-        <el-form-item label="链接地址:">
-          <el-input v-model="editForm.Url" auto-complete="off"></el-input>
+        <el-form-item label="上级部门:" prop="Pid">
+          <el-input v-model="editForm.Pid" auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item label="排序:">
           <el-input-number v-model="editForm.Sort"></el-input-number>
         </el-form-item>
-        <el-form-item label="显示菜单:">
-          <el-checkbox v-model="editForm.Isvisiable">显示</el-checkbox>
-        </el-form-item>
-        <el-form-item label="是否启用:">
-          <el-checkbox v-model="editForm.State">显示</el-checkbox>
+        <el-form-item label="备注:" prop="Memo">
+          <el-input v-model="editForm.Memo" auto-complete="off"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <a-button @click.native="dialogFormVisibleEdit=false">{{button.cancel}}</a-button>        
         <a-button type="primary" @click="updateData">{{button.modify}}</a-button>        
       </div>
-    </a-modal>
+    </el-dialog>
     </el-card>
   </section>
 </template>
@@ -418,28 +373,23 @@ export default {
       
       bllCode: {
         //接口标识，由后端提供
-        add: "AddYsdatabaseYsMenu", //添加
-        edit: "UpdateYsdatabaseYsMenu", //修改
-        del: "DelYsdatabaseYsMenu", //删除
-        getList: "GetListYsdatabaseYsMenu", //获取列表
-        getObj: "GetYsdatabaseYsMenu", //获取对象（单个）
-        getRolesList: "GetListYsdatabaseYsRole" //获取角色
+        // add: "AddYsdatabaseYsDictionary", //添加
+        // edit: "UpdateYsdatabaseYsDictionary", //修改
+        del: "DelYsdatabaseYsLog", //删除
+        getList: "GetListYsdatabaseYsLog", //获取列表
+        getObj: "GetYsdatabaseYsLog", //获取对象（单个）
+        // getRolesList: "GetListYsdatabaseYsRole" //获取角色
       },
       tableLabel: [
         { type: "selection", width: "50" },
-        { Label: "ID", prop: "id", width: "50", type: "index" },
-        { Label: "名称", prop: "Name", width: "100" },
-        { Label: "上级菜单", prop: "Pid", width: "80" },
-        { Label: "链接地址", prop: "Url"},
-        { Label: "页面标识", prop: "Param",width: "150"},
-        { Label: "图标", prop: "Icon", width: "50" },
-        { Label: "排序", prop: "Sort", width: "50" }
-        // {Label:'是否管理后台',prop:"shifouguanlihoutai",width:'150'},
-        // {Label:'是否需要登录',prop:"shifouxuyaodenglu",width:'150'},
-        // {Label:'创建时间',prop:"beizhu",width:'150'},
-        // {Label:'备注',prop:"beizhu",width:'150'},
+        { Label: "Id", prop: "Id", width: "50", type: "index" },
+        { Label: "标识", prop: "Code", width: "200" },
+        { Label: "排序", prop: "Sort", width: "200" },
+        {Label:'参数',prop:"Param",width:'150'},
+        {Label:'是否启用',prop:"State",width:'150'},
+        {Label:'备注',prop:"Memo"},
       ],
-      filtersName: "菜单名称",
+      filtersName: "请输入部门",
       button: {
         query: "查询",
         add: "添加",
@@ -550,12 +500,6 @@ export default {
     //图标
     allotIcon() {
       this.dialogFormVisibleIcon = true;
-    },
-    handleOk() {
-      this.dialogFormVisibleIcon = false;
-    },
-    handleOkButton() {
-      this.dialogFormVisibleButton = false;
     },
     allotButton() {
       this.dialogFormVisibleButton = true;

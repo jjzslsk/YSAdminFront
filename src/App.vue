@@ -86,10 +86,10 @@ export default {
   padding: 5px 0
 }
 .el-dialog__header {
-    background: #222d32;
+    background: #f8f8f8;
 }
 .el-dialog__title {
-  color: #fff;
+  color: #666;
 }
 .el-table thead {
     color: #000;
@@ -101,7 +101,7 @@ export default {
       min-width: 8rem;
 }
 .el-dialog__headerbtn .el-dialog__close {
-    color: #fff;
+    color: #666;
     font-size: 2rem;
 }
 .sectionBox .el-button--info {
@@ -153,5 +153,18 @@ export default {
 } 
 .transferBox .el-transfer-panel__footer {
   display: none;
+}
+.el-button--primary {
+  background: #1890FF;
+  border-color: #1890FF;
+}
+.el-button--text {
+  color: #1890FF;
+}
+.el-button--primary:hover {
+  background: #40a9ff;
+}
+.el-button--text:focus, .el-button--text:hover {
+  color: #1890FF;
 }
 </style>
