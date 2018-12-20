@@ -31,17 +31,17 @@
         </el-form-item>
         <el-form-item style="float: right;">
 
-    <!-- <a-input-group compact>
-      <a-select @change="this.handleSelectChange" defaultValue="接口名称" style="width: 40%">
+    <a-input-group compact>
+      <a-select @change="this.handleSelectChange" defaultValue="菜单名称" style="width: 40%">
           <a-select-option value='ID'>ID</a-select-option>
-          <a-select-option value='接口名称'>接口名称</a-select-option>
-          <a-select-option value='上级菜单'>上级菜单</a-select-option>
+          <a-select-option value='Name'>菜单名称</a-select-option>
+          <a-select-option value='Pname'>上级菜单</a-select-option>
           <a-select-option value='链接地址'>链接地址</a-select-option>
           <a-select-option value='页面标识'>页面标识</a-select-option>
           <a-select-option value='排序'>排序</a-select-option>
       </a-select>
-    <a-input style="width: 60%" defaultValue="" v-model="filters" />
-  </a-input-group> -->
+    <a-input style="width: 60%" defaultValue="" v-model="filters.data"/>
+  </a-input-group>
 
           <!-- <el-input v-model="filters.Name" :placeholder="filtersName" class="input-with-select">
         <el-select v-model="select" slot="prepend" placeholder="请选择">
@@ -186,7 +186,7 @@
     </a-modal>
 
     <!--添加界面-->
-    <a-modal title="添加菜单" :visible.sync="dialogFormVisibleAdd">
+    <a-modal title="添加菜单" @ok="handleOkAdd" @click="createData" v-model="dialogFormVisibleAdd">
       <el-form :model="editForm" label-width="100px" :rules="editFormRules" ref="editForm">
 
         <!-- <a-form-item label='菜单名称' :labelCol="{ span: 5 }" :wrapperCol="{ span: 12 }">
@@ -256,7 +256,7 @@
     </a-modal>
 
     <!--编辑界面-->
-    <a-modal title="编辑菜单" :visible.sync="dialogFormVisibleEdit" :close-on-click-modal="false">
+    <a-modal title="编辑菜单" @ok="handleOkEdit" @click="updateData" v-model="dialogFormVisibleEdit">
       <el-form :model="editForm" label-width="100px" :rules="editFormRules" ref="editForm">
         <el-form-item label="菜单名称:" prop="Name">
           <el-input v-model="editForm.Name" auto-complete="off"></el-input>
@@ -446,7 +446,7 @@ export default {
         return data;
       };
     return {
-      Aselect:'',
+      selectValue:'Name',
             //穿梭框
         data: generateData(),
         value3: [1],
@@ -513,9 +513,6 @@ export default {
       dialogFormVisibleIcon:false,
       dialogFormVisibleAdd: false,
       dialogFormVisibleEdit: false,
-      filters: {
-        name: ""
-      },
       ListsuperiorMenu: [],
       dataList: [], //主页数据
       total: 0,
@@ -566,9 +563,7 @@ export default {
 
       filterdataListData: [],
       //查询条件
-      filters: {
-        name: ""
-      },
+      filters: {},
       ids: [],
       page: 1,
       addFormVisible: false, // 添加界面是否显示
@@ -586,7 +581,7 @@ export default {
   methods: {
     //搜索
     handleSelectChange (value) {
-      this.Aselect = value
+      this.selectValue = value
       // this.form.setFieldsValue({
       //   note: `Hi, ${value === 'male' ? 'man' : 'lady'}!`,
       // })
@@ -609,6 +604,12 @@ export default {
     },
     handleOk() {
       this.dialogFormVisibleIcon = false;
+    },
+    handleOkEdit() {
+      this.dialogFormVisibleEdit = false;
+    },
+    handleOkAdd(){
+      this.dialogFormVisibleAdd = false;
     },
     handleOkButton() {
       this.dialogFormVisibleButton = false;
@@ -663,14 +664,33 @@ export default {
     },
     // 获取列表
     getDataList() {
-      const paraId = {
+      var dataSource = this.selectValue
+      const paraId = [{
         Page: this.page,
-        Name: this.filters,
+        Data: this.filters.data,
         Size: 10
-      };
+      }];
+
+      var keyMap = {
+            "Data" : dataSource,
+        };
+
+        for(var i = 0;i < paraId.length;i++){
+                var obj = paraId[i];
+                for(var key in obj){
+                          var newKey = keyMap[key];
+                          if(newKey){
+                                    obj[newKey] = obj[key];
+                                    delete obj[key];
+                            }
+                    }
+        }
+console.log ('paraId::',paraId)
+      // var result = paraId.map(o=>{return{dataSource:o.Name}});
+      // console.log ('dataSource:',result)
       // this.dataList = [];
       this.para.Code = this.bllCode.getList;
-      this.para.Data = JSON.stringify(paraId);
+      this.para.Data = JSON.stringify(paraId[0]);
       handlePost(this.para).then(res => {
         if (res.IsSuccess == true) {
           this.total = res.Data.Count;
