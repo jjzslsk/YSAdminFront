@@ -11,7 +11,7 @@
           <a-button type="primary" @click="handleAdd">{{button.add}}</a-button>
         </el-form-item>
         <el-form-item>
-          <a-button type="primary" @click="handleAdd">编辑</a-button>
+          <!-- <a-button type="primary" @click="handleAdd">编辑</a-button> -->
         </el-form-item>
         <el-form-item>
           <a-button type="primary" @click="Refresh">刷新</a-button>
@@ -42,17 +42,6 @@
       </el-form>
 
     <!--列表--> 
-      <!-- <a-table defaultExpandAllRows :pagination="false" size="small" :columns="columnsTree" :dataSource="dataTree" :rowSelection="rowSelectionTree">
-          <span slot="tags" slot-scope="tags">
-            <a-checkbox></a-checkbox>
-          </span>
-          <span slot="action" slot-scope="text, record">
-            <a href="javascript:;">{{record.edit}}</a>
-            <a-divider type="vertical" />
-            <a href="javascript:;">{{record.del}}</a>
-          </span>
-      </a-table> -->
-
           <el-table @row-dblclick='Rowdblclick' stripe :data="dataList" highlight-current-row @selection-change="selsChange" style="width: 100%;">
             <el-table-column v-for="item in tableLabel" :key="item.Label" :label="item.Label" :prop="item.prop" :width='item.width' :type='item.type'>
             </el-table-column>
@@ -70,6 +59,17 @@
         style="float:right;">
       </el-pagination>
     </el-col>
+
+    <a-table defaultExpandAllRows :pagination="false" size="small" :columns="columnsTree" :dataSource="dataTree" :rowSelection="rowSelectionTree">
+          <span slot="tags" slot-scope="tags">
+            <a-checkbox></a-checkbox>
+          </span>
+          <span slot="action" slot-scope="text, record">
+            <a href="javascript:;">{{record.edit}}</a>
+            <a-divider type="vertical" />
+            <a href="javascript:;">{{record.del}}</a>
+          </span>
+      </a-table>
 
         <!--图标-->
     <el-dialog title="添加" :visible.sync="dialogFormVisibleIcon" :close-on-click-modal="false">
@@ -193,7 +193,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <a-button @click.native="dialogFormVisibleEdit=false">{{button.cancel}}</a-button>        
-        <a-button type="primary" @click="updateData">{{button.modify}}</a-button>        
+        <a-button type="primary" @click="updateData">{{button.modify}}</a-button>
       </div>
     </el-dialog>
     </el-card>

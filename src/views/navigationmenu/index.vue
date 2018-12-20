@@ -11,7 +11,7 @@
           <a-button type="primary" @click="handleAdd">{{button.add}}</a-button>
         </el-form-item>
         <el-form-item>
-          <a-button type="primary" @click="handleAdd">编辑</a-button>
+          <!-- <a-button type="primary" @click="handleAdd">编辑</a-button> -->
         </el-form-item>
         <el-form-item>
           <a-button type="primary" @click="Refresh">刷新</a-button>
@@ -25,11 +25,25 @@
         <el-form-item>
       <a-button type="danger" @click="batchRemove" :disabled="this.sels.length===0">{{button.batchRemove}}</a-button>
         </el-form-item>
+
         <el-form-item style="float: right;">
           <a-button type="primary" @click="getKeyList">查询</a-button>
         </el-form-item>
         <el-form-item style="float: right;">
-          <el-input v-model="filters.Name" :placeholder="filtersName" class="input-with-select">
+
+    <!-- <a-input-group compact>
+      <a-select @change="this.handleSelectChange" defaultValue="接口名称" style="width: 40%">
+          <a-select-option value='ID'>ID</a-select-option>
+          <a-select-option value='接口名称'>接口名称</a-select-option>
+          <a-select-option value='上级菜单'>上级菜单</a-select-option>
+          <a-select-option value='链接地址'>链接地址</a-select-option>
+          <a-select-option value='页面标识'>页面标识</a-select-option>
+          <a-select-option value='排序'>排序</a-select-option>
+      </a-select>
+    <a-input style="width: 60%" defaultValue="" v-model="filters" />
+  </a-input-group> -->
+
+          <!-- <el-input v-model="filters.Name" :placeholder="filtersName" class="input-with-select">
         <el-select v-model="select" slot="prepend" placeholder="请选择">
           <el-option label="ID" value="1"></el-option>
           <el-option label="接口名称" value="2"></el-option>
@@ -37,24 +51,16 @@
           <el-option label="链接地址" value="4"></el-option>
           <el-option label="页面标识" value="5"></el-option>
           <el-option label="排序" value="6"></el-option>
-        </el-select>
+        </el-select> -->
         <!-- <el-button v-on:click="getKeyList" slot="append" icon="el-icon-search"></el-button> -->
-      </el-input>
+      <!-- </el-input> -->
         </el-form-item>
         
       </el-form>
 
     <!--列表--> 
-      <!-- <a-table defaultExpandAllRows :pagination="false" size="small" :columns="columnsTree" :dataSource="dataTree" :rowSelection="rowSelectionTree">
-          <span slot="tags" slot-scope="tags">
-            <a-checkbox></a-checkbox>
-          </span>
-          <span slot="action" slot-scope="text, record">
-            <a href="javascript:;">{{record.edit}}</a>
-            <a-divider type="vertical" />
-            <a href="javascript:;">{{record.del}}</a>
-          </span>
-      </a-table> -->
+
+      
 
           <el-table @row-dblclick='Rowdblclick' stripe :data="dataList" highlight-current-row @selection-change="selsChange" style="width: 100%;">
             <el-table-column v-for="item in tableLabel" :key="item.Label" :label="item.Label" :prop="item.prop" :width='item.width' :type='item.type'>
@@ -73,6 +79,23 @@
         style="float:right;">
       </el-pagination>
     </el-col>
+
+      <a-table defaultExpandAllRows :pagination="false" size="small" :columns="columnsTree" :dataSource="dataTree" :rowSelection="rowSelectionTree">
+          <a slot="name" slot-scope="text" href="javascript:;">{{text}}</a>
+          <span slot="customTitle"><a-icon type="smile-o" /> Name</span>
+          <!-- <span slot="customTitle"> -->
+            <!-- <a-checkbox></a-checkbox>  -->
+            <!-- 菜单名称</span> -->
+          <span slot="tags" slot-scope="tags">
+            <a-tag v-for="tag in tags" color="blue" :key="tag">{{tag}}</a-tag>
+            <!-- <a-checkbox></a-checkbox> -->
+          </span>
+          <span slot="action" slot-scope="text, record">
+            <a href="javascript:;">{{record.edit}}</a>
+            <a-divider type="vertical" />
+            <a href="javascript:;">{{record.del}}</a>
+          </span>
+        </a-table>
 
         <!--图标-->
     <a-modal title="添加图标" @ok="handleOk" @click="allotIcon" v-model="dialogFormVisibleIcon" >
@@ -163,8 +186,31 @@
     </a-modal>
 
     <!--添加界面-->
-    <a-modal title="添加菜单" :visible.sync="dialogFormVisibleAdd" :close-on-click-modal="false">
+    <a-modal title="添加菜单" :visible.sync="dialogFormVisibleAdd">
       <el-form :model="editForm" label-width="100px" :rules="editFormRules" ref="editForm">
+
+        <!-- <a-form-item label='菜单名称' :labelCol="{ span: 5 }" :wrapperCol="{ span: 12 }">
+          <a-input v-decorator="['note',{rules: [{ required: true, message: 'Please input your note!' }]} ]" />
+        </a-form-item>
+
+        <a-form-item
+            label='上级菜单'
+            :labelCol="{ span: 5 }"
+            :wrapperCol="{ span: 12 }"
+          >
+            <a-select
+              v-decorator="[
+                'gender',
+                {rules: [{ required: true, message: 'Please select your gender!' }]}
+              ]"
+              placeholder='Select a option and change input text above'
+              @change="this.handleSelectChange"
+            >
+              <a-select-option value='male'>male</a-select-option>
+              <a-select-option value='female'>female</a-select-option>
+            </a-select>
+          </a-form-item> -->
+
         <el-form-item label="菜单名称:" prop="Name">
           <el-input v-model="editForm.Name" auto-complete="off"></el-input>
         </el-form-item>
@@ -267,16 +313,24 @@ import { paraHelper } from "@/utils/para.js"; //请求参数格式
 import { handlePost, handleGet } from "@/api/apihelper.js";
 
 const columnsTree = [
-//   {
-//   dataIndex: 'name',
-//   key: 'name',
-//   slots: { title: 'customTitle' },
-// }
-,{
-  title: '菜单名称',
-  key: 'name',
+  {
   dataIndex: 'name',
-},{
+  key: 'name',
+  slots: { title: 'customTitle' },
+  scopedSlots: { customRender: 'name' },
+},
+ {
+  title: 'Tags',
+  key: 'tags',
+  dataIndex: 'tags',
+  scopedSlots: { customRender: 'tags' },
+},
+// ,{
+//   title: '菜单名称',
+//   key: 'name',
+//   dataIndex: 'name',
+// },
+{
   title: '图标',
   key: 'icon',
   dataIndex: 'icon',
@@ -311,7 +365,6 @@ const dataTree = [{
   code:'Button',
   url:'sys/ButtonList',
   sort:'1',
-  age: 60,
   edit:'编辑',
   del:'删除',
   children: [{
@@ -321,7 +374,6 @@ const dataTree = [{
     code:'Button',
     url:'sys/ButtonList',
     sort:'1',
-    age: 42,
     edit:'编辑',
     del:'删除',
   }, {
@@ -331,7 +383,6 @@ const dataTree = [{
     code:'Button',
     url:'sys/ButtonList',
     sort:'1',
-    age: 30,
     edit:'编辑',
     del:'删除',
     tags: ['nice', 'developer','111'],
@@ -342,7 +393,6 @@ const dataTree = [{
     code:'Button',
     url:'sys/ButtonList',
     sort:'1',
-    age: 72,
     edit:'编辑',
     del:'删除',
   }],
@@ -353,7 +403,6 @@ const dataTree = [{
   code:'Button',
   url:'sys/ButtonList',
   sort:'1',
-  age: 32,
   edit:'编辑',
   del:'删除',
   children: [{
@@ -363,7 +412,6 @@ const dataTree = [{
     code:'Button',
     url:'sys/ButtonList',
     sort:'1',
-    age: 42,
     edit:'编辑',
     del:'删除',
   }
@@ -398,6 +446,7 @@ export default {
         return data;
       };
     return {
+      Aselect:'',
             //穿梭框
         data: generateData(),
         value3: [1],
@@ -535,6 +584,13 @@ export default {
     };
   },
   methods: {
+    //搜索
+    handleSelectChange (value) {
+      this.Aselect = value
+      // this.form.setFieldsValue({
+      //   note: `Hi, ${value === 'male' ? 'man' : 'lady'}!`,
+      // })
+    },
         //刷新页面
     Refresh() {
       (this.filters = {
@@ -609,7 +665,7 @@ export default {
     getDataList() {
       const paraId = {
         Page: this.page,
-        Name: this.filters.Name,
+        Name: this.filters,
         Size: 10
       };
       // this.dataList = [];

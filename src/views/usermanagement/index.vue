@@ -11,7 +11,7 @@
           <a-button type="primary" @click="handleAdd">{{button.add}}</a-button>
         </el-form-item>
         <el-form-item>
-          <a-button type="primary" @click="handleAdd">编辑</a-button>
+          <!-- <a-button type="primary" @click="handleAdd">编辑</a-button> -->
         </el-form-item>
         <el-form-item>
           <a-button type="primary" @click="Refresh">刷新</a-button>

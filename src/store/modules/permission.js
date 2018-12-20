@@ -18,9 +18,10 @@ import layout from '@/views/layout/Layout' //Layout 是架构组件，不在后�
 import interfacemanagement from '@/views/interface/index'
 import navigationmenu from '@/views/navigationmenu/index'
 // import YsdatabaseYsButton from '@/views/navigationmenu/index'
-import YsdatabaseYsMenu from '@/views/button/index'
+import button from '@/views/button/index'
 import rolemanagement from '@/views/rolemanagement/index'
-import usermanage from '@/views/usermanage/index'
+// import usermanage from '@/views/usermanage/index'
+import usermanagement from '@/views/usermanagement/index'
 import datadictionary from '@/views/datadictionary/index'
 import divisionmanage from '@/views/divisionmanage/index'
 import myinfo from '@/views/myinfo/index'
@@ -52,12 +53,12 @@ function loadLayout(name) {
     return rolemanagement
   } else if (name == 'navigationmenu') {
     return navigationmenu
-  }else if (name == 'YsdatabaseYsMenu') {
-    return YsdatabaseYsMenu
+  }else if (name == 'button') {
+    return button
   } else if (name == 'interface') {
     return interfacemanagement
-  } else if (name == 'usermanage') {
-    return usermanage
+  } else if (name == 'usermanagement') {
+    return usermanagement
   } else if (name == 'datadictionary') {
     return datadictionary
   } else if (name == 'divisionmanage') {
