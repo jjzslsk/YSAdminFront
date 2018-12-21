@@ -19,9 +19,6 @@
         <el-form-item>
           <a-button type="primary" @click="allotButton">分配按钮</a-button>
         </el-form-item>
-        <el-form-item>
-          <a-button type="primary" @click="SetButton">设置按钮</a-button>
-        </el-form-item>
         <!-- <el-form-item>
           <a-button type="primary" @click="allotIcon">图标</a-button>
         </el-form-item> -->
@@ -84,13 +81,22 @@
       </el-pagination>
     </el-col>
 
-      <a-table :pagination="false" :defaultExpandAllRows='true' :columns="columnsTree" :dataSource="dataList" :rowSelection="rowSelectionTree">
+      <a-table defaultExpandAllRows :pagination="false" size="small" :columns="columnsTree" :dataSource="dataTree" :rowSelection="rowSelectionTree">
           <a slot="name" slot-scope="text" href="javascript:;">{{text}}</a>
           <span slot="customTitle"><a-icon type="smile-o" /> Name</span>
+          <!-- <span slot="customTitle"> -->
+            <!-- <a-checkbox></a-checkbox>  -->
+            <!-- 菜单名称</span> -->
+          <!-- <span slot="tags" slot-scope="tags">
+            <a-tag v-for="tag in tags" color="blue" :key="tag">{{tag}}</a-tag>
+          </span> -->
+          <!-- <span slot="checkbox" slot-scope="checkbox">
+            <a-checkbox></a-checkbox>
+          </span> -->
           <span slot="action" slot-scope="text, record">
-            <a href="javascript:;">{{record.Edit}}</a>
+            <a href="javascript:;">{{record.edit}}</a>
             <a-divider type="vertical" />
-            <a href="javascript:;">{{record.Del}}</a>
+            <a href="javascript:;">{{record.del}}</a>
           </span>
         </a-table>
 
@@ -155,18 +161,27 @@
             <!--按钮-->
     <a-modal title="添加" v-model="dialogFormVisibleButton" @ok="handleOkButton" @click="allotIcon">
              <div style="text-align: center" class="transferBox">
-      <template>
-        <a-transfer
-          :dataSource="mockData"
-          :filterOption="filterOption"
-          :targetKeys="targetKeys"
-          @change="handleChange"
-          :render="item=>item.title"
-        >
-        </a-transfer>
-      </template>
+          <el-transfer
+          
+            style="text-align: left; display: inline-block"
+            v-model="value3"
+            filterable
+            filter-placeholder="请输入搜索内容"
+            :left-default-checked="[2, 3]"
+            :right-default-checked="[1]"
+            :render-content="renderFunc"
+            :titles="['所有菜单', '已有菜单']"
+            
+            :format="{
+              noChecked: '${total}',
+              hasChecked: '${checked}/${total}'
+            }"
+            @change="handleChange"
+            :data="data">
+            <a-button class="transfer-footer" slot="left-footer" size="small">操作</a-button>
+            <a-button class="transfer-footer" slot="right-footer" size="small">操作</a-button>
+          </el-transfer>
       </div>
-
       <div slot="footer" class="dialog-footer">
         <a-button @click.native="dialogFormVisibleButton=false">取消</a-button>
         <a-button type="primary" @click.native="dialogFormVisibleButton=false">确认</a-button>
@@ -300,106 +315,118 @@ import util from "@/utils/table.js";
 import { paraHelper } from "@/utils/para.js"; //请求参数格式
 import { handlePost, handleGet } from "@/api/apihelper.js";
 
-//表头部
 const columnsTree = [
+//   {
+//   dataIndex: 'name',
+//   key: 'name',
+//   slots: { title: 'customTitle' },
+//   scopedSlots: { customRender: 'name' },
+// },
+//  {
+//   title: 'Tags',
+//   key: 'tags',
+//   dataIndex: 'tags',
+//   scopedSlots: { customRender: 'tags' },
+// },
 ,{
   title: '菜单名称',
-  Key: 'Name',
-  dataIndex: 'Name',
-  scopedSlots: { customRender: 'name' },
+  key: 'name',
+  dataIndex: 'name',
+  // scopedSlots: { customRender: 'name' },
 },
 {
   title: '图标',
-  Key: 'Icon',
-  dataIndex: 'Icon',
+  key: 'icon',
+  dataIndex: 'icon',
 },{
   title: '标记',
-  Key: 'Code',
-  dataIndex: 'Code',
+  key: 'code',
+  dataIndex: 'code',
 },{
   title: '链接地址',
-  Key: 'Url',
-  dataIndex: 'Url',
+  key: 'url',
+  dataIndex: 'url',
 },{
   title: '是否显示',
-  Key: 'Show',
-  dataIndex: 'Show',
+  key: 'show',
+  dataIndex: 'show',
+  // scopedSlots: { customRender: 'checkbox' },
 },{
   title: '排序',
-  Key: 'Sort',
-  dataIndex: 'Sort',
+  key: 'sort',
+  dataIndex: 'sort',
 },{
   title: '操作',
-  Key: 'action',
+  key: 'action',
   dataIndex: 'action',
   scopedSlots: { customRender: 'action' },
 }];
 
-//表主体数据
-// const dataTree = [{
-//   key: 1,
-//   name: '系统设置',
-//   icon:'icon',
-//   code:'Button',
-//   url:'sys/ButtonList',
-//   sort:'1',
-//   edit:'编辑',
-//   del:'删除',
-//   show:'√',
-//   children: [{
-//     key: 11,
-//     name: '导航菜单',
-//     icon:'icon',
-//     code:'Button',
-//     url:'sys/ButtonList',
-//     sort:'1',
-//     edit:'编辑',
-//     del:'删除',
-//     show:'√',
-//   }, {
-//     key: 12,
-//     name: '用户管理',
-//     icon:'icon',
-//     code:'Button',
-//     url:'sys/ButtonList',
-//     sort:'1',
-//     edit:'编辑',
-//     del:'删除',
-//     show:'√',
-//   }, {
-//     key: 13,
-//     name: '部门管理',
-//     icon:'icon',
-//     code:'Button',
-//     url:'sys/ButtonList',
-//     sort:'1',
-//     edit:'编辑',
-//     del:'删除',
-//     show:'√',
-//   }],
-// }, {
-//   key: 2,
-//   name: '财务管理',
-//   icon:'icon',
-//   code:'Button',
-//   url:'sys/ButtonList',
-//   sort:'1',
-//   edit:'编辑',
-//   del:'删除',
-//   show:'√',
-//   children: [{
-//     key: 22,
-//     name: '奖金明细',
-//     icon:'icon',
-//     code:'Button',
-//     url:'sys/ButtonList',
-//     sort:'1',
-//     edit:'编辑',
-//     del:'删除',
-//     show:'x',
-//   }
-//   ]
-// }];
+const dataTree = [{
+  key: 1,
+  name: '系统设置',
+  icon:'icon',
+  code:'Button',
+  url:'sys/ButtonList',
+  sort:'1',
+  edit:'编辑',
+  del:'删除',
+  show:'√',
+  children: [{
+    key: 11,
+    name: '导航菜单',
+    icon:'icon',
+    code:'Button',
+    url:'sys/ButtonList',
+    sort:'1',
+    edit:'编辑',
+    del:'删除',
+    show:'√',
+  }, {
+    key: 12,
+    name: '用户管理',
+    icon:'icon',
+    code:'Button',
+    url:'sys/ButtonList',
+    sort:'1',
+    edit:'编辑',
+    del:'删除',
+    show:'√',
+    // tags: ['nice', 'developer','111'],
+  }, {
+    key: 13,
+    name: '部门管理',
+    icon:'icon',
+    code:'Button',
+    url:'sys/ButtonList',
+    sort:'1',
+    edit:'编辑',
+    del:'删除',
+    show:'√',
+  }],
+}, {
+  key: 2,
+  name: '财务管理',
+  icon:'icon',
+  code:'Button',
+  url:'sys/ButtonList',
+  sort:'1',
+  edit:'编辑',
+  del:'删除',
+  show:'√',
+  children: [{
+    key: 22,
+    name: '奖金明细',
+    icon:'icon',
+    code:'Button',
+    url:'sys/ButtonList',
+    sort:'1',
+    edit:'编辑',
+    del:'删除',
+    show:'x',
+  }
+  ]
+}];
 
 const rowSelectionTree = {
   onChange: (selectedRowKeys, selectedRows) => {
@@ -415,16 +442,28 @@ const rowSelectionTree = {
 
 export default {
   data() {
+        // 穿梭框
+        const generateData = _ => {
+        const data = [];
+        
+        for (let i = 1; i <= 10; i++) {
+          data.push({
+            key: i,
+            label: `备选项 ${ i }`,
+            disabled: i % 4 === 0
+          });
+        }
+        return data;
+      };
     return {
-      //菜单按钮
-      GetYsMenuButtonData:[],
       selectValue:'Name',
             //穿梭框
-      dataListButton:[],//按钮列表数组
-
-      mockData: [],
-      targetKeys: [],
-
+        data: generateData(),
+        value3: [1],
+        value4: [1],
+        renderFunc(h, option) {
+          return <span>{ option.key } - { option.label }</span>;
+        },
       //搜索
       input3: '',
       input4: '',
@@ -432,7 +471,7 @@ export default {
       select: '',
 
       // tree列表
-      // dataTree,
+      dataTree,
       columnsTree,
       rowSelectionTree,
       
@@ -567,32 +606,9 @@ export default {
         this.getDataList();
     },
         //穿梭框
-        getMock() {
-      const targetKeys = [];
-      const mockData = [];
-      for (let i = 0; i < 20; i++) {
-        const data = {
-          key: i.toString(),
-          title: `content${i + 1}`,
-          description: `description of content${i + 1}`,
-          chosen: Math.random() * 2 > 1,
-        };
-        if (data.chosen) {
-          targetKeys.push(data.key);
-        }
-        mockData.push(data);
-      }
-      this.mockData = mockData
-      this.targetKeys = targetKeys
-    },
-    filterOption(inputValue, option) {
-      return option.description.indexOf(inputValue) > -1;
-    },
-    handleChange(targetKeys, direction, moveKeys) {
-      console.log(targetKeys, direction, moveKeys);
-      this.targetKeys = targetKeys
-    },
-
+    handleChange(value, direction, movedKeys) {
+        console.log(value, direction, movedKeys);
+      },
     //图标
     allotIcon() {
       this.dialogFormVisibleIcon = true;
@@ -611,24 +627,6 @@ export default {
     },
     allotButton() {
       this.dialogFormVisibleButton = true;
-      this.GetYsMenuButton()
-      // this.getDataListButton()
-    },
-    //
-    // 设置按钮
-    SetButton(){
-      const paraId = [{
-        MenuId:1,
-		    ButtonIds:[5,6]
-      }];
-      this.para.Code = 'SetYsMenuButton';
-      this.para.Data = JSON.stringify(paraId);
-      handlePost(this.para).then(res => {
-        if (res.IsSuccess == true) {
-          console.log ('ButtonIds',res)
-          // this.dataListButton = res.Data.List;
-        }
-      });
     },
     //是否显示
     aSwitch(checked){
@@ -706,37 +704,8 @@ export default {
       this.para.Data = JSON.stringify(paraId[0]);
       handlePost(this.para).then(res => {
         if (res.IsSuccess == true) {
-          // this.total = res.Data.Count;
-          this.dataList = res.Data;
-        }
-      });
-    },
-        // 获取按钮
-    getDataListButton() {
-      const paraId = {
-        Page: this.page,
-        Size: 10
-      };
-      // this.dataList = [];
-      this.para.Code = 'GetListYsdatabaseYsButton';
-      this.para.Data = JSON.stringify(paraId);
-      handlePost(this.para).then(res => {
-        if (res.IsSuccess == true) {
-          // this.total = res.Data.Count;
-          this.dataListButton = res.Data.List;
-          console.log ('111rrttt',this.dataListButton)
-          console.log ('this.mockData::',this.mockData)
-        }
-      });
-    },
-    GetYsMenuButton(){//获取菜单按钮
-      this.para.Code = 'GetYsMenuButton';
-      this.para.Data = '';
-      handlePost(this.para).then(res => {
-        if (res.IsSuccess == true) {
-          this.GetYsMenuButtonData = res.Data;
-          console.log ('resres:',this.GetYsMenuButtonData)
-          alert (321)
+          this.total = res.Data.Count;
+          this.dataList = res.Data.List;
         }
       });
     },
@@ -924,7 +893,6 @@ export default {
     }
   },
   mounted() {
-    this.getMock()
     this.loadButton(store.getters.interfaces); //按权限加载按钮
     this.getDataList();
   }

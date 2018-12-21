@@ -19,9 +19,6 @@
         <el-form-item>
           <a-button type="primary" @click="allotButton">分配按钮</a-button>
         </el-form-item>
-        <el-form-item>
-          <a-button type="primary" @click="SetButton">设置按钮</a-button>
-        </el-form-item>
         <!-- <el-form-item>
           <a-button type="primary" @click="allotIcon">图标</a-button>
         </el-form-item> -->
@@ -87,6 +84,15 @@
       <a-table :pagination="false" :defaultExpandAllRows='true' :columns="columnsTree" :dataSource="dataList" :rowSelection="rowSelectionTree">
           <a slot="name" slot-scope="text" href="javascript:;">{{text}}</a>
           <span slot="customTitle"><a-icon type="smile-o" /> Name</span>
+          <!-- <span slot="customTitle"> -->
+            <!-- <a-checkbox></a-checkbox>  -->
+            <!-- 菜单名称</span> -->
+          <!-- <span slot="tags" slot-scope="tags">
+            <a-tag v-for="tag in tags" color="blue" :key="tag">{{tag}}</a-tag>
+          </span> -->
+          <!-- <span slot="checkbox" slot-scope="checkbox">
+            <a-checkbox></a-checkbox>
+          </span> -->
           <span slot="action" slot-scope="text, record">
             <a href="javascript:;">{{record.Edit}}</a>
             <a-divider type="vertical" />
@@ -158,6 +164,7 @@
       <template>
         <a-transfer
           :dataSource="mockData"
+          showSearch
           :filterOption="filterOption"
           :targetKeys="targetKeys"
           @change="handleChange"
@@ -415,9 +422,8 @@ const rowSelectionTree = {
 
 export default {
   data() {
+        // 穿梭框
     return {
-      //菜单按钮
-      GetYsMenuButtonData:[],
       selectValue:'Name',
             //穿梭框
       dataListButton:[],//按钮列表数组
@@ -611,24 +617,7 @@ export default {
     },
     allotButton() {
       this.dialogFormVisibleButton = true;
-      this.GetYsMenuButton()
-      // this.getDataListButton()
-    },
-    //
-    // 设置按钮
-    SetButton(){
-      const paraId = [{
-        MenuId:1,
-		    ButtonIds:[5,6]
-      }];
-      this.para.Code = 'SetYsMenuButton';
-      this.para.Data = JSON.stringify(paraId);
-      handlePost(this.para).then(res => {
-        if (res.IsSuccess == true) {
-          console.log ('ButtonIds',res)
-          // this.dataListButton = res.Data.List;
-        }
-      });
+      this.getDataListButton()
     },
     //是否显示
     aSwitch(checked){
@@ -724,19 +713,6 @@ export default {
         if (res.IsSuccess == true) {
           // this.total = res.Data.Count;
           this.dataListButton = res.Data.List;
-          console.log ('111rrttt',this.dataListButton)
-          console.log ('this.mockData::',this.mockData)
-        }
-      });
-    },
-    GetYsMenuButton(){//获取菜单按钮
-      this.para.Code = 'GetYsMenuButton';
-      this.para.Data = '';
-      handlePost(this.para).then(res => {
-        if (res.IsSuccess == true) {
-          this.GetYsMenuButtonData = res.Data;
-          console.log ('resres:',this.GetYsMenuButtonData)
-          alert (321)
         }
       });
     },

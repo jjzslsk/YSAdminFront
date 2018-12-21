@@ -20,6 +20,9 @@
           <a-button type="primary" @click="allotButton">分配按钮</a-button>
         </el-form-item>
         <el-form-item>
+          <a-button type="primary" @click="allotMent">分配权限</a-button>
+        </el-form-item>
+        <el-form-item>
       <a-button type="danger" @click="batchRemove" :disabled="this.sels.length===0">{{button.batchRemove}}</a-button>
         </el-form-item>
         <el-form-item style="float: right;">
@@ -60,16 +63,7 @@
       </el-pagination>
     </el-col>
 
-    <a-table defaultExpandAllRows :pagination="false" size="small" :columns="columnsTree" :dataSource="dataTree" :rowSelection="rowSelectionTree">
-          <span slot="tags" slot-scope="tags">
-            <a-checkbox></a-checkbox>
-          </span>
-          <span slot="action" slot-scope="text, record">
-            <a href="javascript:;">{{record.edit}}</a>
-            <a-divider type="vertical" />
-            <a href="javascript:;">{{record.del}}</a>
-          </span>
-      </a-table>
+
 
         <!--图标-->
     <el-dialog title="添加" :visible.sync="dialogFormVisibleIcon" :close-on-click-modal="false">
@@ -126,6 +120,25 @@
       <div slot="footer" class="dialog-footer">
         <a-button @click.native="dialogFormVisibleIcon=false">取消</a-button>
         <a-button type="primary" @click.native="dialogFormVisibleIcon=false">确认</a-button>
+      </div>
+    </el-dialog>
+
+        <!--二维权限-->
+    <el-dialog title="添加" :visible.sync="dialogFormVisibleData" :close-on-click-modal="false">
+          <a-table defaultExpandAllRows :pagination="false" size="small" :columns="columnsTree" :dataSource="dataTree" :rowSelection="rowSelectionTree">
+          <span slot="tags" slot-scope="tags">
+            <a-checkbox></a-checkbox>
+          </span>
+          <span slot="action" slot-scope="text, record">
+            <a href="javascript:;">{{record.edit}}</a>
+            <a-divider type="vertical" />
+            <a href="javascript:;">{{record.del}}</a>
+          </span>
+      </a-table>
+
+      <div slot="footer" class="dialog-footer">
+        <a-button @click.native="dialogFormVisibleData=false">取消</a-button>
+        <a-button type="primary" @click.native="dialogFormVisibleData=false">确认</a-button>
       </div>
     </el-dialog>
 
@@ -220,31 +233,54 @@ const columnsTree = [
   key: 'name',
   dataIndex: 'name',
 },{
-  title: '图标',
+  title: '浏览',
   key: 'icon',
   dataIndex: 'icon',
+  scopedSlots: { customRender: 'tags' },
 },{
-  title: '标记',
+  title: '添加',
   key: 'code',
   dataIndex: 'code',
+  scopedSlots: { customRender: 'tags' },
 },{
-  title: '链接地址',
+  title: '下话单',
   key: 'url',
   dataIndex: 'url',
+  scopedSlots: { customRender: 'tags' },
 },{
-  title: '是否显示',
+  title: '重发通知',
   key: 'show',
   dataIndex: 'show',
   scopedSlots: { customRender: 'tags' },
 },{
-  title: '排序',
+  title: '重置',
   key: 'sort',
   dataIndex: 'sort',
+  scopedSlots: { customRender: 'tags' },
 },{
-  title: '操作',
+  title: '编辑',
   key: 'action',
   dataIndex: 'action',
-  scopedSlots: { customRender: 'action' },
+  scopedSlots: { customRender: 'tags' },
+  // scopedSlots: { customRender: 'action' },
+},{
+  title: '删除',
+  key: 'del',
+  dataIndex: 'del',
+  scopedSlots: { customRender: 'tags' },
+  // scopedSlots: { customRender: 'action' },
+},{
+  title: '查询',
+  key: 'query',
+  dataIndex: 'query',
+  scopedSlots: { customRender: 'tags' },
+  // scopedSlots: { customRender: 'action' },
+},{
+  title: '导出',
+  key: 'export',
+  dataIndex: 'export',
+  scopedSlots: { customRender: 'tags' },
+  // scopedSlots: { customRender: 'action' },
 }];
 
 const dataTree = [{
@@ -403,6 +439,7 @@ export default {
       },
       // para: paraHelper,
       dialogStatus: "",
+      dialogFormVisibleData:false,
       dialogFormVisibleButton:false,
       dialogFormVisibleIcon:false,
       dialogFormVisibleAdd: false,
@@ -496,6 +533,10 @@ export default {
     },
     allotButton() {
       this.dialogFormVisibleButton = true;
+    },
+    //分配二维权限
+    allotMent() {
+      this.dialogFormVisibleData = true;
     },
     //行点击事件
     Rowdblclick() {
