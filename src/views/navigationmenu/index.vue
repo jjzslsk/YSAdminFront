@@ -17,7 +17,7 @@
           <a-button type="primary" @click="Refresh">刷新</a-button>
         </el-form-item>
         <el-form-item>
-          <a-button type="primary" @click="allotButton">分配按钮</a-button>
+          <a-button type="primary" @click="allotButton">获取菜单按钮</a-button>
         </el-form-item>
         <el-form-item>
           <a-button type="primary" @click="SetButton">设置按钮</a-button>
@@ -78,13 +78,13 @@
           </el-table>
 
           <!-- 分页 -->
-        <el-col :span="24" class="toolbar">
+        <!-- <el-col :span="24" class="toolbar">
       <el-pagination layout="prev, pager, next" @current-change="handleCurrentChange" :page-size="10" :total="total"
         style="float:right;">
       </el-pagination>
-    </el-col>
+    </el-col> -->
 
-      <a-table :pagination="false" :defaultExpandAllRows='true' :columns="columnsTree" :dataSource="dataList" :rowSelection="rowSelectionTree">
+      <!-- <a-table :pagination="false" :defaultExpandAllRows='true' :columns="columnsTree" :dataSource="dataList" :rowSelection="rowSelectionTree">
           <a slot="name" slot-scope="text" href="javascript:;">{{text}}</a>
           <span slot="customTitle"><a-icon type="smile-o" /> Name</span>
           <span slot="action" slot-scope="text, record">
@@ -92,7 +92,7 @@
             <a-divider type="vertical" />
             <a href="javascript:;">{{record.Del}}</a>
           </span>
-        </a-table>
+        </a-table> -->
 
         <!--图标-->
     <a-modal title="添加图标" @ok="handleOk" @click="allotIcon" v-model="dialogFormVisibleIcon" >
@@ -566,32 +566,7 @@ export default {
       }),
         this.getDataList();
     },
-        //穿梭框
-        getMock() {
-      const targetKeys = [];
-      const mockData = [];
-      for (let i = 0; i < 20; i++) {
-        const data = {
-          key: i.toString(),
-          title: `content${i + 1}`,
-          description: `description of content${i + 1}`,
-          chosen: Math.random() * 2 > 1,
-        };
-        if (data.chosen) {
-          targetKeys.push(data.key);
-        }
-        mockData.push(data);
-      }
-      this.mockData = mockData
-      this.targetKeys = targetKeys
-    },
-    filterOption(inputValue, option) {
-      return option.description.indexOf(inputValue) > -1;
-    },
-    handleChange(targetKeys, direction, moveKeys) {
-      console.log(targetKeys, direction, moveKeys);
-      this.targetKeys = targetKeys
-    },
+       
 
     //图标
     allotIcon() {
@@ -615,21 +590,7 @@ export default {
       // this.getDataListButton()
     },
     //
-    // 设置按钮
-    SetButton(){
-      const paraId = [{
-        MenuId:1,
-		    ButtonIds:[5,6]
-      }];
-      this.para.Code = 'SetYsMenuButton';
-      this.para.Data = JSON.stringify(paraId);
-      handlePost(this.para).then(res => {
-        if (res.IsSuccess == true) {
-          console.log ('ButtonIds',res)
-          // this.dataListButton = res.Data.List;
-        }
-      });
-    },
+
     //是否显示
     aSwitch(checked){
       this.editForm.Isvisiable = checked
@@ -729,17 +690,66 @@ export default {
         }
       });
     },
-    GetYsMenuButton(){//获取菜单按钮
+        GetYsMenuButton(){//获取菜单按钮
+      const paraId = {
+        // MenuId:this.sels[0].Key,
+      };
       this.para.Code = 'GetYsMenuButton';
-      this.para.Data = '';
+      this.para.Data = JSON.stringify(paraId);
       handlePost(this.para).then(res => {
         if (res.IsSuccess == true) {
           this.GetYsMenuButtonData = res.Data;
           console.log ('resres:',this.GetYsMenuButtonData)
-          alert (321)
         }
       });
     },
+     //穿梭框
+        getMock() {
+          alert (3)
+      // const targetKeys = [];
+      // const mockData = [];
+        console.log ('this.GetYsMenuButtonData.length:',this.GetYsMenuButtonData)
+
+      for (let i = 0; i < this.GetYsMenuButtonData.length; i++) {
+        // console.log (this.GetYsMenuButtonData[i])
+        // console.log (1)
+        // const data = {
+        //   key: i.toString(),
+        //   title: `content${i + 1}`,
+        //   description: `description of content${i + 1}`,
+        //   chosen: Math.random() * 2 > 1,
+        // };
+        // if (data.chosen) {
+        //   targetKeys.push(data.key);
+        // }
+        // mockData.push(data);
+      }
+      // this.mockData = mockData
+      // this.targetKeys = targetKeys
+    },
+    filterOption(inputValue, option) {
+      return option.description.indexOf(inputValue) > -1;
+    },
+    handleChange(targetKeys, direction, moveKeys) {
+      console.log(targetKeys, direction, moveKeys);
+      this.targetKeys = targetKeys
+    },
+        // 设置按钮
+    SetButton(){
+      const paraId = [{
+        MenuId:this.sels[0].Key,
+		    ButtonIds:[5,6]
+      }];
+      this.para.Code = 'SetYsMenuButton';
+      this.para.Data = JSON.stringify(paraId);
+      console.log ('menu',this.para)
+      // handlePost(this.para).then(res => {
+      //   if (res.IsSuccess == true) {
+      //     console.log ('ButtonIds',res)
+      //   }
+      // });
+    },
+
     // 删除
     handleDel(index, row) {
       this.$confirm("确认删除该记录吗?", "提示", {
@@ -896,6 +906,7 @@ export default {
     // 全选单选多选
     selsChange(sels) {
       this.sels = sels;
+      console.log (this.sels)
     },
     // 批量删除
     batchRemove() {
@@ -924,6 +935,7 @@ export default {
     }
   },
   mounted() {
+    this.GetYsMenuButton()
     this.getMock()
     this.loadButton(store.getters.interfaces); //按权限加载按钮
     this.getDataList();
