@@ -4,29 +4,44 @@
         
     <!--工具条-->
       <el-form :inline="true" :model="filters" @submit.native.prevent>
-        <!-- <el-form-item>
+        <el-form-item>
           <el-button v-if="buttons.selectshow==true" type="primary" v-on:click="getKeyList">刷新</el-button>
-        </el-form-item> -->
+        </el-form-item>
         <el-form-item>
           <a-button type="primary" @click="handleAdd">{{button.add}}</a-button>
         </el-form-item>
         <el-form-item>
-          <!-- <a-button type="primary" @click="handleAdd">编辑</a-button> -->
+          <!-- <a-button type="primary" @click="handleEdit">编辑</a-button> -->
         </el-form-item>
         <el-form-item>
           <a-button type="primary" @click="Refresh">刷新</a-button>
         </el-form-item>
         <el-form-item>
-          <a-button type="primary" @click="allotButton">获取菜单按钮</a-button>
+          <!-- <a-button type="primary" @click="allotButton">获取菜单按钮</a-button> -->
         </el-form-item>
-        <el-form-item>
+        <!-- <el-form-item>
           <a-button type="primary" @click="SetButton">设置按钮</a-button>
-        </el-form-item>
+        </el-form-item> -->
         <!-- <el-form-item>
           <a-button type="primary" @click="allotIcon">图标</a-button>
         </el-form-item> -->
         <el-form-item>
-      <a-button type="danger" @click="batchRemove" :disabled="this.sels.length===0">{{button.batchRemove}}</a-button>
+      <!-- <a-button type="danger" @click="batchRemove" :disabled="this.sels.length===0">{{button.batchRemove}}</a-button> -->
+      <!-- <div style="margin-bottom: 16px">
+          <a-button
+            type="primary"
+            @click="start"
+            :disabled="!hasSelected"
+            :loading="loading"
+          >
+            Reload
+          </a-button>
+          <span style="margin-left: 8px">
+            <template v-if="hasSelected">
+              {{`Selected ${selectedRowKeys.length} items`}}
+            </template>
+          </span>
+        </div> -->
         </el-form-item>
 
         <el-form-item style="float: right;">
@@ -63,10 +78,7 @@
       </el-form>
 
     <!--列表--> 
-
-      
-
-          <el-table @row-dblclick='Rowdblclick' stripe :data="dataList" highlight-current-row @selection-change="selsChange" style="width: 100%;">
+          <!-- <el-table @row-dblclick='Rowdblclick' stripe :data="dataList" highlight-current-row @selection-change="selsChange" style="width: 100%;">
             <el-table-column v-for="item in tableLabel" :key="item.Label" :label="item.Label" :prop="item.prop" :width='item.width' :type='item.type'>
             </el-table-column>
             <el-table-column label="操作" width="100" fixed="right">
@@ -75,7 +87,7 @@
                 <el-button type="text" @click="handleDel(scope.$index, scope.row)">{{button.del}}</el-button>
               </template>
             </el-table-column>
-          </el-table>
+          </el-table> -->
 
           <!-- 分页 -->
         <!-- <el-col :span="24" class="toolbar">
@@ -84,15 +96,19 @@
       </el-pagination>
     </el-col> -->
 
-      <!-- <a-table :pagination="false" :defaultExpandAllRows='true' :columns="columnsTree" :dataSource="dataList" :rowSelection="rowSelectionTree">
+      <a-table defaultExpandAllRows :pagination="false" :columns="columnsTree" :dataSource="dataList" :rowSelection="rowSelectionTree">
           <a slot="name" slot-scope="text" href="javascript:;">{{text}}</a>
           <span slot="customTitle"><a-icon type="smile-o" /> Name</span>
-          <span slot="action" slot-scope="text, record">
-            <a href="javascript:;">{{record.Edit}}</a>
+
+          <template slot="action" slot-scope="text, record">
+            <a href="javascript:;" @click="allotButton(record.Key)">分配按钮</a>
+            <a-divider type="vertical" />          
+            <a href="javascript:;" @click="onEdit(record)">{{record.Edit}}</a>
             <a-divider type="vertical" />
-            <a href="javascript:;">{{record.Del}}</a>
-          </span>
-        </a-table> -->
+            <a href="javascript:;" @click="onDelete(record)">{{record.Del}}</a>
+          </template>
+          
+        </a-table>
 
         <!--图标-->
     <a-modal title="添加图标" @ok="handleOk" @click="allotIcon" v-model="dialogFormVisibleIcon" >
@@ -154,7 +170,15 @@
 
             <!--按钮-->
     <a-modal title="添加" v-model="dialogFormVisibleButton" @ok="handleOkButton" @click="allotIcon">
-             <div style="text-align: center" class="transferBox">
+          <div style="text-align: center" class="transferBox">
+          <a-button type="primary" @click="GetYsMenuButton()">获取单个菜单按钮</a-button>
+          <a-button type="primary" @click="GetYsMenuButtons">获取所有菜单按钮</a-button>
+          <a-button type="primary" @click="SetButton">设置按钮</a-button>
+          {{buttonKey}}
+          {{this.GetYsMenuButtonData}}
+          <hr>
+          ==============
+          {{this.GetYsMenuButtonsData}}
       <template>
         <a-transfer
           :dataSource="mockData"
@@ -174,7 +198,7 @@
     </a-modal>
 
     <!--添加界面-->
-    <a-modal title="添加菜单" @ok="handleOkAdd" @click="createData" v-model="dialogFormVisibleAdd">
+    <a-modal title="添加按钮" @ok="handleOkAdd" @click="createData" v-model="dialogFormVisibleAdd">
       <el-form :model="editForm" label-width="100px" :rules="editFormRules" ref="editForm">
 
         <!-- <a-form-item label='菜单名称' :labelCol="{ span: 5 }" :wrapperCol="{ span: 12 }">
@@ -217,12 +241,24 @@
           <el-select v-model="editForm.Pid" placeholder="请选择">
               <el-option
                 v-for="item in ListsuperiorMenu"
-                :key="item.Id"
+                :key="item.Key"
                 :label="item.Name"
-                :value="item.Id">
+                :value="item.Key">
               </el-option>
             </el-select>
             {{editForm.Pid}}
+
+            <!-- <template>
+              <div>
+                <a-select defaultValue="" style="width: 120px" @change="handleChangePid">
+                  <a-select-option value="1">导航菜单</a-select-option>
+                  <a-select-option value="2">操作按钮</a-select-option>
+                  <a-select-option value="3">角色管理</a-select-option>
+                  <a-select-option value="4">用户管理</a-select-option>
+                </a-select>
+              </div>
+            </template> -->
+
         </el-form-item>
         <el-form-item label="链接地址:">
           <el-input v-model="editForm.Url" auto-complete="off"></el-input>
@@ -244,7 +280,7 @@
     </a-modal>
 
     <!--编辑界面-->
-    <a-modal title="编辑菜单" @ok="handleOkEdit" @click="updateData" v-model="dialogFormVisibleEdit">
+    <a-modal title="编辑按钮" @ok="handleOkEdit" @click="updateData" v-model="dialogFormVisibleEdit">
       <el-form :model="editForm" label-width="100px" :rules="editFormRules" ref="editForm">
         <el-form-item label="菜单名称:" prop="Name">
           <el-input v-model="editForm.Name" auto-complete="off"></el-input>
@@ -416,8 +452,11 @@ const rowSelectionTree = {
 export default {
   data() {
     return {
+      //按钮KEY
+      buttonKey:'',
       //菜单按钮
-      GetYsMenuButtonData:[],
+      GetYsMenuButtonData:[],//获取单按钮
+      GetYsMenuButtonsData:[],//获取多按钮
       selectValue:'Name',
             //穿梭框
       dataListButton:[],//按钮列表数组
@@ -550,7 +589,82 @@ export default {
       }
     };
   },
+
+  selectedRowKeys: [], // Check here to configure the default column
+  loading: false,
+  computed: {
+    hasSelected() {
+      return this.selectedRowKeys.length > 0
+    }
+  },
   methods: {
+    start () {
+      this.loading = true;
+      // ajax request after empty completing
+      setTimeout(() => {
+        this.loading = false;
+        this.selectedRowKeys = [];
+      }, 1000);
+    },
+    onSelectChange (selectedRowKeys) {
+      console.log('selectedRowKeys changed: ', selectedRowKeys);
+      this.selectedRowKeys = selectedRowKeys
+    },
+    //
+    handleChangePid(value) {
+      console.log(`selected ${value}`);
+    },
+    onDelete (data) {
+      console.log (data)
+        this.$confirm("确认删除该记录吗?", "提示", {
+        type: "warning",
+        confirmButtonText: "确定",
+        cancelButtonText: "取消"
+      })
+        .then(() => {
+          const paraId = {
+            Id: data.Key
+          };
+          this.para.Code = this.bllCode.del;
+          this.para.Data = JSON.stringify(paraId);
+          handlePost(this.para).then(res => {
+            if (res.IsSuccess == true) {
+              this.getDataList();
+              this.$message({
+                message: "删除成功！",
+                type: "success"
+              });
+            }
+          });
+        })
+        .catch(() => {});
+      // const dataSource = [...this.dataSource]
+      // this.dataSource = dataSource.filter(item => item.key !== key)
+    },
+        // 显示编辑界面
+    onEdit(row) {
+      console.log (row)
+      this.dialogStatus = "update";
+      this.dialogFormVisibleEdit = true;
+      // this.$refs["editForm"].resetFields(); //重置editForm
+      this.editForm = {},
+      this.editForm = Object.assign({}, row);
+      let paert = {
+        Pid: -1
+      };
+      this.para.Data = JSON.stringify(paert);
+      this.para.Code = this.bllCode.getList;
+      handlePost(this.para).then(res => {
+        if (res.IsSuccess == true) {
+          this.ListsuperiorMenu = res.Data;
+          let top = {
+            Id: 0,
+            Name: "无"
+          };
+          this.ListsuperiorMenu.push(top);
+        }
+      });
+    },
     //搜索
     handleSelectChange (value) {
       this.selectValue = value
@@ -584,10 +698,11 @@ export default {
     handleOkButton() {
       this.dialogFormVisibleButton = false;
     },
-    allotButton() {
+    allotButton(data) {
+      this.GetYsMenuButtonData=[]
+      this.GetYsMenuButtonsData=[]
+      this.buttonKey = data
       this.dialogFormVisibleButton = true;
-      this.GetYsMenuButton()
-      // this.getDataListButton()
     },
     //
 
@@ -690,9 +805,9 @@ export default {
         }
       });
     },
-        GetYsMenuButton(){//获取菜单按钮
+      GetYsMenuButton(){//获取单菜单按钮
       const paraId = {
-        // MenuId:this.sels[0].Key,
+        MenuId:this.buttonKey,
       };
       this.para.Code = 'GetYsMenuButton';
       this.para.Data = JSON.stringify(paraId);
@@ -703,9 +818,22 @@ export default {
         }
       });
     },
+
+    GetYsMenuButtons(){//获取多菜单按钮
+      const paraId = {
+        // MenuId:this.sels[0].Key,
+      };
+      this.para.Code = 'GetYsMenuButton';
+      this.para.Data = JSON.stringify(paraId);
+      handlePost(this.para).then(res => {
+        if (res.IsSuccess == true) {
+          this.GetYsMenuButtonsData = res.Data;
+          console.log ('resres:',this.GetYsMenuButtonsData)
+        }
+      });
+    },
      //穿梭框
         getMock() {
-          alert (3)
       // const targetKeys = [];
       // const mockData = [];
         console.log ('this.GetYsMenuButtonData.length:',this.GetYsMenuButtonData)
@@ -827,7 +955,7 @@ export default {
       console.log(this.para);
       handlePost(this.para).then(res => {
         if (res.IsSuccess == true) {
-          this.ListsuperiorMenu = res.Data.List;
+          this.ListsuperiorMenu = res.Data;
           let top = {
             Id: 0,
             Name: "无"
@@ -935,7 +1063,6 @@ export default {
     }
   },
   mounted() {
-    this.GetYsMenuButton()
     this.getMock()
     this.loadButton(store.getters.interfaces); //按权限加载按钮
     this.getDataList();

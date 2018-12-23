@@ -160,22 +160,22 @@
     </el-dialog>
 
     <!--添加界面-->
-    <el-dialog title="添加部门" :visible.sync="dialogFormVisibleAdd" :close-on-click-modal="false">
+    <a-modal title="添加字典" @ok="handleOkAdd" @click="createData" v-model="dialogFormVisibleAdd">
       <el-form :model="editForm" label-width="100px" :rules="editFormRules" ref="editForm">
-        <el-form-item label="用户名:" prop="Username">
-          <el-input v-model="editForm.Username" auto-complete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="真实姓名:" prop="Pid">
+        <el-form-item label="父编号:" prop="Pid">
           <el-input v-model="editForm.Pid" auto-complete="off"></el-input>
         </el-form-item>
-        <el-form-item label="密码:" prop="Pid">
-          <el-input type="psaa" v-model="editForm.Pid" auto-complete="off"></el-input>
+        <el-form-item label="名称:" prop="Name">
+          <el-input v-model="editForm.Name" auto-complete="off"></el-input>
         </el-form-item>
-        <el-form-item label="所属部门:" prop="Pid">
-          <el-input v-model="editForm.Pid" auto-complete="off"></el-input>
+        <el-form-item label="参数:" prop="Param">
+          <el-input type="psaa" v-model="editForm.Param" auto-complete="off"></el-input>
         </el-form-item>
-        <el-form-item label="排序:">
-          <el-input-number v-model="editForm.Sort"></el-input-number>
+        <el-form-item label="排序:" prop="Sort">
+          <el-input v-model="editForm.Sort" auto-complete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="是否启用:" prop="Sort">
+          <el-input v-model="editForm.Sort" auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item label="备注:" prop="Memo">
           <el-input v-model="editForm.Memo" auto-complete="off"></el-input>
@@ -185,10 +185,10 @@
         <a-button @click.native="dialogFormVisibleAdd=false">{{button.cancel}}</a-button>
         <a-button type="primary" @click="createData">{{button.add}}</a-button>
       </div>
-    </el-dialog>
+    </a-modal>
 
     <!--编辑界面-->
-    <el-dialog title="编辑部门" :visible.sync="dialogFormVisibleEdit" :close-on-click-modal="false">
+    <a-modal title="编辑字典" @ok="handleOkEdit" @click="updateData" v-model="dialogFormVisibleEdit">
       <el-form :model="editForm" label-width="100px" :rules="editFormRules" ref="editForm">
         <el-form-item label="部门名称:" prop="Name">
           <el-input v-model="editForm.Name" auto-complete="off"></el-input>
@@ -207,7 +207,7 @@
         <a-button @click.native="dialogFormVisibleEdit=false">{{button.cancel}}</a-button>        
         <a-button type="primary" @click="updateData">{{button.modify}}</a-button>        
       </div>
-    </el-dialog>
+    </a-modal>
     </el-card>
   </section>
 </template>
@@ -389,7 +389,7 @@ export default {
         {Label:'是否启用',prop:"State",width:'150'},
         {Label:'备注',prop:"Memo"},
       ],
-      filtersName: "请输入部门",
+      filtersName: "请输入",
       button: {
         query: "查询",
         add: "添加",

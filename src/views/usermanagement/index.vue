@@ -160,23 +160,49 @@
     </el-dialog>
 
     <!--添加界面-->
-    <el-dialog title="添加部门" :visible.sync="dialogFormVisibleAdd" :close-on-click-modal="false">
+    <a-modal title="添加用户" @ok="handleOkAdd" @click="createData" v-model="dialogFormVisibleAdd">
       <el-form :model="editForm" label-width="100px" :rules="editFormRules" ref="editForm">
         <el-form-item label="用户名:" prop="Username">
           <el-input v-model="editForm.Username" auto-complete="off"></el-input>
         </el-form-item>
-        <el-form-item label="真实姓名:" prop="Pid">
-          <el-input v-model="editForm.Pid" auto-complete="off"></el-input>
+        <el-form-item label="真实姓名:" prop="Name">
+          <el-input v-model="editForm.Name" auto-complete="off"></el-input>
         </el-form-item>
-        <el-form-item label="密码:" prop="Pid">
-          <el-input type="psaa" v-model="editForm.Pid" auto-complete="off"></el-input>
+        <el-form-item label="密码:" prop="Pasword">
+          <el-input type="psaa" v-model="editForm.Pasword" auto-complete="off"></el-input>
         </el-form-item>
-        <el-form-item label="所属部门:" prop="Pid">
-          <el-input v-model="editForm.Pid" auto-complete="off"></el-input>
+        <el-form-item label="邮箱:" prop="Email">
+          <el-input v-model="editForm.Email" auto-complete="off"></el-input>
         </el-form-item>
-        <el-form-item label="排序:">
-          <el-input-number v-model="editForm.Sort"></el-input-number>
+        <el-form-item label="手机:" prop="Mobile">
+          <el-input v-model="editForm.Mobile" auto-complete="off"></el-input>
         </el-form-item>
+        <el-row>
+          <el-col :span="12">
+        <el-form-item label="部门:">
+                        <el-select v-model="editForm.bumen" placeholder="请选择">
+                            <el-option v-for="item in departments" :key="item.mingcheng" :label="item.mingcheng" :value="item.id">
+                              {{item.mingcheng}}</el-option>
+                        </el-select>
+                    </el-form-item>
+          </el-col>
+          <el-col :span="12">
+                    <el-form-item label="角色:">
+                        <el-select v-model="editForm.juese" placeholder="请选择">
+                            <el-option v-for="item in roles" :key="item.id" :label="item.juesemingcheng" :value="item.id">
+                              {{item.juesemingcheng}}</el-option>
+                        </el-select>
+                    </el-form-item>
+          </el-col>
+          </el-row>
+          <el-col :span="12">
+        <el-form-item label="是否启用:" prop="shifouqiyong">
+          <el-radio-group v-model="editForm.shifouqiyong">
+            <el-radio class="radio" :label='true'>启用</el-radio>
+            <el-radio class="radio" :label='false'>禁用</el-radio>
+          </el-radio-group>
+        </el-form-item>
+          </el-col>
         <el-form-item label="备注:" prop="Memo">
           <el-input v-model="editForm.Memo" auto-complete="off"></el-input>
         </el-form-item>
@@ -185,12 +211,12 @@
         <a-button @click.native="dialogFormVisibleAdd=false">{{button.cancel}}</a-button>
         <a-button type="primary" @click="createData">{{button.add}}</a-button>
       </div>
-    </el-dialog>
+    </a-modal>
 
     <!--编辑界面-->
-    <el-dialog title="编辑部门" :visible.sync="dialogFormVisibleEdit" :close-on-click-modal="false">
+    <a-modal title="编辑用户" @ok="handleOkEdit" @click="updateData" v-model="dialogFormVisibleEdit">
       <el-form :model="editForm" label-width="100px" :rules="editFormRules" ref="editForm">
-        <el-form-item label="部门名称:" prop="Name">
+        <el-form-item label="用户名称:" prop="Name">
           <el-input v-model="editForm.Name" auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item label="上级部门:" prop="Pid">
@@ -207,7 +233,7 @@
         <a-button @click.native="dialogFormVisibleEdit=false">{{button.cancel}}</a-button>        
         <a-button type="primary" @click="updateData">{{button.modify}}</a-button>        
       </div>
-    </el-dialog>
+    </a-modal>
     </el-card>
   </section>
 </template>
@@ -393,7 +419,7 @@ export default {
         // {Label:'是否启用',prop:"State",width:'150'},
         {Label:'备注',prop:"Memo"},
       ],
-      filtersName: "请输入部门",
+      filtersName: "请输入名称",
       button: {
         query: "查询",
         add: "添加",
@@ -489,6 +515,12 @@ export default {
     };
   },
   methods: {
+        handleOkEdit() {
+      this.dialogFormVisibleEdit = false;
+    },
+    handleOkAdd(){
+      this.dialogFormVisibleAdd = false;
+    },
         //刷新页面
     Refresh() {
       (this.filters = {

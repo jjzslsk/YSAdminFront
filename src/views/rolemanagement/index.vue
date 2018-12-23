@@ -17,7 +17,7 @@
           <a-button type="primary" @click="Refresh">刷新</a-button>
         </el-form-item>
         <el-form-item>
-          <a-button type="primary" @click="allotButton">分配按钮</a-button>
+          <!-- <a-button type="primary" @click="allotButton">分配按钮</a-button> -->
         </el-form-item>
         <el-form-item>
           <a-button type="primary" @click="allotMent">分配权限</a-button>
@@ -173,7 +173,7 @@
     </el-dialog>
 
     <!--添加界面-->
-    <el-dialog title="添加角色" :visible.sync="dialogFormVisibleAdd" :close-on-click-modal="false">
+    <a-modal title="添加角色" @ok="handleOkAdd" @click="createData" v-model="dialogFormVisibleAdd">
       <el-form :model="editForm" label-width="100px" :rules="editFormRules" ref="editForm">
         <el-form-item label="角色名称:" prop="Name">
           <el-input v-model="editForm.Name" auto-complete="off"></el-input>
@@ -189,10 +189,10 @@
         <a-button @click.native="dialogFormVisibleAdd=false">{{button.cancel}}</a-button>
         <a-button type="primary" @click="createData">{{button.add}}</a-button>
       </div>
-    </el-dialog>
+    </a-modal>
 
     <!--编辑界面-->
-    <el-dialog title="编辑角色" :visible.sync="dialogFormVisibleEdit" :close-on-click-modal="false">
+    <a-modal title="编辑角色" @ok="handleOkEdit" @click="updateData" v-model="dialogFormVisibleEdit">
       <el-form :model="editForm" label-width="100px" :rules="editFormRules" ref="editForm">
         <el-form-item label="角色名称:" prop="Name">
           <el-input v-model="editForm.Name" auto-complete="off"></el-input>
@@ -208,7 +208,7 @@
         <a-button @click.native="dialogFormVisibleEdit=false">{{button.cancel}}</a-button>        
         <a-button type="primary" @click="updateData">{{button.modify}}</a-button>
       </div>
-    </el-dialog>
+    </a-modal>
     </el-card>
   </section>
 </template>

@@ -160,7 +160,7 @@
     </el-dialog>
 
     <!--添加界面-->
-    <el-dialog title="添加部门" :visible.sync="dialogFormVisibleAdd" :close-on-click-modal="false">
+    <a-modal title="添加部门" @ok="handleOkAdd" @click="createData" v-model="dialogFormVisibleAdd">
       <el-form :model="editForm" label-width="100px" :rules="editFormRules" ref="editForm">
         <el-form-item label="部门名称:" prop="Name">
           <el-input v-model="editForm.Name" auto-complete="off"></el-input>
@@ -179,10 +179,10 @@
         <a-button @click.native="dialogFormVisibleAdd=false">{{button.cancel}}</a-button>
         <a-button type="primary" @click="createData">{{button.add}}</a-button>
       </div>
-    </el-dialog>
+    </a-modal>
 
     <!--编辑界面-->
-    <el-dialog title="编辑部门" :visible.sync="dialogFormVisibleEdit" :close-on-click-modal="false">
+    <a-modal title="编辑部门" @ok="handleOkEdit" @click="updateData" v-model="dialogFormVisibleEdit">
       <el-form :model="editForm" label-width="100px" :rules="editFormRules" ref="editForm">
         <el-form-item label="部门名称:" prop="Name">
           <el-input v-model="editForm.Name" auto-complete="off"></el-input>
@@ -201,7 +201,7 @@
         <a-button @click.native="dialogFormVisibleEdit=false">{{button.cancel}}</a-button>        
         <a-button type="primary" @click="updateData">{{button.modify}}</a-button>        
       </div>
-    </el-dialog>
+    </a-modal>
     </el-card>
   </section>
 </template>

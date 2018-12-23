@@ -17,7 +17,7 @@
           <a-button type="primary" @click="Refresh">刷新</a-button>
         </el-form-item>
         <el-form-item>
-          <a-button type="primary" @click="allotButton">分配按钮</a-button>
+          <!-- <a-button type="primary" @click="allotButton">分配按钮</a-button> -->
         </el-form-item>
         <el-form-item>
       <a-button type="danger" @click="batchRemove" :disabled="this.sels.length===0">{{button.batchRemove}}</a-button>
@@ -160,7 +160,7 @@
     </el-dialog>
 
     <!--添加界面-->
-    <el-dialog title="添加按钮" :visible.sync="dialogFormVisibleAdd" :close-on-click-modal="false">
+    <a-modal title="添加按钮" @ok="handleOkAdd" @click="createData" v-model="dialogFormVisibleAdd">
       <el-form :model="editForm" label-width="100px" :rules="editFormRules" ref="editForm">
         <el-form-item label="按钮名称:" prop="Name">
           <el-input v-model="editForm.Name" auto-complete="off"></el-input>
@@ -184,12 +184,12 @@
         <a-button  @click.native="dialogFormVisibleAdd=false">{{button.cancel}}</a-button>
         <a-button  type="primary" @click="createData">{{button.add}}</a-button>
       </div>
-    </el-dialog>
+    </a-modal>
 
     <!--编辑界面-->
-    <el-dialog title="编辑菜单" :visible.sync="dialogFormVisibleEdit" :close-on-click-modal="false">
+    <a-modal title="编辑按钮" @ok="handleOkEdit" @click="updateData" v-model="dialogFormVisibleEdit">
       <el-form :model="editForm" label-width="100px" :rules="editFormRules" ref="editForm">
-        <el-form-item label="菜单名称:" prop="Name">
+        <el-form-item label="按钮名称:" prop="Name">
           <el-input v-model="editForm.Name" auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item label="图标:" prop="Icon">
@@ -209,7 +209,7 @@
         <a-button  @click.native="dialogFormVisibleEdit=false">{{button.cancel}}</a-button>        
         <a-button  type="primary" @click="updateData">{{button.modify}}</a-button>        
       </div>
-    </el-dialog>
+    </a-modal>
     </el-card>
   </section>
 </template>
@@ -395,7 +395,7 @@ export default {
         // {Label:'创建时间',prop:"beizhu",width:'150'},
         // {Label:'备注',prop:"beizhu",width:'150'},
       ],
-      filtersName: "菜单名称",
+      filtersName: "按钮名称",
       button: {
         query: "查询",
         add: "添加",
@@ -432,7 +432,7 @@ export default {
         Name: [
           {
             required: true,
-            message: "菜单名称必填",
+            message: "名称必填",
             trigger: "blur"
           }
         ],
@@ -491,6 +491,12 @@ export default {
     };
   },
   methods: {
+    handleOkEdit() {
+      this.dialogFormVisibleEdit = false;
+    },
+    handleOkAdd(){
+      this.dialogFormVisibleAdd = false;
+    },
         //刷新页面
     Refresh() {
       (this.filters = {
