@@ -160,23 +160,49 @@
     </el-dialog>
 
     <!--添加界面-->
-    <a-modal title="添加字典" @ok="handleOkAdd" @click="createData" v-model="dialogFormVisibleAdd">
+    <a-modal title="添加用户" @ok="handleOkAdd" @click="createData" v-model="dialogFormVisibleAdd">
       <el-form :model="editForm" label-width="100px" :rules="editFormRules" ref="editForm">
-        <el-form-item label="父编号:" prop="Pid">
-          <el-input v-model="editForm.Pid" auto-complete="off"></el-input>
+        <el-form-item label="用户名:" prop="Username">
+          <el-input v-model="editForm.Username" auto-complete="off"></el-input>
         </el-form-item>
-        <el-form-item label="名称:" prop="Name">
+        <el-form-item label="真实姓名:" prop="Name">
           <el-input v-model="editForm.Name" auto-complete="off"></el-input>
         </el-form-item>
-        <el-form-item label="参数:" prop="Param">
-          <el-input type="psaa" v-model="editForm.Param" auto-complete="off"></el-input>
+        <el-form-item label="密码:" prop="Pasword">
+          <el-input type="psaa" v-model="editForm.Pasword" auto-complete="off"></el-input>
         </el-form-item>
-        <el-form-item label="排序:" prop="Sort">
-          <el-input v-model="editForm.Sort" auto-complete="off"></el-input>
+        <el-form-item label="邮箱:" prop="Email">
+          <el-input v-model="editForm.Email" auto-complete="off"></el-input>
         </el-form-item>
-        <el-form-item label="是否启用:">
-          <a-switch @change='aState' v-model="editForm.State"/>
+        <el-form-item label="手机:" prop="Mobile">
+          <el-input v-model="editForm.Mobile" auto-complete="off"></el-input>
         </el-form-item>
+        <el-row>
+          <el-col :span="12">
+        <el-form-item label="部门:">
+                        <el-select v-model="editForm.DepartmentId" placeholder="请选择">
+                            <el-option v-for="item in departments" :key="item.Name" :label="item.Name" :value="item.Id">
+                              {{item.Name}}</el-option>
+                        </el-select>
+                    </el-form-item>
+          </el-col>
+          <el-col :span="12">
+                    <el-form-item label="角色:">
+                        <el-select v-model="editForm.RoleIds" placeholder="请选择">
+                            <el-option v-for="item in roles" :key="item.Id" :label="item.Name" :value="item.Id">
+                              {{item.Name}}</el-option>
+                        </el-select>
+                    </el-form-item>
+          </el-col>
+          </el-row>
+          <el-col :span="12">
+        <el-form-item label="是否启用:" prop="shifouqiyong">
+          <el-radio-group v-model="editForm.shifouqiyong">
+            <el-radio class="radio" :label='true'>启用</el-radio>
+            <el-radio class="radio" :label='false'>禁用</el-radio>
+          </el-radio-group>
+        </el-form-item>
+          </el-col>
         <el-form-item label="备注:" prop="Memo">
           <el-input v-model="editForm.Memo" auto-complete="off"></el-input>
         </el-form-item>
@@ -188,22 +214,16 @@
     </a-modal>
 
     <!--编辑界面-->
-    <a-modal title="编辑字典" @ok="handleOkEdit" @click="updateData" v-model="dialogFormVisibleEdit">
+    <a-modal title="编辑用户" @ok="handleOkEdit" @click="updateData" v-model="dialogFormVisibleEdit">
       <el-form :model="editForm" label-width="100px" :rules="editFormRules" ref="editForm">
-        <el-form-item label="父编号:" prop="Pid">
-          <el-input v-model="editForm.Pid" auto-complete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="名称:" prop="Name">
+        <el-form-item label="用户名称:" prop="Name">
           <el-input v-model="editForm.Name" auto-complete="off"></el-input>
         </el-form-item>
-        <el-form-item label="参数:" prop="Param">
-          <el-input type="psaa" v-model="editForm.Param" auto-complete="off"></el-input>
+        <el-form-item label="上级部门:" prop="Pid">
+          <el-input v-model="editForm.Pid" auto-complete="off"></el-input>
         </el-form-item>
-        <el-form-item label="排序:" prop="Sort">
-          <el-input v-model="editForm.Sort" auto-complete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="是否启用:">
-          <a-switch @change='aState' v-model="editForm.State"/>
+        <el-form-item label="排序:">
+          <el-input-number v-model="editForm.Sort"></el-input-number>
         </el-form-item>
         <el-form-item label="备注:" prop="Memo">
           <el-input v-model="editForm.Memo" auto-complete="off"></el-input>
@@ -359,6 +379,10 @@ export default {
         return data;
       };
     return {
+        departments: [],
+        roles: [],
+
+
             //穿梭框
         data: generateData(),
         value3: [1],
@@ -379,23 +403,27 @@ export default {
       
       bllCode: {
         //接口标识，由后端提供
-        add: "AddYsdatabaseYsDictionary", //添加
-        edit: "UpdateYsdatabaseYsDictionary", //修改
-        del: "DelYsdatabaseYsDictionary", //删除
-        getList: "GetListYsdatabaseYsDictionary", //获取列表
-        getObj: "GetYsdatabaseYsDictionary", //获取对象（单个）
+        add: "AddYsdatabaseYsAdmin", //添加
+        edit: "UpdateYsdatabaseYsAdmin", //修改
+        del: "DelYsdatabaseYsAdmin", //删除
+        getList: "GetListYsdatabaseYsAdmin", //获取列表
+        getObj: "GetYsdatabaseYsAdmin", //获取对象（单个）
         getRolesList: "GetListYsdatabaseYsRole" //获取角色
       },
       tableLabel: [
         { type: "selection", width: "50" },
         { Label: "Id", prop: "Id", width: "50", type: "index" },
         { Label: "名称", prop: "Name", width: "200" },
-        { Label: "排序", prop: "Sort", width: "200" },
-        {Label:'参数',prop:"Param",width:'150'},
-        {Label:'是否启用',prop:"State",width:'150'},
+        { Label: "账号", prop: "Username", width: "200" },
+        { Label: "部门", prop: "DepartmentId",width: "100"},
+        { Label: "邮箱", prop: "Email",width: "200"},
+        { Label: "手机", prop: "Mobile", width: "200" },
+        // { Label: "角色", prop: "RoleIds", width: "50" },
+        // {Label:'是否超管',prop:"Issuper",width:'150'},
+        // {Label:'是否启用',prop:"State",width:'150'},
         {Label:'备注',prop:"Memo"},
       ],
-      filtersName: "请输入",
+      filtersName: "请输入名称",
       button: {
         query: "查询",
         add: "添加",
@@ -491,13 +519,11 @@ export default {
     };
   },
   methods: {
-        //是否显示
-    aSwitch(checked){
-      this.editForm.Isvisiable = checked
+        handleOkEdit() {
+      this.dialogFormVisibleEdit = false;
     },
-    //是否启用
-    aState(checked){
-      this.editForm.State = checked
+    handleOkAdd(){
+      this.dialogFormVisibleAdd = false;
     },
         //刷新页面
     Refresh() {
@@ -632,25 +658,22 @@ export default {
     handleAdd() {
       this.dialogStatus = "create";
       this.dialogFormVisibleAdd = true;
-      // this.$refs["editForm"].resetFields(); //重置editForm
-      this.editForm = {
-
-      };
-
-      let paert = {
-        Pid: -1
-      };
-      this.para.Data = JSON.stringify(paert);
-      this.para.Code = this.bllCode.getList;
-      console.log(this.para);
+      // this.editForm = {
+      //   shifouchaoguan: true,
+      //   shifouqiyong: true
+      // };
+      this.para.Code = 'GetListYsdatabaseYsDepartment';
       handlePost(this.para).then(res => {
         if (res.IsSuccess == true) {
-          this.ListsuperiorMenu = res.Data.List;
-          let top = {
-            Id: 0,
-            Name: "无"
-          };
-          this.ListsuperiorMenu.push(top);
+          this.departments = res.Data.List;
+          // console.log(this.departments);
+          this.para.Code = 'GetListYsdatabaseYsRole';
+          handlePost(this.para).then(res => {
+            if (res.IsSuccess == true) {
+              this.roles = res.Data.List;
+              // console.log(this.roles);
+            }
+          });
         }
       });
     },

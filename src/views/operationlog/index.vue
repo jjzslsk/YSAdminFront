@@ -58,7 +58,7 @@
             </el-table-column>
             <el-table-column label="操作" width="100" fixed="right">
               <template slot-scope="scope">
-                <el-button type="text" @click="handleEdit(scope.$index, scope.row)">{{button.edit}}</el-button>
+                <!-- <el-button type="text" @click="handleEdit(scope.$index, scope.row)">{{button.edit}}</el-button> -->
                 <el-button type="text"  @click="handleDel(scope.$index, scope.row)">{{button.del}}</el-button>
               </template>
             </el-table-column>
@@ -377,9 +377,9 @@ export default {
       tableLabel: [
         { type: "selection", width: "50" },
         { Label: "标识", prop: "Code", width: "50", type: "index" },
-        { Label: "输入参数", prop: "Input", width: "100" },
-        { Label: "返回结果", prop: "Result", width: "100" },
-        { Label: "是否成功", prop: "Issuccess"},
+        { Label: "输入参数", prop: "Input", },
+        { Label: "返回结果", prop: "Result", },
+        { Label: "是否成功", prop: "Issuccess",width:'100'},
         { Label: "访问时间", prop: "Createdate",width: "150"},
         // { Label: "图标", prop: "Icon", width: "50" },
         // { Label: "排序", prop: "Sort", width: "50" },

@@ -124,7 +124,7 @@
     </el-dialog>
 
         <!--二维权限-->
-    <el-dialog title="添加" :visible.sync="dialogFormVisibleData" :close-on-click-modal="false">
+    <el-dialog title="分配权限" :visible.sync="dialogFormVisibleData" :close-on-click-modal="false">
           <a-table defaultExpandAllRows :pagination="false" size="small" :columns="columnsTree" :dataSource="dataTree" :rowSelection="rowSelectionTree">
           <span slot="tags" slot-scope="tags">
             <a-checkbox></a-checkbox>

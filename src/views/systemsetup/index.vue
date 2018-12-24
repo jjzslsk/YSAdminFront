@@ -160,7 +160,7 @@
     </el-dialog>
 
     <!--添加界面-->
-    <a-modal title="添加字典" @ok="handleOkAdd" @click="createData" v-model="dialogFormVisibleAdd">
+    <a-modal title="添加" @ok="handleOkAdd" @click="createData" v-model="dialogFormVisibleAdd">
       <el-form :model="editForm" label-width="100px" :rules="editFormRules" ref="editForm">
         <el-form-item label="父编号:" prop="Pid">
           <el-input v-model="editForm.Pid" auto-complete="off"></el-input>
@@ -188,16 +188,22 @@
     </a-modal>
 
     <!--编辑界面-->
-    <a-modal title="编辑字典" @ok="handleOkEdit" @click="updateData" v-model="dialogFormVisibleEdit">
+    <a-modal title="编辑" @ok="handleOkEdit" @click="updateData" v-model="dialogFormVisibleEdit">
       <el-form :model="editForm" label-width="100px" :rules="editFormRules" ref="editForm">
-        <el-form-item label="部门名称:" prop="Name">
-          <el-input v-model="editForm.Name" auto-complete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="上级部门:" prop="Pid">
+        <el-form-item label="父编号:" prop="Pid">
           <el-input v-model="editForm.Pid" auto-complete="off"></el-input>
         </el-form-item>
-        <el-form-item label="排序:">
-          <el-input-number v-model="editForm.Sort"></el-input-number>
+        <el-form-item label="名称:" prop="Name">
+          <el-input v-model="editForm.Name" auto-complete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="参数:" prop="Param">
+          <el-input type="psaa" v-model="editForm.Param" auto-complete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="排序:" prop="Sort">
+          <el-input v-model="editForm.Sort" auto-complete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="是否启用:" prop="Sort">
+          <el-input v-model="editForm.Sort" auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item label="备注:" prop="Memo">
           <el-input v-model="editForm.Memo" auto-complete="off"></el-input>

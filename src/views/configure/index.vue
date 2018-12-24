@@ -95,7 +95,7 @@ export default {
     // 获取用户列表
     getUsers() {
       this.para.Data = "";
-      this.para.Code = "GetSysConfig";
+      this.para.Code = "GetYsdatabaseYsConfig";
       handlePost(this.para).then(res => {
         if (res.IsSuccess == true) {
           this.users = res.Data;
@@ -121,7 +121,7 @@ export default {
           UpFilePath: this.users.UpFilePath,
           TimeOut: this.users.TimeOut
         };
-        this.para.Code = "SetSysConfig";
+        this.para.Code = "AddYsdatabaseYsConfig";
         this.para.Data = JSON.stringify(sysData);
         console.log(this.para);
 

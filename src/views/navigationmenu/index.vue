@@ -169,7 +169,7 @@
     </a-modal>
 
             <!--按钮-->
-    <a-modal title="添加" v-model="dialogFormVisibleButton" @ok="handleOkButton" @click="allotIcon">
+    <a-modal title="分配按钮" v-model="dialogFormVisibleButton" @ok="handleOkButton" @click="allotIcon">
           <div style="text-align: center" class="transferBox">
           <a-button type="primary" @click="GetYsMenuButton()">获取单个菜单按钮</a-button>
           <a-button type="primary" @click="GetYsMenuButtons">获取所有菜单按钮</a-button>
@@ -834,26 +834,26 @@ export default {
     },
      //穿梭框
         getMock() {
-      // const targetKeys = [];
-      // const mockData = [];
-        console.log ('this.GetYsMenuButtonData.length:',this.GetYsMenuButtonData)
+      const targetKeys = [];
+      const mockData = [];
+        // console.log ('this.GetYsMenuButtonData.length:',this.GetYsMenuButtonData)
 
-      for (let i = 0; i < this.GetYsMenuButtonData.length; i++) {
+      for (let i = 0; i < 20; i++) {
         // console.log (this.GetYsMenuButtonData[i])
         // console.log (1)
-        // const data = {
-        //   key: i.toString(),
-        //   title: `content${i + 1}`,
-        //   description: `description of content${i + 1}`,
-        //   chosen: Math.random() * 2 > 1,
-        // };
-        // if (data.chosen) {
-        //   targetKeys.push(data.key);
-        // }
-        // mockData.push(data);
+        const data = {
+          key: i.toString(),
+          title: `content${i + 1}`,
+          description: `description of content${i + 1}`,
+          chosen: Math.random() * 2 > 1,
+        };
+        if (data.chosen) {
+          targetKeys.push(data.key);
+        }
+        mockData.push(data);
       }
-      // this.mockData = mockData
-      // this.targetKeys = targetKeys
+      this.mockData = mockData
+      this.targetKeys = targetKeys
     },
     filterOption(inputValue, option) {
       return option.description.indexOf(inputValue) > -1;
