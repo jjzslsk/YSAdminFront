@@ -167,4 +167,7 @@ export default {
 .el-button--text:focus, .el-button--text:hover {
   color: #1890FF;
 }
+.UserTable .el-table__body-wrapper {
+  height: 50rem;
+}
 </style>

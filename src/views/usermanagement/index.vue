@@ -3,17 +3,20 @@
     <!--工具条-->
     <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
       <el-form :inline="true" :model="filters" @submit.native.prevent>
-        <el-form-item>
-          <el-input size="mini" v-model="filters.Name" :placeholder="filtersName"></el-input>
+        <el-form-item style="float: right;">
+          <a-button type="primary" v-on:click="getKeyList">{{button.query}}</a-button>
+        </el-form-item>
+        <el-form-item style="float: right;">
+          <a-input v-model="filters.Name" :placeholder="filtersName"></a-input>
         </el-form-item>
         <el-form-item>
-          <el-button size="mini" type="primary" v-on:click="getKeyList">{{button.query}}</el-button>
+          <a-button type="primary" @click="handleAdd">{{button.add}}</a-button>
         </el-form-item>
         <el-form-item>
-          <el-button size="mini" type="primary" @click="handleAdd">{{button.add}}</el-button>
+          <a-button type="primary" @click="Refresh">刷新</a-button>
         </el-form-item>
         <el-form-item>
-      <el-button type="danger" size="mini" @click="batchRemove" :disabled="this.sels.length===0">{{button.batchRemove}}</el-button>
+      <a-button type="danger" @click="batchRemove" :disabled="this.sels.length===0">{{button.batchRemove}}</a-button>
         </el-form-item>
       </el-form>
     </el-col>
@@ -28,7 +31,14 @@
     <el-button style="float: right; padding: 3px 0" type="text"></el-button>
   </div> -->
   <div class="text item">
-    <el-tree
+    <template>
+      <a-tree
+        @select="onSelect"
+        :treeData="dataList"
+      />
+    </template>
+
+    <!-- <el-tree
       class="filter-tree"
       :data="menus"
       :props="defaultProps"
@@ -38,14 +48,15 @@
       :filter-node-method="filterNode"
       @node-click='changeClick'
       ref="tree2">
-    </el-tree>
+    </el-tree> -->
   </div>
-  {{data9}}
 </el-card>
 
     </el-col>
-    <el-col :span="20">
-    <el-table border @row-dblclick='Rowdblclick' :data="users" highlight-current-row @selection-change="selsChange" style="width: 100%;">
+    <el-col :span="20" class="UserTable">
+    <el-card class="box-card">
+
+    <el-table @row-dblclick='Rowdblclick' :data="users" highlight-current-row @selection-change="selsChange" style="width: 100%;">
       <el-table-column type="selection" width="55">
       </el-table-column>
       <el-table-column type="index" width="60">
@@ -70,13 +81,21 @@
       </el-table-column>
       <el-table-column prop="Memo" label="备注" min-width="100">
       </el-table-column>
-      <el-table-column label="操作" width="300">
-        <template slot-scope="scope"><el-button size="mini" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-          <el-button type="danger" size="mini" @click="handleDel(scope.$index, scope.row)">删除</el-button>
+      <el-table-column label="操作" fixed="right">
+        <template slot-scope="scope">
+          <a @click="handleEdit(scope.$index, scope.row)">编辑</a>
+          <a @click="handleDel(scope.$index, scope.row)">删除</a>
         </template>
       </el-table-column>
     </el-table>
-    
+
+      <!--工具条-->
+    <el-col :span="24" class="toolbar"><el-pagination layout="prev, pager, next" @current-change="handleCurrentChange" :page-size="10" :total="total"
+        style="float:right;">
+      </el-pagination>
+    </el-col>
+
+    </el-card>
     </el-col>
 
 
@@ -115,10 +134,10 @@
     </el-table> -->
 
     <!--工具条-->
-    <el-col :span="24" class="toolbar"><el-pagination layout="prev, pager, next" @current-change="handleCurrentChange" :page-size="10" :total="total"
+    <!-- <el-col :span="24" class="toolbar"><el-pagination layout="prev, pager, next" @current-change="handleCurrentChange" :page-size="10" :total="total"
         style="float:right;">
       </el-pagination>
-    </el-col>
+    </el-col> -->
 
     <!--添加界面-->
     <el-dialog title="添加用户" :visible.sync="dialogFormVisibleAdd" :close-on-click-modal="false">
@@ -178,9 +197,9 @@
                               {{item.Name}}</el-option>
                         </el-select>
                     </el-form-item> -->
-                    <a-select mode="multiple" :defaultValue="['a1', 'b2']" style="width: 100%" @change="handleChange" placeholder="Please select">
+                    <!-- <a-select mode="multiple" :defaultValue="['a1', 'b2']" style="width: 100%" @change="handleChange" placeholder="Please select">
                       <a-select-option v-for="i in roles" :key="(i + 9).toString(36) + i">{{(i + 9).toString(36) + i}}</a-select-option>
-                    </a-select>
+                    </a-select> -->
           </el-col>
           </el-row>
       </el-form>
@@ -268,10 +287,53 @@ import store from "@/store/index.js"; //引入本地存储
 import util from "@/utils/table.js";
 import { handlePost, handleGet } from "@/api/apihelper.js";
 import { paraHelper } from "@/utils/para.js"; //请求参数格式
-
+const treeData = [{
+  title: '0-0',
+  key: '0-0',
+  children: [{
+    title: '0-0-0',
+    key: '0-0-0',
+    children: [
+      { title: '0-0-0-0', key: '0-0-0-0' },
+      { title: '0-0-0-1', key: '0-0-0-1' },
+      { title: '0-0-0-2', key: '0-0-0-2' },
+    ],
+  }, {
+    title: '0-0-1',
+    key: '0-0-1',
+    children: [
+      { title: '0-0-1-0', key: '0-0-1-0' },
+      { title: '0-0-1-1', key: '0-0-1-1' },
+      { title: '0-0-1-2', key: '0-0-1-2' },
+    ],
+  }, {
+    title: '0-0-2',
+    key: '0-0-2',
+  }],
+}, {
+  title: '0-1',
+  key: '0-1',
+  children: [
+    { title: '0-1-0-0', key: '0-1-0-0' },
+    { title: '0-1-0-1', key: '0-1-0-1' },
+    { title: '0-1-0-2', key: '0-1-0-2' },
+  ],
+}, {
+  title: '0-2',
+  key: '0-2',
+}]
 export default {
   data() {
     return {
+        dataList: [], //主页数据
+      //tree
+      expandedKeys: ['0-0-0', '0-0-1'],
+      autoExpandParent: true,
+      checkedKeys: [],
+      selectedKeys: [],
+      treeData,
+
+
       data9:null,
       TreeData: [
         {
@@ -428,11 +490,34 @@ export default {
     };
   },
   watch: {
+        checkedKeys(val) {
+      console.log('onCheck', val)
+    },
     filterText(val) {
       this.$refs.tree2.filter(val);
     }
   },
   methods: {
+    //
+    onExpand (expandedKeys) {
+      console.log('onExpand', expandedKeys)
+      // if not set autoExpandParent to false, if children expanded, parent can not collapse.
+      // or, you can remove all expanded children keys.
+      this.expandedKeys = expandedKeys
+      this.autoExpandParent = false
+    },
+    onCheck (checkedKeys) {
+      console.log('onCheck', checkedKeys)
+      this.checkedKeys = checkedKeys
+    },
+    // onSelect (selectedKeys, info) {
+    //   console.log('onSelect', info)
+    //   this.selectedKeys = selectedKeys
+    // },
+    onSelect (selectedKeys, info) {
+      console.log('selected', selectedKeys, info)
+    },
+    //
     nodeClick(data9){
       // console.log ('vaaaaaaaaaaaaaaa',data9)      
     },
@@ -483,6 +568,7 @@ export default {
     },
     // 获取用户列表
     getDataList() {
+      //取列表
       const paraSelect = {
         Name: this.filters.Name,
         Page: this.page,
@@ -510,19 +596,28 @@ export default {
                   console.log("roles:", this.roles);
                 }
               });
-              // 获取部门树
-            this.para.Code = this.bllCode.GetTreeDepartment;
-            this.para.Data = '';
-            handlePost(this.para)
-              .then(res => {
-                if (res.IsSuccess == true) {
-                  this.menus = res.Data;
-                  // this.total = res.Data.Count;
-                  // this.users = res.Data.List;
-                }
-              })
+            
             }
           });
+          //取部门树
+      const paraTree = {
+        // Page: this.page,
+        // Size: 10
+      };
+      // this.dataList = [];
+      this.para.Code = 'GetTreeYsdatabaseYsDepartment';
+      this.para.Data = JSON.stringify(paraTree);
+      handlePost(this.para).then(res => {
+        if (res.IsSuccess == true) {
+          this.dataList = res.Data;
+          console.log ('this.dataList:::000000',this.dataList)
+          this.getMenuName()
+
+
+        }
+      });
+
+
         })
         .catch(err => {
           console.log(err);
@@ -532,6 +627,39 @@ export default {
        
 
     },
+    //
+    
+    //闭包
+    getMenuName() {
+            var menus  = this.dataList
+            var Key = 1
+            var name = "" ;
+            for (var i = 0; i < menus.length; i++) {
+              if (menus[i].Key == Key) {
+                name = menus[i].Name;
+                break;
+              }
+              else {
+                (function () {
+                  var m = arguments[0];
+                  var menuKey = arguments[1];
+                  for (var j = 0; j < m.length; j++) {
+                    if (m[j].Key == menuKey) {
+                      name = m[j].Name;
+                      break;
+                    }
+                    else if (m[j].children != null && m[j].children.length > 0) {
+                      arguments.callee(m[j].children, val);//递归匿名方法
+                    }
+                  }
+                })(menus[i].children, Key);
+              }
+            }
+            return name;
+            // return alert (name)
+            //
+            
+          },
     // 删除
     handleDel(index, row) {
       this.$confirm("确认删除该记录吗?", "提示", {
@@ -719,6 +847,7 @@ export default {
     this.loadButton(store.getters.interfaces); //按权限加载按钮
     this.getDataList();
   }
+  
 };
 </script>
 
@@ -744,6 +873,7 @@ export default {
 } */
 .box-card {
   /* width: 480px; */
-  height: 40.625rem;
+  height: 60rem;
 }
+
 </style>

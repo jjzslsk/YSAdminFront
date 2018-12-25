@@ -778,6 +778,7 @@ export default {
                             }
                     }
         }
+        
       this.para.Code = this.bllCode.getList;
       this.para.Data = JSON.stringify(paraId[0]);
       handlePost(this.para).then(res => {

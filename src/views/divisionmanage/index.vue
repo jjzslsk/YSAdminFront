@@ -42,18 +42,7 @@
       </el-form>
 
     <!--列表--> 
-      <!-- <a-table defaultExpandAllRows :pagination="false" size="small" :columns="columnsTree" :dataSource="dataTree" :rowSelection="rowSelectionTree">
-          <span slot="tags" slot-scope="tags">
-            <a-checkbox></a-checkbox>
-          </span>
-          <span slot="action" slot-scope="text, record">
-            <a href="javascript:;">{{record.edit}}</a>
-            <a-divider type="vertical" />
-            <a href="javascript:;">{{record.del}}</a>
-          </span>
-      </a-table> -->
-
-          <el-table @row-dblclick='Rowdblclick' stripe :data="dataList" highlight-current-row @selection-change="selsChange" style="width: 100%;">
+          <!-- <el-table @row-dblclick='Rowdblclick' stripe :data="dataList" highlight-current-row @selection-change="selsChange" style="width: 100%;">
             <el-table-column v-for="item in tableLabel" :key="item.Label" :label="item.Label" :prop="item.prop" :width='item.width' :type='item.type'>
             </el-table-column>
             <el-table-column label="操作" width="100" fixed="right">
@@ -62,14 +51,30 @@
                 <el-button type="text"  @click="handleDel(scope.$index, scope.row)">{{button.del}}</el-button>
               </template>
             </el-table-column>
-          </el-table>
+          </el-table> -->
 
           <!-- 分页 -->
-        <el-col :span="24" class="toolbar">
+        <!-- <el-col :span="24" class="toolbar">
       <el-pagination layout="prev, pager, next" @current-change="handleCurrentChange" :page-size="10" :total="total"
         style="float:right;">
       </el-pagination>
-    </el-col>
+    </el-col> -->
+
+          <a-table defaultExpandAllRows :pagination="false" :columns="columnsTree" :dataSource="dataList" :rowSelection="rowSelectionTree">
+          <a slot="name" slot-scope="text" href="javascript:;">{{text}}</a>
+          <span slot="customTitle"><a-icon type="smile-o" /> Name</span>
+
+          <template slot="action" slot-scope="text, record">
+            <!-- <a href="javascript:;" @click="allotButton(record.Key)">分配按钮</a>
+            <a-divider type="vertical" />           -->
+            <a href="javascript:;" @click="onEdit(record)">{{record.Edit}}</a>
+            <a-divider type="vertical" />
+            <a href="javascript:;" @click="onDelete(record)">{{record.Del}}</a>
+          </template>
+          
+        </a-table>
+
+    
 
         <!--图标-->
     <el-dialog title="添加" :visible.sync="dialogFormVisibleIcon" :close-on-click-modal="false">
@@ -215,109 +220,90 @@ import util from "@/utils/table.js";
 import { paraHelper } from "@/utils/para.js"; //请求参数格式
 import { handlePost, handleGet } from "@/api/apihelper.js";
 
+//表头部
 const columnsTree = [
-//   {
-//   dataIndex: 'name',
-//   key: 'name',
-//   slots: { title: 'customTitle' },
-// }
-,{
-  title: '菜单名称',
-  key: 'name',
-  dataIndex: 'name',
-},{
-  title: '图标',
-  key: 'icon',
-  dataIndex: 'icon',
-},{
-  title: '标记',
-  key: 'code',
-  dataIndex: 'code',
-},{
-  title: '链接地址',
-  key: 'url',
-  dataIndex: 'url',
-},{
-  title: '是否显示',
-  key: 'show',
-  dataIndex: 'show',
-  scopedSlots: { customRender: 'tags' },
+{
+  title: '部门名称',
+  Key: 'Name',
+  dataIndex: 'Name',
+  scopedSlots: { customRender: 'name' },
 },{
   title: '排序',
-  key: 'sort',
-  dataIndex: 'sort',
+  Key: 'Sort',
+  dataIndex: 'Sort',
 },{
   title: '操作',
-  key: 'action',
+  Key: 'action',
   dataIndex: 'action',
   scopedSlots: { customRender: 'action' },
-}];
+}
+];
 
-const dataTree = [{
-  key: 1,
-  name: '系统设置',
-  icon:'icon',
-  code:'Button',
-  url:'sys/ButtonList',
-  sort:'1',
-  age: 60,
-  edit:'编辑',
-  del:'删除',
-  children: [{
-    key: 11,
-    name: '导航菜单',
-    icon:'icon',
-    code:'Button',
-    url:'sys/ButtonList',
-    sort:'1',
-    age: 42,
-    edit:'编辑',
-    del:'删除',
-  }, {
-    key: 12,
-    name: '用户管理',
-    icon:'icon',
-    code:'Button',
-    url:'sys/ButtonList',
-    sort:'1',
-    age: 30,
-    edit:'编辑',
-    del:'删除',
-    tags: ['nice', 'developer','111'],
-  }, {
-    key: 13,
-    name: '部门管理',
-    icon:'icon',
-    code:'Button',
-    url:'sys/ButtonList',
-    sort:'1',
-    age: 72,
-    edit:'编辑',
-    del:'删除',
-  }],
-}, {
-  key: 2,
-  name: '财务管理',
-  icon:'icon',
-  code:'Button',
-  url:'sys/ButtonList',
-  sort:'1',
-  age: 32,
-  edit:'编辑',
-  del:'删除',
-  children: [{
-    key: 22,
-    name: '奖金明细',
-    icon:'icon',
-    code:'Button',
-    url:'sys/ButtonList',
-    sort:'1',
-    age: 42,
-    edit:'编辑',
-    del:'删除',
-  }
-  ]
-}];
+// const dataTree = [{
+//   key: 1,
+//   name: '系统设置',
+//   icon:'icon',
+//   code:'Button',
+//   url:'sys/ButtonList',
+//   sort:'1',
+//   age: 60,
+//   edit:'编辑',
+//   del:'删除',
+//   children: [{
+//     key: 11,
+//     name: '导航菜单',
+//     icon:'icon',
+//     code:'Button',
+//     url:'sys/ButtonList',
+//     sort:'1',
+//     age: 42,
+//     edit:'编辑',
+//     del:'删除',
+//   }, {
+//     key: 12,
+//     name: '用户管理',
+//     icon:'icon',
+//     code:'Button',
+//     url:'sys/ButtonList',
+//     sort:'1',
+//     age: 30,
+//     edit:'编辑',
+//     del:'删除',
+//     tags: ['nice', 'developer','111'],
+//   }, {
+//     key: 13,
+//     name: '部门管理',
+//     icon:'icon',
+//     code:'Button',
+//     url:'sys/ButtonList',
+//     sort:'1',
+//     age: 72,
+//     edit:'编辑',
+//     del:'删除',
+//   }],
+// }, {
+//   key: 2,
+//   name: '财务管理',
+//   icon:'icon',
+//   code:'Button',
+//   url:'sys/ButtonList',
+//   sort:'1',
+//   age: 32,
+//   edit:'编辑',
+//   del:'删除',
+//   children: [{
+//     key: 22,
+//     name: '奖金明细',
+//     icon:'icon',
+//     code:'Button',
+//     url:'sys/ButtonList',
+//     sort:'1',
+//     age: 42,
+//     edit:'编辑',
+//     del:'删除',
+//   }
+//   ]
+// }];
 
 const rowSelectionTree = {
   onChange: (selectedRowKeys, selectedRows) => {
@@ -347,6 +333,29 @@ export default {
         return data;
       };
     return {
+          //图标
+    allotIcon() {
+      this.dialogFormVisibleIcon = true;
+    },
+    handleOk() {
+      this.dialogFormVisibleIcon = false;
+    },
+    handleOkEdit() {
+      this.dialogFormVisibleEdit = false;
+    },
+    handleOkAdd(){
+      this.dialogFormVisibleAdd = false;
+    },
+    handleOkButton() {
+      this.dialogFormVisibleButton = false;
+    },
+    // allotButton(data) {
+    //   this.GetYsMenuButtonData=[]
+    //   this.GetYsMenuButtonsData=[]
+    //   this.buttonKey = data
+    //   this.dialogFormVisibleButton = true;
+    // },
+    //
             //穿梭框
         data: generateData(),
         value3: [1],
@@ -361,7 +370,7 @@ export default {
       select: '',
 
       // tree列表
-      dataTree,
+      // dataTree,
       columnsTree,
       rowSelectionTree,
       
@@ -484,6 +493,58 @@ export default {
     };
   },
   methods: {
+            // 显示编辑界面
+    onEdit(row) {
+      console.log (row)
+      this.dialogStatus = "update";
+      this.dialogFormVisibleEdit = true;
+      // this.$refs["editForm"].resetFields(); //重置editForm
+      this.editForm = {},
+      this.editForm = Object.assign({}, row);
+      let paert = {
+        Pid: -1
+      };
+      this.para.Data = JSON.stringify(paert);
+      this.para.Code = this.bllCode.getList;
+      handlePost(this.para).then(res => {
+        if (res.IsSuccess == true) {
+          this.ListsuperiorMenu = res.Data;
+          let top = {
+            Id: 0,
+            Name: "无"
+          };
+          this.ListsuperiorMenu.push(top);
+        }
+      });
+    },
+    //操作删除
+        onDelete (data) {
+      console.log (data)
+        this.$confirm("确认删除该记录吗?", "提示", {
+        type: "warning",
+        confirmButtonText: "确定",
+        cancelButtonText: "取消"
+      })
+        .then(() => {
+          const paraId = {
+            Id: data.Key
+          };
+          this.para.Code = this.bllCode.del;
+          this.para.Data = JSON.stringify(paraId);
+          handlePost(this.para).then(res => {
+            if (res.IsSuccess == true) {
+              this.getDataList();
+              this.$message({
+                message: "删除成功！",
+                type: "success"
+              });
+            }
+          });
+        })
+        .catch(() => {});
+      // const dataSource = [...this.dataSource]
+      // this.dataSource = dataSource.filter(item => item.key !== key)
+    },
         //刷新页面
     Refresh() {
       (this.filters = {
@@ -496,13 +557,10 @@ export default {
     handleChange(value, direction, movedKeys) {
         console.log(value, direction, movedKeys);
       },
-    //图标
-    allotIcon() {
-      this.dialogFormVisibleIcon = true;
-    },
-    allotButton() {
-      this.dialogFormVisibleButton = true;
-    },
+    //
+    // allotButton() {
+    //   this.dialogFormVisibleButton = true;
+    // },
     //行点击事件
     Rowdblclick() {
       this.handleAdd();
@@ -556,12 +614,12 @@ export default {
         Size: 10
       };
       // this.dataList = [];
-      this.para.Code = this.bllCode.getList;
+      this.para.Code = 'GetTreeYsdatabaseYsDepartment';
       this.para.Data = JSON.stringify(paraId);
       handlePost(this.para).then(res => {
         if (res.IsSuccess == true) {
           this.total = res.Data.Count;
-          this.dataList = res.Data.List;
+          this.dataList = res.Data;
         }
       });
     },
