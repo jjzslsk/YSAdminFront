@@ -4,29 +4,20 @@
         
     <!--工具条-->
       <el-form :inline="true" :model="filters" @submit.native.prevent>
-        <el-form-item>
           <el-button v-if="buttons.selectshow==true" type="primary" v-on:click="getKeyList">刷新</el-button>
-        </el-form-item>
-        <el-form-item>
           <a-button type="primary" @click="handleAdd">{{button.add}}</a-button>
-        </el-form-item>
-        <el-form-item>
           <!-- <a-button type="primary" @click="handleEdit">编辑</a-button> -->
-        </el-form-item>
-        <el-form-item>
           <a-button type="primary" @click="Refresh">刷新</a-button>
-        </el-form-item>
-        <el-form-item>
+        <!-- <el-form-item> -->
           <!-- <a-button type="primary" @click="allotButton">获取菜单按钮</a-button> -->
-        </el-form-item>
+        <!-- </el-form-item> -->
         <!-- <el-form-item>
           <a-button type="primary" @click="SetButton">设置按钮</a-button>
         </el-form-item> -->
         <!-- <el-form-item>
           <a-button type="primary" @click="allotIcon">图标</a-button>
         </el-form-item> -->
-        <el-form-item>
-      <!-- <a-button type="danger" @click="batchRemove" :disabled="this.sels.length===0">{{button.batchRemove}}</a-button> -->
+      <a-button type="danger" @click="batchRemove" :disabled="this.sels.length===0">{{button.batchRemove}}</a-button>
       <!-- <div style="margin-bottom: 16px">
           <a-button
             type="primary"
@@ -42,37 +33,23 @@
             </template>
           </span>
         </div> -->
-        </el-form-item>
 
         <el-form-item style="float: right;">
           <a-button type="primary" @click="getKeyList">查询</a-button>
         </el-form-item>
         <el-form-item style="float: right;">
-
-    <a-input-group compact>
-      <a-select @change="this.handleSelectChange" defaultValue="菜单名称" style="width: 40%">
-          <a-select-option value='Id'>Id</a-select-option>
-          <a-select-option value='Name'>菜单名称</a-select-option>
-          <a-select-option value='Pid'>上级菜单</a-select-option>
-          <a-select-option value='Url'>链接地址</a-select-option>
-          <a-select-option value='Param'>页面标识</a-select-option>
-          <a-select-option value='Icon'>图标</a-select-option>
-          <a-select-option value='Sort'>排序</a-select-option>
-      </a-select>
-    <a-input style="width: 60%" defaultValue="" v-model="filters.data"/>
-  </a-input-group>
-
-          <!-- <el-input v-model="filters.Name" :placeholder="filtersName" class="input-with-select">
-        <el-select v-model="select" slot="prepend" placeholder="请选择">
-          <el-option label="ID" value="1"></el-option>
-          <el-option label="接口名称" value="2"></el-option>
-          <el-option label="上级菜单" value="3"></el-option>
-          <el-option label="链接地址" value="4"></el-option>
-          <el-option label="页面标识" value="5"></el-option>
-          <el-option label="排序" value="6"></el-option>
-        </el-select> -->
-        <!-- <el-button v-on:click="getKeyList" slot="append" icon="el-icon-search"></el-button> -->
-      <!-- </el-input> -->
+          <a-input-group compact>
+            <a-select  @change="this.handleSelectChange" defaultValue="菜单名称" style="width: 40%">
+                <a-select-option value='Id'>Id</a-select-option>
+                <a-select-option value='Name'>菜单名称</a-select-option>
+                <a-select-option value='Pid'>上级菜单</a-select-option>
+                <a-select-option value='Url'>链接地址</a-select-option>
+                <a-select-option value='Param'>页面标识</a-select-option>
+                <a-select-option value='Icon'>图标</a-select-option>
+                <a-select-option value='Sort'>排序</a-select-option>
+            </a-select>
+          <a-input style="width: 60%" defaultValue="" v-model="filters.data"/>
+        </a-input-group>
         </el-form-item>
         
       </el-form>
@@ -113,54 +90,42 @@
         <!--图标-->
     <a-modal title="添加图标" @ok="handleOk" @click="allotIcon" v-model="dialogFormVisibleIcon" >
       <ul class="anticons-list">
+        <li class><i class="anticon anticon-bars"></i></li>
+        <li class><i class="anticon anticon-copy"></i></li>
         <li class><i class="anticon anticon-lock"></i></li>
         <li class><i class="anticon anticon-unlock"></i></li>
         <li class><i class="anticon anticon-bars"></i></li>
+        <li class><i class="anticon anticon-book"></i></li>
+        <li class><i class="anticon anticon-calendar"></i></li>
+        <li class><i class="anticon anticon-cloud"></i></li>
+        <li class><i class="anticon anticon-cloud-download"></i></li>
+        <li class><i class="anticon anticon-code"></i></li>
+        <li class><i class="anticon anticon-credit-card"></i></li>
+        <li class><i class="anticon anticon-download"></i></li>
+        <li class><i class="anticon anticon-bars"></i></li>
+        <li class><i class="anticon anticon-copy"></i></li>
         <li class><i class="anticon anticon-lock"></i></li>
         <li class><i class="anticon anticon-unlock"></i></li>
         <li class><i class="anticon anticon-bars"></i></li>
+        <li class><i class="anticon anticon-book"></i></li>
+        <li class><i class="anticon anticon-calendar"></i></li>
+        <li class><i class="anticon anticon-cloud"></i></li>
+        <li class><i class="anticon anticon-cloud-download"></i></li>
+        <li class><i class="anticon anticon-code"></i></li>
+        <li class><i class="anticon anticon-credit-card"></i></li>
+        <li class><i class="anticon anticon-download"></i></li>
+        <li class><i class="anticon anticon-bars"></i></li>
+        <li class><i class="anticon anticon-copy"></i></li>
         <li class><i class="anticon anticon-lock"></i></li>
         <li class><i class="anticon anticon-unlock"></i></li>
         <li class><i class="anticon anticon-bars"></i></li>
-        <li class><i class="anticon anticon-lock"></i></li>
-        <li class><i class="anticon anticon-unlock"></i></li>
-        <li class><i class="anticon anticon-bars"></i></li>
-        <li class><i class="anticon anticon-lock"></i></li>
-        <li class><i class="anticon anticon-unlock"></i></li>
-        <li class><i class="anticon anticon-bars"></i></li>
-        <li class><i class="anticon anticon-lock"></i></li>
-        <li class><i class="anticon anticon-unlock"></i></li>
-        <li class><i class="anticon anticon-bars"></i></li>
-        <li class><i class="anticon anticon-lock"></i></li>
-        <li class><i class="anticon anticon-unlock"></i></li>
-        <li class><i class="anticon anticon-bars"></i></li>
-        <li class><i class="anticon anticon-lock"></i></li>
-        <li class><i class="anticon anticon-unlock"></i></li>
-        <li class><i class="anticon anticon-bars"></i></li>
-        <li class><i class="anticon anticon-lock"></i></li>
-        <li class><i class="anticon anticon-unlock"></i></li>
-        <li class><i class="anticon anticon-bars"></i></li>
-        <li class><i class="anticon anticon-lock"></i></li>
-        <li class><i class="anticon anticon-unlock"></i></li>
-        <li class><i class="anticon anticon-bars"></i></li>
-        <li class><i class="anticon anticon-lock"></i></li>
-        <li class><i class="anticon anticon-unlock"></i></li>
-        <li class><i class="anticon anticon-bars"></i></li>
-        <li class><i class="anticon anticon-lock"></i></li>
-        <li class><i class="anticon anticon-unlock"></i></li>
-        <li class><i class="anticon anticon-bars"></i></li>
-        <li class><i class="anticon anticon-lock"></i></li>
-        <li class><i class="anticon anticon-unlock"></i></li>
-        <li class><i class="anticon anticon-bars"></i></li>
-        <li class><i class="anticon anticon-lock"></i></li>
-        <li class><i class="anticon anticon-unlock"></i></li>
-        <li class><i class="anticon anticon-bars"></i></li>
-        <li class><i class="anticon anticon-lock"></i></li>
-        <li class><i class="anticon anticon-unlock"></i></li>
-        <li class><i class="anticon anticon-bars"></i></li>
-        <li class><i class="anticon anticon-lock"></i></li>
-        <li class><i class="anticon anticon-unlock"></i></li>
-        <li class><i class="anticon anticon-bars"></i></li>
+        <li class><i class="anticon anticon-book"></i></li>
+        <li class><i class="anticon anticon-calendar"></i></li>
+        <li class><i class="anticon anticon-cloud"></i></li>
+        <li class><i class="anticon anticon-cloud-download"></i></li>
+        <li class><i class="anticon anticon-code"></i></li>
+        <li class><i class="anticon anticon-credit-card"></i></li>
+        <li class><i class="anticon anticon-download"></i></li>
       </ul>
       <div slot="footer" class="dialog-footer">
         <a-button @click.native="dialogFormVisibleIcon=false">取消</a-button>
@@ -169,7 +134,7 @@
     </a-modal>
 
             <!--按钮-->
-    <a-modal title="分配按钮" v-model="dialogFormVisibleButton" @ok="handleOkButton" @click="allotIcon">
+    <!-- <a-modal title="分配按钮" v-model="dialogFormVisibleButton" @ok="handleOkButton" @click="allotIcon">
           <div style="text-align: center" class="transferBox">
           <a-button type="primary" @click="GetYsMenuButton()">获取单个菜单按钮</a-button>
           <a-button type="primary" @click="GetYsMenuButtons">获取所有菜单按钮</a-button>
@@ -190,6 +155,25 @@
         </a-transfer>
       </template>
       </div>
+
+      <div slot="footer" class="dialog-footer">
+        <a-button @click.native="dialogFormVisibleButton=false">取消</a-button>
+        <a-button type="primary" @click.native="dialogFormVisibleButton=false">确认</a-button>
+      </div>
+    </a-modal> -->
+
+    <a-modal title="分配按钮" v-model="dialogFormVisibleButton" @ok="handleOkButton" @click="allotIcon">
+      <template>
+        <a-transfer
+          :titles="['未选按钮', '已选按钮']"
+          :dataSource="mockData"
+          :filterOption="filterOption"
+          :targetKeys="targetKeys"
+          @change="handleChange"
+          :render="item=>item.title"
+        >
+        </a-transfer>
+      </template>
 
       <div slot="footer" class="dialog-footer">
         <a-button @click.native="dialogFormVisibleButton=false">取消</a-button>
@@ -234,7 +218,7 @@
         </el-form-item>
         <el-form-item label="图标:" prop="">
           <el-input placeholder="请输入内容" v-model="editForm.Icon" class="input-with-select">
-            <a-button slot="append" icon="el-icon-search" @click="allotIcon"></a-button>
+            <a-icon type="picture"  slot="append" @click="allotIcon"/>
           </el-input>
         </el-form-item>
         <el-form-item label="上级菜单:" prop="Pid">
@@ -266,12 +250,18 @@
         <el-form-item label="排序:">
           <el-input-number v-model="editForm.Sort"></el-input-number>
         </el-form-item>
+        <a-row>
+        <a-col :span="12">
         <el-form-item label="显示菜单:">
           <a-switch @change='aSwitch' v-model="editForm.Isvisiable"/>
         </el-form-item>
+        </a-col>
+        <a-col :span="12">
         <el-form-item label="是否启用:">
           <a-switch @change='aState' v-model="editForm.State"/>
         </el-form-item>
+        </a-col>
+        </a-row>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <a-button @click.native="dialogFormVisibleAdd=false">{{button.cancel}}</a-button>
@@ -285,8 +275,10 @@
         <el-form-item label="菜单名称:" prop="Name">
           <el-input v-model="editForm.Name" auto-complete="off"></el-input>
         </el-form-item>
-        <el-form-item label="图标:" prop="Icon">
-          <el-input v-model="editForm.Icon" auto-complete="off"></el-input>
+        <el-form-item label="图标:" prop="">
+          <el-input placeholder="请输入内容" v-model="editForm.Icon" class="input-with-select">
+            <a-icon type="picture"  slot="append" @click="allotIcon"/>
+          </el-input>
         </el-form-item>
         <el-form-item label="参数:" prop="Param">
           <el-input v-model="editForm.Param" auto-complete="off"></el-input>
@@ -311,12 +303,18 @@
         <el-form-item label="排序:">
           <el-input-number v-model="editForm.Sort"></el-input-number>
         </el-form-item>
+        <a-row>
+        <a-col :span="12">
         <el-form-item label="显示菜单:">
           <a-switch @change='aSwitch' v-model="editForm.Isvisiable"/>
         </el-form-item>
+        </a-col>
+        <a-col :span="12">
         <el-form-item label="是否启用:">
           <a-switch @change='aState' v-model="editForm.State"/>
         </el-form-item>
+        </a-col>
+        </a-row>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <a-button @click.native="dialogFormVisibleEdit=false">{{button.cancel}}</a-button>        
@@ -487,7 +485,7 @@ export default {
       tableLabel: [
         { type: "selection", width: "50" },
         { Label: "ID", prop: "Id", width: "50", type: "index" },
-        { Label: "名称", prop: "Name", width: "100" },
+        { Label: "名称", prop: "Name"},
         { Label: "上级菜单", prop: "Pid", width: "80" },
         { Label: "链接地址", prop: "Url"},
         { Label: "页面标识", prop: "Param",width: "150"},
@@ -586,7 +584,47 @@ export default {
             trigger: "blur"
           }
         ]
-      }
+      },
+
+    mockDatas: [
+    { chosen: true,
+      key: "0",
+      title: "添加",
+      },
+      {
+      chosen: false,
+      key: "1",
+      title: "编辑",
+      },
+      { chosen: true,
+      key: "2",
+      title: "删除",
+      },
+      {
+      chosen: false,
+      key: "3",
+      title: "查询",
+      },
+      { chosen: true,
+      key: "4",
+      title: "重设",
+      },
+      {
+      chosen: false,
+      key: "5",
+      title: "导入",
+      },
+      { chosen: true,
+      key: "6",
+      title: "导出",
+      },
+      {
+      chosen: false,
+      key: "7",
+      title: "批量删除",
+      }, 
+  ],
+
     };
   },
 
@@ -597,6 +635,9 @@ export default {
       return this.selectedRowKeys.length > 0
     }
   },
+
+
+
   methods: {
     start () {
       this.loading = true;
@@ -680,8 +721,6 @@ export default {
       }),
         this.getDataList();
     },
-       
-
     //图标
     allotIcon() {
       this.dialogFormVisibleIcon = true;
@@ -837,16 +876,16 @@ export default {
         getMock() {
       const targetKeys = [];
       const mockData = [];
+      console.log ('1111',this.mockDatas)
         // console.log ('this.GetYsMenuButtonData.length:',this.GetYsMenuButtonData)
 
-      for (let i = 0; i < 20; i++) {
+      for (let i = 0; i < this.mockDatas.length; i++) {
         // console.log (this.GetYsMenuButtonData[i])
-        // console.log (1)
+        // console.log ('iiiiiii',this.mockDatas[i])
         const data = {
-          key: i.toString(),
-          title: `content${i + 1}`,
-          description: `description of content${i + 1}`,
-          chosen: Math.random() * 2 > 1,
+          key: this.mockDatas[i].key,
+          title: this.mockDatas[i].title,
+          chosen:this.mockDatas[i].chosen,
         };
         if (data.chosen) {
           targetKeys.push(data.key);
@@ -854,6 +893,7 @@ export default {
         mockData.push(data);
       }
       this.mockData = mockData
+
       this.targetKeys = targetKeys
     },
     filterOption(inputValue, option) {

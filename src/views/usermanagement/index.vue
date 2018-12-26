@@ -140,7 +140,7 @@
     </el-col> -->
 
     <!--添加界面-->
-    <el-dialog title="添加用户" :visible.sync="dialogFormVisibleAdd" :close-on-click-modal="false">
+    <a-modal title="添加用户" @ok="handleOkAdd" @click="createData" v-model="dialogFormVisibleAdd">
       <el-form :model="editForm" label-width="100px" :rules="editFormRules" ref="editForm">
         <el-form-item label="名称:" prop="Name">
           <el-input v-model="editForm.Name" auto-complete="off"></el-input>
@@ -181,42 +181,40 @@
         <el-form-item label="备注:">
           <el-input type="textarea" v-model="editForm.Memo"></el-input>
         </el-form-item>
-        <el-row>
-          <el-col :span="12">
+        <!-- <el-form-item label="角色:">
+            <el-select v-model="editForm.RoleIds" placeholder="请选择">
+                <el-option v-for="item in roles" :key="item.Id" :label="item.Name" :value="item.Id">
+                  {{item.Name}}</el-option>
+            </el-select>
+        </el-form-item> -->
+        <el-form-item label="角色:">
+        <template>
+          <a-select size="large" mode="multiple" style="width: 100%" @change="handleChangeSelect" placeholder="选择角色">
+            <a-select-option v-for="item in roles" :key="item.Id">{{item.Name}}</a-select-option>
+          </a-select>
+        </template>
+        </el-form-item>
         <el-form-item label="部门:">
-                        <el-select v-model="editForm.DepartmentId" placeholder="请选择">
-                            <el-option v-for="item in departments" :key="item.Name" :label="item.Name" :value="item.Id">
-                              {{item.Name}}</el-option>
-                        </el-select>
-                    </el-form-item>
-          </el-col>
-          <el-col :span="12">
-                    <!-- <el-form-item label="角色:">
-                        <el-select v-model="editForm.RoleIds" placeholder="请选择">
-                            <el-option v-for="item in roles" :key="item.Id" :label="item.Name" :value="item.Id">
-                              {{item.Name}}</el-option>
-                        </el-select>
-                    </el-form-item> -->
-                    <!-- <a-select mode="multiple" :defaultValue="['a1', 'b2']" style="width: 100%" @change="handleChange" placeholder="Please select">
-                      <a-select-option v-for="i in roles" :key="(i + 9).toString(36) + i">{{(i + 9).toString(36) + i}}</a-select-option>
-                    </a-select> -->
-          </el-col>
-          </el-row>
+            <el-select v-model="editForm.DepartmentId" placeholder="请选择">
+                <el-option v-for="item in departments" :key="item.Name" :label="item.Name" :value="item.Id">
+                  {{item.Name}}</el-option>
+            </el-select>
+        </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click.native="dialogFormVisibleAdd=false">取消</el-button>
         <el-button v-if="dialogStatus=='create'" type="primary" @click="createData">添加</el-button>
         <el-button v-else type="primary" @click="updateData">修改</el-button>
       </div>
-    </el-dialog>
+    </a-modal>
 
     <!--编辑界面-->
-    <el-dialog title="编辑用户" :visible.sync="dialogFormVisibleAddEdit" :close-on-click-modal="false">
+    <el-dialog title="编辑用户" :visible.sync="dialogFormVisibleEdit" :close-on-click-modal="false">
       <el-form :model="editForm" label-width="100px" :rules="editFormRules" ref="editForm">
         <el-form-item label="名称:" prop="Name">
           <el-input v-model="editForm.Name" auto-complete="off"></el-input>
         </el-form-item>
-        <el-form-item label="账号:" prop="Username-">
+        <el-form-item label="账号:" prop="Username">
           <el-input v-model="editForm.Username" auto-complete="off" :disabled="disabledZhangHao" placeholder="设置后不可更改"></el-input>
         </el-form-item>
         <el-form-item label="密码:" prop="PasWord">
@@ -272,7 +270,7 @@
           </el-row>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click.native="dialogFormVisibleAddEdit=false">取消</el-button>
+        <el-button @click.native="dialogFormVisibleEdit=false">取消</el-button>
         <el-button v-if="dialogStatus=='create'" type="primary" @click="createData">添加</el-button>
         <el-button v-else type="primary" @click="updateData">修改</el-button>
       </div>
@@ -382,7 +380,7 @@ export default {
       para: paraHelper,
       dialogStatus: "",
       dialogFormVisibleAdd: false,
-      dialogFormVisibleAddEdit: false,
+      dialogFormVisibleEdit: false,
       filters: {
 
       },
@@ -535,6 +533,29 @@ export default {
     Rowdblclick() {
       this.handleAdd();
     },
+    //窗口控制
+    handleOkEdit() {
+      this.dialogFormVisibleEdit = false;
+    },
+    handleOkAdd(){
+      this.dialogFormVisibleAdd = false;
+    },
+    //刷新页面
+    Refresh() {
+      (this.filters = {
+        Page: 1,
+        Size: 15
+      }),
+        this.getDataList();
+    },
+    //多选角色
+    handleChangeSelect(value) {
+      console.log(`Selected: ${value}`);
+    },
+    popupScroll(){
+      console.log('popupScroll')
+    },
+       
     //加载按钮
     loadButton(data) {
       if (data && data.length > 0) {
@@ -694,7 +715,7 @@ export default {
     // 显示编辑界面
     handleEdit(index, row) {
       this.dialogStatus = "update";
-      this.dialogFormVisibleAddEdit = true;
+      this.dialogFormVisibleEdit = true;
       this.disabledZhangHao = true;
       this.disabledMima = true;
       this.editForm = Object.assign({}, row);

@@ -4,41 +4,26 @@
         
     <!--工具条-->
       <el-form :inline="true" :model="filters" @submit.native.prevent>
-        <!-- <el-form-item>
           <a-button  v-if="buttons.selectshow==true" type="primary" v-on:click="getKeyList">刷新</a-button>
-        </el-form-item> -->
-        <el-form-item>
           <a-button type="primary" @click="handleAdd">{{button.add}}</a-button>
-        </el-form-item>
-        <el-form-item>
           <!-- <a-button type="primary" @click="handleAdd">编辑</a-button> -->
-        </el-form-item>
-        <el-form-item>
           <a-button type="primary" @click="Refresh">刷新</a-button>
-        </el-form-item>
-        <el-form-item>
           <!-- <a-button type="primary" @click="allotButton">分配按钮</a-button> -->
-        </el-form-item>
-        <el-form-item>
       <a-button type="danger" @click="batchRemove" :disabled="this.sels.length===0">{{button.batchRemove}}</a-button>
-        </el-form-item>
-        <el-form-item style="float: right;">
+      <el-form-item style="float: right;">
           <a-button type="primary" @click="getKeyList">查询</a-button>
         </el-form-item>
         <el-form-item style="float: right;">
-          <el-input v-model="filters.Name" :placeholder="filtersName" class="input-with-select">
-        <el-select v-model="select" slot="prepend" placeholder="请选择">
-          <el-option label="ID" value="1"></el-option>
-          <el-option label="接口名称" value="2"></el-option>
-          <el-option label="上级菜单" value="3"></el-option>
-          <el-option label="链接地址" value="4"></el-option>
-          <el-option label="页面标识" value="5"></el-option>
-          <el-option label="排序" value="6"></el-option>
-        </el-select>
-        <!-- <a-button v-on:click="getKeyList" slot="append" icon="el-icon-search"></a-button> -->
-      </el-input>
+          <a-input-group compact>
+            <a-select  @change="this.handleSelectChange" defaultValue="按钮名称" style="width: 40%">
+                <a-select-option value='Id'>Id</a-select-option>
+                <a-select-option value='Pid'>图标</a-select-option>
+                <a-select-option value='Url'>说明</a-select-option>
+                <a-select-option value='Name'>按钮名称</a-select-option>
+            </a-select>
+          <a-input style="width: 60%" defaultValue="" v-model="filters.data"/>
+        </a-input-group>
         </el-form-item>
-        
       </el-form>
 
     <!--列表--> 
@@ -72,62 +57,50 @@
     </el-col>
 
         <!--图标-->
-    <el-dialog title="添加" :visible.sync="dialogFormVisibleIcon" :close-on-click-modal="false">
+    <a-modal title="添加图标" @ok="handleOk" @click="allotIcon" v-model="dialogFormVisibleIcon" >
       <ul class="anticons-list">
+        <li class><i class="anticon anticon-bars"></i></li>
+        <li class><i class="anticon anticon-copy"></i></li>
         <li class><i class="anticon anticon-lock"></i></li>
         <li class><i class="anticon anticon-unlock"></i></li>
         <li class><i class="anticon anticon-bars"></i></li>
+        <li class><i class="anticon anticon-book"></i></li>
+        <li class><i class="anticon anticon-calendar"></i></li>
+        <li class><i class="anticon anticon-cloud"></i></li>
+        <li class><i class="anticon anticon-cloud-download"></i></li>
+        <li class><i class="anticon anticon-code"></i></li>
+        <li class><i class="anticon anticon-credit-card"></i></li>
+        <li class><i class="anticon anticon-download"></i></li>
+        <li class><i class="anticon anticon-bars"></i></li>
+        <li class><i class="anticon anticon-copy"></i></li>
         <li class><i class="anticon anticon-lock"></i></li>
         <li class><i class="anticon anticon-unlock"></i></li>
         <li class><i class="anticon anticon-bars"></i></li>
+        <li class><i class="anticon anticon-book"></i></li>
+        <li class><i class="anticon anticon-calendar"></i></li>
+        <li class><i class="anticon anticon-cloud"></i></li>
+        <li class><i class="anticon anticon-cloud-download"></i></li>
+        <li class><i class="anticon anticon-code"></i></li>
+        <li class><i class="anticon anticon-credit-card"></i></li>
+        <li class><i class="anticon anticon-download"></i></li>
+        <li class><i class="anticon anticon-bars"></i></li>
+        <li class><i class="anticon anticon-copy"></i></li>
         <li class><i class="anticon anticon-lock"></i></li>
         <li class><i class="anticon anticon-unlock"></i></li>
         <li class><i class="anticon anticon-bars"></i></li>
-        <li class><i class="anticon anticon-lock"></i></li>
-        <li class><i class="anticon anticon-unlock"></i></li>
-        <li class><i class="anticon anticon-bars"></i></li>
-        <li class><i class="anticon anticon-lock"></i></li>
-        <li class><i class="anticon anticon-unlock"></i></li>
-        <li class><i class="anticon anticon-bars"></i></li>
-        <li class><i class="anticon anticon-lock"></i></li>
-        <li class><i class="anticon anticon-unlock"></i></li>
-        <li class><i class="anticon anticon-bars"></i></li>
-        <li class><i class="anticon anticon-lock"></i></li>
-        <li class><i class="anticon anticon-unlock"></i></li>
-        <li class><i class="anticon anticon-bars"></i></li>
-        <li class><i class="anticon anticon-lock"></i></li>
-        <li class><i class="anticon anticon-unlock"></i></li>
-        <li class><i class="anticon anticon-bars"></i></li>
-        <li class><i class="anticon anticon-lock"></i></li>
-        <li class><i class="anticon anticon-unlock"></i></li>
-        <li class><i class="anticon anticon-bars"></i></li>
-        <li class><i class="anticon anticon-lock"></i></li>
-        <li class><i class="anticon anticon-unlock"></i></li>
-        <li class><i class="anticon anticon-bars"></i></li>
-        <li class><i class="anticon anticon-lock"></i></li>
-        <li class><i class="anticon anticon-unlock"></i></li>
-        <li class><i class="anticon anticon-bars"></i></li>
-        <li class><i class="anticon anticon-lock"></i></li>
-        <li class><i class="anticon anticon-unlock"></i></li>
-        <li class><i class="anticon anticon-bars"></i></li>
-        <li class><i class="anticon anticon-lock"></i></li>
-        <li class><i class="anticon anticon-unlock"></i></li>
-        <li class><i class="anticon anticon-bars"></i></li>
-        <li class><i class="anticon anticon-lock"></i></li>
-        <li class><i class="anticon anticon-unlock"></i></li>
-        <li class><i class="anticon anticon-bars"></i></li>
-        <li class><i class="anticon anticon-lock"></i></li>
-        <li class><i class="anticon anticon-unlock"></i></li>
-        <li class><i class="anticon anticon-bars"></i></li>
-        <li class><i class="anticon anticon-lock"></i></li>
-        <li class><i class="anticon anticon-unlock"></i></li>
-        <li class><i class="anticon anticon-bars"></i></li>
+        <li class><i class="anticon anticon-book"></i></li>
+        <li class><i class="anticon anticon-calendar"></i></li>
+        <li class><i class="anticon anticon-cloud"></i></li>
+        <li class><i class="anticon anticon-cloud-download"></i></li>
+        <li class><i class="anticon anticon-code"></i></li>
+        <li class><i class="anticon anticon-credit-card"></i></li>
+        <li class><i class="anticon anticon-download"></i></li>
       </ul>
       <div slot="footer" class="dialog-footer">
-        <a-button  @click.native="dialogFormVisibleIcon=false">取消</a-button>
-        <a-button  type="primary" @click.native="dialogFormVisibleIcon=false">确认</a-button>
+        <a-button @click.native="dialogFormVisibleIcon=false">取消</a-button>
+        <a-button type="primary" @click.native="dialogFormVisibleIcon=false">确认</a-button>
       </div>
-    </el-dialog>
+    </a-modal>
 
             <!--按钮-->
     <el-dialog title="添加" :visible.sync="dialogFormVisibleButton" :close-on-click-modal="false">
@@ -171,9 +144,9 @@
         <el-form-item label="权限说明:" prop="Memo">
           <el-input v-model="editForm.Memo" auto-complete="off"></el-input>
         </el-form-item>
-        <el-form-item label="图标:" prop="">
+                <el-form-item label="图标:" prop="">
           <el-input placeholder="请输入内容" v-model="editForm.Icon" class="input-with-select">
-            <a-button slot="append" icon="el-icon-search" @click="allotIcon"></a-button>
+            <a-icon type="picture"  slot="append" @click="allotIcon"/>
           </el-input>
         </el-form-item>
         <el-form-item label="排序:">
@@ -192,8 +165,10 @@
         <el-form-item label="按钮名称:" prop="Name">
           <el-input v-model="editForm.Name" auto-complete="off"></el-input>
         </el-form-item>
-        <el-form-item label="图标:" prop="Icon">
-          <el-input v-model="editForm.Icon" auto-complete="off"></el-input>
+                <el-form-item label="图标:" prop="">
+          <el-input placeholder="请输入内容" v-model="editForm.Icon" class="input-with-select">
+            <a-icon type="picture"  slot="append" @click="allotIcon"/>
+          </el-input>
         </el-form-item>
         <el-form-item label="参数:" prop="Param">
           <el-input v-model="editForm.Param" auto-complete="off"></el-input>
@@ -420,9 +395,7 @@ export default {
       dialogFormVisibleIcon:false,
       dialogFormVisibleAdd: false,
       dialogFormVisibleEdit: false,
-      filters: {
-        name: ""
-      },
+      filters: {},
       ListsuperiorMenu: [],
       dataList: [], //主页数据
       total: 0,
@@ -470,12 +443,9 @@ export default {
         paixu: "",
         tubiao: ""
       },
+      selectValue:'Name',
 
       filterdataListData: [],
-      //查询条件
-      filters: {
-        name: ""
-      },
       ids: [],
       page: 1,
       addFormVisible: false, // 添加界面是否显示
@@ -491,6 +461,10 @@ export default {
     };
   },
   methods: {
+    //窗口事件
+    handleOk() {
+      this.dialogFormVisibleIcon = false;
+    },
     handleOkEdit() {
       this.dialogFormVisibleEdit = false;
     },
@@ -561,11 +535,18 @@ export default {
       this.page = val;
       this.getDataList();
     },
+        //搜索
+    handleSelectChange (value) {
+      this.selectValue = value
+      // this.form.setFieldsValue({
+      //   note: `Hi, ${value === 'male' ? 'man' : 'lady'}!`,
+      // })
+    },
     // 获取列表
     getDataList() {
       const paraId = {
         Page: this.page,
-        Name: this.filters.Name,
+        Name: this.filters.data,
         Size: 10
       };
       // this.dataList = [];
