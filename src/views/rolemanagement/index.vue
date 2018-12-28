@@ -9,17 +9,18 @@
           <!-- <a-button type="primary" @click="handleAdd">编辑</a-button> -->
           <a-button type="primary" @click="Refresh">刷新</a-button>
           <!-- <a-button type="primary" @click="allotButton">分配按钮</a-button> -->
+          <a-button type="primary" @click="allotMent">分配权限</a-button>
       <a-button type="danger" @click="batchRemove" :disabled="this.sels.length===0">{{button.batchRemove}}</a-button>
       <el-form-item style="float: right;">
           <a-button type="primary" @click="getKeyList">查询</a-button>
         </el-form-item>
         <el-form-item style="float: right;">
           <a-input-group compact>
-            <a-select  @change="this.handleSelectChange" defaultValue="按钮名称" style="width: 40%">
+            <a-select  @change="this.handleSelectChange" defaultValue="名称" style="width: 40%">
                 <a-select-option value='Id'>Id</a-select-option>
-                <a-select-option value='Pid'>图标</a-select-option>
-                <a-select-option value='Url'>说明</a-select-option>
-                <a-select-option value='Name'>按钮名称</a-select-option>
+                <a-select-option value='Pid'>名称</a-select-option>
+                <a-select-option value='Url'>排序</a-select-option>
+                <a-select-option value='Name'>备注</a-select-option>
             </a-select>
           <a-input style="width: 60%" defaultValue="" v-model="filters.data"/>
         </a-input-group>
@@ -48,83 +49,70 @@
 
 
         <!--图标-->
-    <el-dialog title="添加" :visible.sync="dialogFormVisibleIcon" :close-on-click-modal="false">
+    <a-modal title="添加图标" @ok="handleOk" @click="allotIcon" v-model="dialogFormVisibleIcon" >
       <ul class="anticons-list">
+        <li class><i class="anticon anticon-bars"></i></li>
+        <li class><i class="anticon anticon-copy"></i></li>
         <li class><i class="anticon anticon-lock"></i></li>
         <li class><i class="anticon anticon-unlock"></i></li>
         <li class><i class="anticon anticon-bars"></i></li>
+        <li class><i class="anticon anticon-book"></i></li>
+        <li class><i class="anticon anticon-calendar"></i></li>
+        <li class><i class="anticon anticon-cloud"></i></li>
+        <li class><i class="anticon anticon-cloud-download"></i></li>
+        <li class><i class="anticon anticon-code"></i></li>
+        <li class><i class="anticon anticon-credit-card"></i></li>
+        <li class><i class="anticon anticon-download"></i></li>
+        <li class><i class="anticon anticon-bars"></i></li>
+        <li class><i class="anticon anticon-copy"></i></li>
         <li class><i class="anticon anticon-lock"></i></li>
         <li class><i class="anticon anticon-unlock"></i></li>
         <li class><i class="anticon anticon-bars"></i></li>
+        <li class><i class="anticon anticon-book"></i></li>
+        <li class><i class="anticon anticon-calendar"></i></li>
+        <li class><i class="anticon anticon-cloud"></i></li>
+        <li class><i class="anticon anticon-cloud-download"></i></li>
+        <li class><i class="anticon anticon-code"></i></li>
+        <li class><i class="anticon anticon-credit-card"></i></li>
+        <li class><i class="anticon anticon-download"></i></li>
+        <li class><i class="anticon anticon-bars"></i></li>
+        <li class><i class="anticon anticon-copy"></i></li>
         <li class><i class="anticon anticon-lock"></i></li>
         <li class><i class="anticon anticon-unlock"></i></li>
         <li class><i class="anticon anticon-bars"></i></li>
-        <li class><i class="anticon anticon-lock"></i></li>
-        <li class><i class="anticon anticon-unlock"></i></li>
-        <li class><i class="anticon anticon-bars"></i></li>
-        <li class><i class="anticon anticon-lock"></i></li>
-        <li class><i class="anticon anticon-unlock"></i></li>
-        <li class><i class="anticon anticon-bars"></i></li>
-        <li class><i class="anticon anticon-lock"></i></li>
-        <li class><i class="anticon anticon-unlock"></i></li>
-        <li class><i class="anticon anticon-bars"></i></li>
-        <li class><i class="anticon anticon-lock"></i></li>
-        <li class><i class="anticon anticon-unlock"></i></li>
-        <li class><i class="anticon anticon-bars"></i></li>
-        <li class><i class="anticon anticon-lock"></i></li>
-        <li class><i class="anticon anticon-unlock"></i></li>
-        <li class><i class="anticon anticon-bars"></i></li>
-        <li class><i class="anticon anticon-lock"></i></li>
-        <li class><i class="anticon anticon-unlock"></i></li>
-        <li class><i class="anticon anticon-bars"></i></li>
-        <li class><i class="anticon anticon-lock"></i></li>
-        <li class><i class="anticon anticon-unlock"></i></li>
-        <li class><i class="anticon anticon-bars"></i></li>
-        <li class><i class="anticon anticon-lock"></i></li>
-        <li class><i class="anticon anticon-unlock"></i></li>
-        <li class><i class="anticon anticon-bars"></i></li>
-        <li class><i class="anticon anticon-lock"></i></li>
-        <li class><i class="anticon anticon-unlock"></i></li>
-        <li class><i class="anticon anticon-bars"></i></li>
-        <li class><i class="anticon anticon-lock"></i></li>
-        <li class><i class="anticon anticon-unlock"></i></li>
-        <li class><i class="anticon anticon-bars"></i></li>
-        <li class><i class="anticon anticon-lock"></i></li>
-        <li class><i class="anticon anticon-unlock"></i></li>
-        <li class><i class="anticon anticon-bars"></i></li>
-        <li class><i class="anticon anticon-lock"></i></li>
-        <li class><i class="anticon anticon-unlock"></i></li>
-        <li class><i class="anticon anticon-bars"></i></li>
-        <li class><i class="anticon anticon-lock"></i></li>
-        <li class><i class="anticon anticon-unlock"></i></li>
-        <li class><i class="anticon anticon-bars"></i></li>
+        <li class><i class="anticon anticon-book"></i></li>
+        <li class><i class="anticon anticon-calendar"></i></li>
+        <li class><i class="anticon anticon-cloud"></i></li>
+        <li class><i class="anticon anticon-cloud-download"></i></li>
+        <li class><i class="anticon anticon-code"></i></li>
+        <li class><i class="anticon anticon-credit-card"></i></li>
+        <li class><i class="anticon anticon-download"></i></li>
       </ul>
       <div slot="footer" class="dialog-footer">
         <a-button @click.native="dialogFormVisibleIcon=false">取消</a-button>
         <a-button type="primary" @click.native="dialogFormVisibleIcon=false">确认</a-button>
       </div>
-    </el-dialog>
+    </a-modal>
 
         <!--二维权限-->
-    <el-dialog title="分配权限" :visible.sync="dialogFormVisibleData" :close-on-click-modal="false">
+    <a-modal class="allotMent" title="分配权限" @ok="handleOkData" @click="allotMent" v-model="dialogFormVisibleData">
           <a-table defaultExpandAllRows :pagination="false" size="small" :columns="columnsTree" :dataSource="dataTree" :rowSelection="rowSelectionTree">
-          <span slot="tags" slot-scope="tags">
-            <a-checkbox></a-checkbox>
-          </span>
-          <span slot="action" slot-scope="text, record">
-            <a href="javascript:;">{{record.edit}}</a>
-            <a-divider type="vertical" />
-            <a href="javascript:;">{{record.del}}</a>
-          </span>
-      </a-table>
-
+              <span slot="tags" slot-scope="tags">
+                <a-checkbox></a-checkbox>
+              </span>
+              <span slot="action" slot-scope="text, record">
+                <a href="javascript:;">{{record.edit}}</a>
+                <a-divider type="vertical" />
+                <a href="javascript:;">{{record.del}}</a>
+              </span>
+          </a-table>
       <div slot="footer" class="dialog-footer">
         <a-button @click.native="dialogFormVisibleData=false">取消</a-button>
         <a-button type="primary" @click.native="dialogFormVisibleData=false">确认</a-button>
       </div>
-    </el-dialog>
+    </a-modal>
 
-            <!--按钮-->
+    <!--按钮-->
     <el-dialog title="添加" :visible.sync="dialogFormVisibleButton" :close-on-click-modal="false">
              <div style="text-align: center" class="transferBox">
           <el-transfer
@@ -475,6 +463,13 @@ export default {
       },
 
       filterdataListData: [],
+    //搜索
+    handleSelectChange (value) {
+      this.selectValue = value
+      // this.form.setFieldsValue({
+      //   note: `Hi, ${value === 'male' ? 'man' : 'lady'}!`,
+      // })
+    },
       //查询条件
       filters: {
       },
@@ -502,6 +497,9 @@ export default {
     },
     handleOkAdd(){
       this.dialogFormVisibleAdd = false;
+    },
+    handleOkData(){
+      this.dialogFormVisibleData = false;
     },
         //刷新页面
     Refresh() {
@@ -821,5 +819,8 @@ export default {
     transition: transform .3s ease-in-out;
     transition: transform .3s ease-in-out,-webkit-transform .3s ease-in-out;
     will-change: transform;
+}
+.allotMent {
+  width: 600px !important;
 }
 </style>

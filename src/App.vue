@@ -170,4 +170,7 @@ export default {
 .UserTable .el-table__body-wrapper {
   height: 50rem;
 }
+.allotMent {
+  width: 780px !important;
+}
 </style>

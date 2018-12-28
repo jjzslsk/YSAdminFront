@@ -47,6 +47,18 @@
         :treeData="dataList"
       />
     </template>
+
+    <!-- <el-tree
+      class="filter-tree"
+      :data="menus"
+      :props="defaultProps"
+      default-expand-all
+      node-key="value"
+      :highlight-current='true'
+      :filter-node-method="filterNode"
+      @node-click='changeClick'
+      ref="tree2">
+    </el-tree> -->
   </div>
 </el-card>
 
@@ -95,6 +107,47 @@
 
     </el-card>
     </el-col>
+
+
+
+    <!--列表-->
+    <!-- <el-table @row-dblclick='Rowdblclick' :data="users" highlight-current-row @selection-change="selsChange" style="width: 100%;">
+      <el-table-column type="selection" width="55">
+      </el-table-column>
+      <el-table-column type="index" width="60">
+      </el-table-column>
+      <el-table-column prop="mingcheng" label="名称" width="120">
+      </el-table-column>
+      <el-table-column prop="zhanghao" label="账号" width="120">
+      </el-table-column>
+      <el-table-column prop="zhenshixingming" label="真实姓名" width="120">
+      </el-table-column>
+      <el-table-column prop="bumenmingcheng" label="部门名称" width="120">
+      </el-table-column>
+      <el-table-column prop="juesemingcheng" label="角色名称" width="120">
+      </el-table-column>
+      <el-table-column prop="youxiang" label="邮箱" width="120">
+      </el-table-column>
+      <el-table-column prop="shoujihaoma" label="手机" width="120">
+      </el-table-column>
+      <el-table-column prop="shifouchaoguan" label="是否超管" width="100" :formatter="formatIsAdmin">
+      </el-table-column>
+      <el-table-column prop="chuangjianriqi" label="是否启用" min-width="100" :formatter="formatIsDisabled">
+      </el-table-column>
+      <el-table-column prop="beizhu" label="备注" min-width="100">
+      </el-table-column>
+      <el-table-column label="操作" width="300">
+        <template slot-scope="scope"><el-button size="mini" v-if="buttons.updateshow==true" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+          <el-button type="danger" v-if="buttons.delshow==true" size="mini" @click="handleDel(scope.$index, scope.row)">删除</el-button>
+        </template>
+      </el-table-column>
+    </el-table> -->
+
+    <!--工具条-->
+    <!-- <el-col :span="24" class="toolbar"><el-pagination layout="prev, pager, next" @current-change="handleCurrentChange" :page-size="10" :total="total"
+        style="float:right;">
+      </el-pagination>
+    </el-col> -->
 
         <a-modal title="分配按钮" v-model="dialogFormVisibleRoles" @ok="dialogFormVisibleRoles = true" @click="dialogFormVisibleRoles = true">
       <template>
@@ -148,12 +201,28 @@
         <el-form-item label="密码:" prop="PasWord-">
           <el-input type="password" :disabled="disabledMima" v-model="editForm.PasWord" auto-complete="off"></el-input>
         </el-form-item>
-        <el-form-item label="部门:">
-            <el-select v-model="editForm.DepartmentId" placeholder="请选择">
-                <el-option v-for="item in departments" :key="item.Name" :label="item.Name" :value="item.Id">
-                  {{item.Name}}</el-option>
-            </el-select>
+        <!-- <el-form-item label="真实姓名:" prop="zhenshixingming">
+          <el-input v-model="editForm.zhenshixingming" auto-complete="off"></el-input>
+        </el-form-item> -->
+        
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="是否超管:" prop="Issuper">
+          <el-radio-group v-model="editForm.Issuper">
+            <el-radio class="radio" :label='true'>是</el-radio>
+            <el-radio class="radio" :label='false'>否</el-radio>
+          </el-radio-group>
         </el-form-item>
+          </el-col>
+          <el-col :span="12">
+        <el-form-item label="是否启用:" prop="State">
+          <el-radio-group v-model="editForm.State">
+            <el-radio class="radio" :label='true'>启用</el-radio>
+            <el-radio class="radio" :label='false'>禁用</el-radio>
+          </el-radio-group>
+        </el-form-item>
+          </el-col>
+        </el-row>
         <el-form-item label="角色:">
         <template>
           <a-select size="large" v-model="editForm.RoleIds" mode="multiple" style="width: 100%" @change="handleChangeSelect" placeholder="选择角色">
@@ -161,18 +230,12 @@
           </a-select>
         </template>
         </el-form-item>
-        <a-row>
-          <a-col :span="12">
-          <el-form-item label="是否超管:">
-            <a-switch @change='aSwitch' v-model="editForm.Issuper"/>
-          </el-form-item>
-          </a-col>
-          <a-col :span="12">
-          <el-form-item label="是否启用:">
-            <a-switch @change='aState' v-model="editForm.State"/>
-          </el-form-item>
-          </a-col>
-        </a-row>
+        <el-form-item label="部门:">
+            <el-select v-model="editForm.DepartmentId" placeholder="请选择">
+                <el-option v-for="item in departments" :key="item.Name" :label="item.Name" :value="item.Id">
+                  {{item.Name}}</el-option>
+            </el-select>
+        </el-form-item>
       </el-form>
 
           </a-tab-pane>
@@ -208,6 +271,7 @@
 
     <!--编辑界面-->
     <a-modal title="编辑用户" @ok="dialogFormVisibleEdit = true" @click="updateData" v-model="dialogFormVisibleEdit">
+      
       <template>
         <a-tabs @change="callback" type="card">
           <a-tab-pane tab="基本信息" key="1">
@@ -221,12 +285,27 @@
         <el-form-item label="密码:" prop="PasWord-">
           <el-input type="password" :disabled="disabledMima" v-model="editForm.PasWord" auto-complete="off"></el-input>
         </el-form-item>
-        <el-form-item label="部门:">
-            <el-select v-model="editForm.DepartmentId" placeholder="请选择">
-                <el-option v-for="item in departments" :key="item.Name" :label="item.Name" :value="item.Id">
-                  {{item.Name}}</el-option>
-            </el-select>
+        <!-- <el-form-item label="真实姓名:" prop="zhenshixingming">
+          <el-input v-model="editForm.zhenshixingming" auto-complete="off"></el-input>
+        </el-form-item> -->
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="是否超管:" prop="Issuper">
+          <el-radio-group v-model="editForm.Issuper">
+            <el-radio class="radio" :label='true'>是</el-radio>
+            <el-radio class="radio" :label='false'>否</el-radio>
+          </el-radio-group>
         </el-form-item>
+          </el-col>
+          <el-col :span="12">
+        <el-form-item label="是否启用:" prop="State">
+          <el-radio-group v-model="editForm.State">
+            <el-radio class="radio" :label='true'>启用</el-radio>
+            <el-radio class="radio" :label='false'>禁用</el-radio>
+          </el-radio-group>
+        </el-form-item>
+          </el-col>
+        </el-row>
         <el-form-item label="角色:">
         <template>
           <a-select size="large" v-model="editForm.RoleIds" mode="multiple" style="width: 100%" @change="handleChangeSelect" placeholder="选择角色">
@@ -234,18 +313,13 @@
           </a-select>
         </template>
         </el-form-item>
-        <a-row>
-          <a-col :span="12">
-          <el-form-item label="是否超管:">
-            <a-switch @change='aSwitch' v-model="editForm.Issuper"/>
-          </el-form-item>
-          </a-col>
-          <a-col :span="12">
-          <el-form-item label="是否启用:">
-            <a-switch @change='aState' v-model="editForm.State"/>
-          </el-form-item>
-          </a-col>
-        </a-row>
+        <el-form-item label="部门:">
+            <el-select v-model="editForm.DepartmentId" placeholder="请选择">
+                <el-option v-for="item in departments" :key="item.Name" :label="item.Name" :value="item.Id">
+                  {{item.Name}}</el-option>
+            </el-select>
+        </el-form-item>
+        
       </el-form>
 
           </a-tab-pane>
@@ -520,6 +594,10 @@ export default {
           ]
         },
       ],
+      defaultProps: {
+        children: "children",
+        label: "label"
+      },
       filterText: "",
 
       bllCode: {
@@ -633,6 +711,7 @@ export default {
       Roles: [],
 
       departments: [],
+      menus: [], //菜单列表
 
 
       // 编辑界面数据
@@ -670,14 +749,6 @@ export default {
     }
   },
   methods: {
-        //是否显示
-    aSwitch(checked){
-      this.editForm.Isvisiable = checked
-    },
-    //是否启用
-    aState(checked){
-      this.editForm.State = checked
-    },
     //tabs
     callback (key) {
       console.log(key)
@@ -785,6 +856,10 @@ export default {
     changeClick(data){
       console.log(data);
       },
+    filterNode(value, data) {
+      if (!value) return true;
+      return data.label.indexOf(value) !== -1;
+    },
     handleNodeClick(data) {
       console.log(data);
     },
@@ -866,6 +941,7 @@ export default {
           handlePost(this.para).then(res => {
             if (res.IsSuccess == true) {
               this.departments = res.Data.List;
+              console.log("departments111111:", this.departments);
               this.para.Code = 'GetListYsdatabaseYsRole';
               handlePost(this.para).then(res => {
                 if (res.IsSuccess == true) {
@@ -895,7 +971,7 @@ export default {
               }
               this.dataList.unshift(paraData)
           console.log ('this.dataList:::000000',this.dataList)
-          // this.getMenuName()
+          this.getMenuName()
 
         }
       });
@@ -935,35 +1011,36 @@ export default {
     //
     
     //闭包
-    // getMenuName() {
-    //         var menus  = this.dataList
-    //         var Key = 1
-    //         var name = "" ;
-    //         for (var i = 0; i < menus.length; i++) {
-    //           if (menus[i].Key == Key) {
-    //             name = menus[i].Name;
-    //             break;
-    //           }
-    //           else {
-    //             (function () {
-    //               var m = arguments[0];
-    //               var menuKey = arguments[1];
-    //               for (var j = 0; j < m.length; j++) {
-    //                 if (m[j].Key == menuKey) {
-    //                   name = m[j].Name;
-    //                   break;
-    //                 }
-    //                 else if (m[j].children != null && m[j].children.length > 0) {
-    //                   arguments.callee(m[j].children, val);//递归匿名方法
-    //                 }
-    //               }
-    //             })(menus[i].children, Key);
-    //           }
-    //         }
-    //         return name;
-    //         // return alert (name)
-    //         //
-    //       },
+    getMenuName() {
+            var menus  = this.dataList
+            var Key = 1
+            var name = "" ;
+            for (var i = 0; i < menus.length; i++) {
+              if (menus[i].Key == Key) {
+                name = menus[i].Name;
+                break;
+              }
+              else {
+                (function () {
+                  var m = arguments[0];
+                  var menuKey = arguments[1];
+                  for (var j = 0; j < m.length; j++) {
+                    if (m[j].Key == menuKey) {
+                      name = m[j].Name;
+                      break;
+                    }
+                    else if (m[j].children != null && m[j].children.length > 0) {
+                      arguments.callee(m[j].children, val);//递归匿名方法
+                    }
+                  }
+                })(menus[i].children, Key);
+              }
+            }
+            return name;
+            // return alert (name)
+            //
+            
+          },
     // 删除
     handleDel(index, row) {
       this.$confirm("确认删除该记录吗?", "提示", {

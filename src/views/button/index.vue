@@ -165,16 +165,16 @@
         <el-form-item label="按钮名称:" prop="Name">
           <el-input v-model="editForm.Name" auto-complete="off"></el-input>
         </el-form-item>
+        <el-form-item label="权限代码:" prop="ClassName">
+          <el-input v-model="editForm.ClassName" auto-complete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="权限说明:" prop="Memo">
+          <el-input v-model="editForm.Memo" auto-complete="off"></el-input>
+        </el-form-item>
                 <el-form-item label="图标:" prop="">
           <el-input placeholder="请输入内容" v-model="editForm.Icon" class="input-with-select">
             <a-icon type="picture"  slot="append" @click="allotIcon"/>
           </el-input>
-        </el-form-item>
-        <el-form-item label="参数:" prop="Param">
-          <el-input v-model="editForm.Param" auto-complete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="备注:" prop="Memo">
-          <el-input v-model="editForm.Memo" auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item label="排序:">
           <el-input-number v-model="editForm.Sort"></el-input-number>

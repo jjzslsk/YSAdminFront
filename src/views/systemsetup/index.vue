@@ -4,41 +4,28 @@
         
     <!--工具条-->
       <el-form :inline="true" :model="filters" @submit.native.prevent>
-        <!-- <el-form-item>
-          <a-button v-if="buttons.selectshow==true" type="primary" v-on:click="getKeyList">刷新</a-button>
-        </el-form-item> -->
-        <el-form-item>
+          <a-button  v-if="buttons.selectshow==true" type="primary" v-on:click="getKeyList">刷新</a-button>
           <a-button type="primary" @click="handleAdd">{{button.add}}</a-button>
-        </el-form-item>
-        <el-form-item>
           <!-- <a-button type="primary" @click="handleAdd">编辑</a-button> -->
-        </el-form-item>
-        <el-form-item>
           <a-button type="primary" @click="Refresh">刷新</a-button>
-        </el-form-item>
-        <el-form-item>
           <!-- <a-button type="primary" @click="allotButton">分配按钮</a-button> -->
-        </el-form-item>
-        <el-form-item>
+          <!-- <a-button type="primary" @click="allotMent">权限</a-button> -->
+          <!-- <a-button type="primary" @click="allotRoles">角色</a-button> -->
       <a-button type="danger" @click="batchRemove" :disabled="this.sels.length===0">{{button.batchRemove}}</a-button>
-        </el-form-item>
-        <el-form-item style="float: right;">
+      <el-form-item style="float: right;">
           <a-button type="primary" @click="getKeyList">查询</a-button>
         </el-form-item>
         <el-form-item style="float: right;">
-          <el-input v-model="filters.Name" :placeholder="filtersName" class="input-with-select">
-        <el-select v-model="select" slot="prepend" placeholder="请选择">
-          <el-option label="ID" value="1"></el-option>
-          <el-option label="接口名称" value="2"></el-option>
-          <el-option label="上级菜单" value="3"></el-option>
-          <el-option label="链接地址" value="4"></el-option>
-          <el-option label="页面标识" value="5"></el-option>
-          <el-option label="排序" value="6"></el-option>
-        </el-select>
-        <!-- <a-button v-on:click="getKeyList" slot="append" icon="el-icon-search"></a-button> -->
-      </el-input>
+          <a-input-group compact>
+            <a-select  @change="this.handleSelectChange" defaultValue="名称" style="width: 40%">
+                <a-select-option value='Id'>Id</a-select-option>
+                <a-select-option value='Pid'>图标</a-select-option>
+                <a-select-option value='Url'>说明</a-select-option>
+                <a-select-option value='Name'>名称</a-select-option>
+            </a-select>
+          <a-input style="width: 60%" defaultValue="" v-model="filters.data"/>
+        </a-input-group>
         </el-form-item>
-        
       </el-form>
 
     <!--列表--> 
@@ -160,7 +147,7 @@
     </el-dialog>
 
     <!--添加界面-->
-    <a-modal title="添加" @ok="handleOkAdd" @click="createData" v-model="dialogFormVisibleAdd">
+    <a-modal title="添加字典" @ok="handleOkAdd" @click="createData" v-model="dialogFormVisibleAdd">
       <el-form :model="editForm" label-width="100px" :rules="editFormRules" ref="editForm">
         <el-form-item label="父编号:" prop="Pid">
           <el-input v-model="editForm.Pid" auto-complete="off"></el-input>
@@ -174,8 +161,8 @@
         <el-form-item label="排序:" prop="Sort">
           <el-input v-model="editForm.Sort" auto-complete="off"></el-input>
         </el-form-item>
-        <el-form-item label="是否启用:" prop="Sort">
-          <el-input v-model="editForm.Sort" auto-complete="off"></el-input>
+        <el-form-item label="是否启用:">
+          <a-switch @change='aState' v-model="editForm.State"/>
         </el-form-item>
         <el-form-item label="备注:" prop="Memo">
           <el-input v-model="editForm.Memo" auto-complete="off"></el-input>
@@ -188,7 +175,7 @@
     </a-modal>
 
     <!--编辑界面-->
-    <a-modal title="编辑" @ok="handleOkEdit" @click="updateData" v-model="dialogFormVisibleEdit">
+    <a-modal title="编辑字典" @ok="handleOkEdit" @click="updateData" v-model="dialogFormVisibleEdit">
       <el-form :model="editForm" label-width="100px" :rules="editFormRules" ref="editForm">
         <el-form-item label="父编号:" prop="Pid">
           <el-input v-model="editForm.Pid" auto-complete="off"></el-input>
@@ -202,8 +189,8 @@
         <el-form-item label="排序:" prop="Sort">
           <el-input v-model="editForm.Sort" auto-complete="off"></el-input>
         </el-form-item>
-        <el-form-item label="是否启用:" prop="Sort">
-          <el-input v-model="editForm.Sort" auto-complete="off"></el-input>
+        <el-form-item label="是否启用:">
+          <a-switch @change='aState' v-model="editForm.State"/>
         </el-form-item>
         <el-form-item label="备注:" prop="Memo">
           <el-input v-model="editForm.Memo" auto-complete="off"></el-input>
@@ -421,7 +408,6 @@ export default {
       dialogFormVisibleAdd: false,
       dialogFormVisibleEdit: false,
       filters: {
-        name: ""
       },
       ListsuperiorMenu: [],
       dataList: [], //主页数据
@@ -472,10 +458,6 @@ export default {
       },
 
       filterdataListData: [],
-      //查询条件
-      filters: {
-        name: ""
-      },
       ids: [],
       page: 1,
       addFormVisible: false, // 添加界面是否显示
@@ -491,6 +473,21 @@ export default {
     };
   },
   methods: {
+        //搜索
+    handleSelectChange (value) {
+      this.selectValue = value
+      // this.form.setFieldsValue({
+      //   note: `Hi, ${value === 'male' ? 'man' : 'lady'}!`,
+      // })
+    },
+        //是否显示
+    aSwitch(checked){
+      this.editForm.Isvisiable = checked
+    },
+    //是否启用
+    aState(checked){
+      this.editForm.State = checked
+    },
         //刷新页面
     Refresh() {
       (this.filters = {
@@ -559,7 +556,7 @@ export default {
     getDataList() {
       const paraId = {
         Page: this.page,
-        Name: this.filters.Name,
+        Name: this.filters.data,
         Size: 10
       };
       // this.dataList = [];

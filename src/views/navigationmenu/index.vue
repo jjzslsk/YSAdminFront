@@ -17,7 +17,7 @@
         <!-- <el-form-item>
           <a-button type="primary" @click="allotIcon">图标</a-button>
         </el-form-item> -->
-      <a-button type="danger" @click="batchRemove" :disabled="this.sels.length===0">{{button.batchRemove}}</a-button>
+      <!-- <a-button type="danger" @click="batchRemove" :disabled="this.sels.length===0">{{button.batchRemove}}</a-button> -->
       <!-- <div style="margin-bottom: 16px">
           <a-button
             type="primary"
@@ -36,6 +36,8 @@
 
         <el-form-item style="float: right;">
           <a-button type="primary" @click="getKeyList">查询</a-button>
+          <!-- <a-button type="primary" @click="getQueryList">1查询</a-button> -->
+
         </el-form-item>
         <el-form-item style="float: right;">
           <a-input-group compact>
@@ -225,24 +227,12 @@
           <el-select v-model="editForm.Pid" placeholder="请选择">
               <el-option
                 v-for="item in ListsuperiorMenu"
-                :key="item.Key"
+                :key="item.Id"
                 :label="item.Name"
-                :value="item.Key">
+                :value="item.Id">
               </el-option>
             </el-select>
-            {{editForm.Pid}}
-
-            <!-- <template>
-              <div>
-                <a-select defaultValue="" style="width: 120px" @change="handleChangePid">
-                  <a-select-option value="1">导航菜单</a-select-option>
-                  <a-select-option value="2">操作按钮</a-select-option>
-                  <a-select-option value="3">角色管理</a-select-option>
-                  <a-select-option value="4">用户管理</a-select-option>
-                </a-select>
-              </div>
-            </template> -->
-
+            <!-- {{editForm.Pid}} -->
         </el-form-item>
         <el-form-item label="链接地址:">
           <el-input v-model="editForm.Url" auto-complete="off"></el-input>
@@ -295,7 +285,7 @@
                 :value="item.Id">
               </el-option>
             </el-select>
-            {{editForm.Pid}}
+            <!-- {{editForm.Pid}} -->
         </el-form-item>
         <el-form-item label="链接地址:">
           <el-input v-model="editForm.Url" auto-complete="off"></el-input>
@@ -684,20 +674,29 @@ export default {
     },
         // 显示编辑界面
     onEdit(row) {
-      console.log (row)
+      // ----------
       this.dialogStatus = "update";
       this.dialogFormVisibleEdit = true;
-      // this.$refs["editForm"].resetFields(); //重置editForm
-      this.editForm = {},
-      this.editForm = Object.assign({}, row);
-      let paert = {
-        Pid: -1
-      };
-      this.para.Data = JSON.stringify(paert);
-      this.para.Code = this.bllCode.getList;
+      this.editForm = {};
+      const paraId = {
+        Id: row.Key,
+      }; 
+      this.para.Code = 'GetYsdatabaseYsMenu';
+      this.para.Data = JSON.stringify(paraId);
       handlePost(this.para).then(res => {
         if (res.IsSuccess == true) {
-          this.ListsuperiorMenu = res.Data;
+      this.editForm = Object.assign({}, res.Data);
+          // this.dataList = res.Data;
+      // -------------
+      //获取上级菜单
+      let paert = {
+        IsList: true
+      };
+      this.para.Data = JSON.stringify(paert);
+      this.para.Code = 'GetListYsdatabaseYsMenu';
+      handlePost(this.para).then(res => {
+        if (res.IsSuccess == true) {
+          this.ListsuperiorMenu = res.Data.List;
           let top = {
             Id: 0,
             Name: "无"
@@ -705,6 +704,13 @@ export default {
           this.ListsuperiorMenu.push(top);
         }
       });
+
+        }
+      });
+
+      
+
+
     },
     //搜索
     handleSelectChange (value) {
@@ -823,6 +829,20 @@ export default {
       handlePost(this.para).then(res => {
         if (res.IsSuccess == true) {
           // this.total = res.Data.Count;
+          this.dataList = res.Data;
+        }
+      });
+    },
+        // 查询列表
+    getQueryList() {
+      const paraId = {
+        Id: 1,
+      };
+        
+      this.para.Code = 'GetYsdatabaseYsMenu';
+      this.para.Data = JSON.stringify(paraId);
+      handlePost(this.para).then(res => {
+        if (res.IsSuccess == true) {
           this.dataList = res.Data;
         }
       });
@@ -989,14 +1009,14 @@ export default {
       };
 
       let paert = {
-        Pid: -1
+        IsList:true
       };
       this.para.Data = JSON.stringify(paert);
       this.para.Code = this.bllCode.getList;
       console.log(this.para);
       handlePost(this.para).then(res => {
         if (res.IsSuccess == true) {
-          this.ListsuperiorMenu = res.Data;
+          this.ListsuperiorMenu = res.Data.List;
           let top = {
             Id: 0,
             Name: "无"

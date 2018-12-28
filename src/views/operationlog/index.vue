@@ -1,45 +1,65 @@
 <template>
   <section class="app-container">
     <el-card class="box-card">
-        
+
+
+        <template>
+          <a-card style="margin-bottom:1.6rem;">
+         <template>
+          <a-form layout='inline'>
+            <a-form-item label='操作人' >
+            <a-input />
+            </a-form-item>
+            <a-form-item label='操作时间' >
+            <a-date-picker style="width: 40%"/>&nbsp;-&nbsp;<a-date-picker style="width: 40%"/>
+            </a-form-item>
+            <a-form-item label='操作表' >
+            <a-input />
+            </a-form-item>
+            <a-form-item label='业务' >
+            <a-input />
+            </a-form-item>
+            <a-form-item label='操作类型'>
+            <a-select style="width: 14rem">
+              <a-select-option value='male'>male</a-select-option>
+              <a-select-option value='female'>female</a-select-option>
+            </a-select>
+            </a-form-item>
+          
+            <!-- <a-form-item> -->
+              <a-button style="margin-top:.5rem" type='primary' htmlType='submit'>
+                查询
+              </a-button>
+              <a-button style="margin-top:.5rem" type='primary' htmlType='submit'>
+                删除
+              </a-button>
+            <!-- </a-form-item> -->
+          </a-form>
+        </template>
+                
+          </a-card>
+        </template>
+
     <!--工具条-->
-      <el-form :inline="true" :model="filters" @submit.native.prevent>
-        <!-- <el-form-item>
-          <a-button v-if="buttons.selectshow==true" type="primary" v-on:click="getKeyList">刷新</a-button>
-        </el-form-item> -->
-        <el-form-item>
-          <!-- <a-button type="primary" @click="handleAdd">{{button.add}}</a-button> -->
-        </el-form-item>
-        <el-form-item>
-          <!-- <a-button type="primary" @click="handleAdd">编辑</a-button> -->
-        </el-form-item>
-        <el-form-item>
+      <!-- <el-form :inline="true" :model="filters" @submit.native.prevent>
+          <a-button  v-if="buttons.selectshow==true" type="primary" v-on:click="getKeyList">刷新</a-button>
           <a-button type="primary" @click="Refresh">刷新</a-button>
-        </el-form-item>
-        <el-form-item>
-          <!-- <a-button type="primary" @click="allotButton">分配按钮</a-button> -->
-        </el-form-item>
-        <el-form-item>
       <a-button type="danger" @click="batchRemove" :disabled="this.sels.length===0">{{button.batchRemove}}</a-button>
-        </el-form-item>
-        <el-form-item style="float: right;">
+      <el-form-item style="float: right;">
           <a-button type="primary" @click="getKeyList">查询</a-button>
         </el-form-item>
         <el-form-item style="float: right;">
-          <el-input v-model="filters.Name" :placeholder="filtersName" class="input-with-select">
-        <el-select v-model="select" slot="prepend" placeholder="请选择">
-          <el-option label="ID" value="1"></el-option>
-          <el-option label="接口名称" value="2"></el-option>
-          <el-option label="上级菜单" value="3"></el-option>
-          <el-option label="链接地址" value="4"></el-option>
-          <el-option label="页面标识" value="5"></el-option>
-          <el-option label="排序" value="6"></el-option>
-        </el-select>
-        <!-- <a-button v-on:click="getKeyList" slot="append" icon="el-icon-search"></a-button> -->
-      </el-input>
+          <a-input-group compact>
+            <a-select  @change="this.handleSelectChange" defaultValue="名称" style="width: 40%">
+                <a-select-option value='Id'>Id</a-select-option>
+                <a-select-option value='Pid'>图标</a-select-option>
+                <a-select-option value='Url'>说明</a-select-option>
+                <a-select-option value='Name'>名称</a-select-option>
+            </a-select>
+          <a-input style="width: 60%" defaultValue="" v-model="filters.data"/>
+        </a-input-group>
         </el-form-item>
-        
-      </el-form>
+      </el-form> -->
 
     <!--列表--> 
       <!-- <a-table defaultExpandAllRows :pagination="false" size="small" :columns="columnsTree" :dataSource="dataTree" :rowSelection="rowSelectionTree">
@@ -414,7 +434,6 @@ export default {
       dialogFormVisibleAdd: false,
       dialogFormVisibleEdit: false,
       filters: {
-        name: ""
       },
       ListsuperiorMenu: [],
       dataList: [], //主页数据
@@ -465,10 +484,6 @@ export default {
       },
 
       filterdataListData: [],
-      //查询条件
-      filters: {
-        name: ""
-      },
       ids: [],
       page: 1,
       addFormVisible: false, // 添加界面是否显示
@@ -484,6 +499,13 @@ export default {
     };
   },
   methods: {
+        //搜索
+    handleSelectChange (value) {
+      this.selectValue = value
+      // this.form.setFieldsValue({
+      //   note: `Hi, ${value === 'male' ? 'man' : 'lady'}!`,
+      // })
+    },
         //刷新页面
     Refresh() {
       (this.filters = {
@@ -505,7 +527,7 @@ export default {
     },
     //行点击事件
     Rowdblclick() {
-      this.handleAdd();
+      // this.handleAdd();
     },
     //加载按钮
     loadButton(data) {
@@ -552,7 +574,7 @@ export default {
     getDataList() {
       const paraId = {
         Page: this.page,
-        Name: this.filters.Name,
+        Name: this.filters.data,
         Size: 10
       };
       // this.dataList = [];
