@@ -959,7 +959,12 @@ export default {
                 message: "删除成功！",
                 type: "success"
               });
-            }
+            }else {
+                  this.$message({
+                    message: res.Code + ':' + res.message,
+                    type: "warning"
+                  });
+                }
           });
         })
         .catch(() => {});
@@ -1051,6 +1056,10 @@ export default {
               } else {
                 this.$refs["editForm"].resetFields();
                 this.dialogFormVisibleEdit = false;
+                  this.$message({
+                    message: res.Code + ':' + res.message,
+                    type: "warning"
+                  });
               }
             });
           });
@@ -1085,6 +1094,11 @@ export default {
                 } else {
                   this.$refs["editForm"].resetFields();
                   this.dialogFormVisibleAdd = false;
+
+                  this.$message({
+                    message: res.Code + ':' + res.message,
+                    type: "warning"
+                  });
                 }
               });
             })

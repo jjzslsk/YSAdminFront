@@ -4,14 +4,7 @@
         
     <!--工具条-->
       <el-form :inline="true" :model="filters" @submit.native.prevent>
-          <a-button  v-if="buttons.selectshow==true" type="primary" v-on:click="getKeyList">刷新</a-button>
-          <a-button type="primary" @click="handleAdd">{{button.add}}</a-button>
-          <!-- <a-button type="primary" @click="handleAdd">编辑</a-button> -->
-          <a-button type="primary" @click="Refresh">刷新</a-button>
-          <!-- <a-button type="primary" @click="allotButton">分配按钮</a-button> -->
-          <a-button type="primary" @click="allotMent">权限</a-button>
-          <a-button type="primary" @click="allotRoles">角色</a-button>
-      <a-button type="danger" @click="batchRemove" :disabled="this.sels.length===0">{{button.batchRemove}}</a-button>
+      
       <el-form-item style="float: right;">
           <a-button type="primary" @click="getKeyList">查询</a-button>
         </el-form-item>
@@ -26,10 +19,20 @@
           <a-input style="width: 60%" defaultValue="" v-model="filters.data"/>
         </a-input-group>
         </el-form-item>
+        <el-form-item style="float: right;">
+          <a-button  v-if="buttons.selectshow==true" type="primary" v-on:click="getKeyList">刷新</a-button>
+          <a-button type="primary" @click="handleAdd">添加字典</a-button>
+          <!-- <a-button type="primary" @click="handleAdd">编辑</a-button> -->
+          <a-button type="primary" @click="Refresh">刷新</a-button>
+          <!-- <a-button type="primary" @click="allotButton">分配按钮</a-button> -->
+          <!-- <a-button type="primary" @click="allotMent">权限</a-button> -->
+          <!-- <a-button type="primary" @click="allotRoles">角色</a-button> -->
+      <a-button type="danger" @click="batchRemove" :disabled="this.sels.length===0">{{button.batchRemove}}</a-button>
+      </el-form-item>
       </el-form>
 
     <!-- 部门树形 -->
-  <el-col style="height:100%;margin-top: 2.5rem;" :span="4">
+  <el-col style="height:100%;width:20%;">
   <el-card class="box-card">
   <!-- <div slot="header" class="clearfix">
     <el-input
@@ -38,44 +41,52 @@
     </el-input>
     <el-button style="float: right; padding: 3px 0" type="text"></el-button>
   </div> -->
+  <dir style="margin:0 0 1rem 0;">
+          <a-button size="small" type="primary" @click="Refresh">添加</a-button>
+          <a-button size="small" type="primary" @click="Refresh">编辑</a-button>
+          <a-button size="small" type="primary" @click="Refresh">删除</a-button>
+  </dir>
   <div class="text item">
+  
     <template>
-      <a-tree
-        defaultExpandAll
-        :defaultSelectedKeys="['0']"
+      <a-table :pagination='false' :columns="columnsData" :dataSource="DataSource" size="small" />
+      <!-- <a-tree
+      defaultExpandAll
         @select="onSelect"
-        :treeData="dataList"
-      />
+        :treeData="treeData"
+      /> -->
     </template>
+
+    <!-- <el-tree
+      class="filter-tree"
+      :data="menus"
+      :props="defaultProps"
+      default-expand-all
+      node-key="value"
+      :highlight-current='true'
+      :filter-node-method="filterNode"
+      @node-click='changeClick'
+      ref="tree2">
+    </el-tree> -->
   </div>
 </el-card>
 
     </el-col>
-    <el-col :span="20" class="UserTable">
-    <el-card class="box-card">
+    <el-col style="width:80%;" class="UserTable">
+    <el-card class="box-card" >
 
     <el-table @row-dblclick='Rowdblclick' :data="users" highlight-current-row @selection-change="selsChange" style="width: 100%;">
       <el-table-column type="selection" width="55">
       </el-table-column>
-      <!-- <el-table-column type="index" width="60">
-      </el-table-column> -->
+      <el-table-column type="index" width="60">
+      </el-table-column>
       <el-table-column prop="Id" label="Id" width="60">
       </el-table-column>
       <el-table-column prop="Name" label="名称" width="120">
       </el-table-column>
-      <el-table-column prop="Username" label="账号" width="120">
+      <el-table-column prop="Param" label="参数" width="120">
       </el-table-column>
-      <el-table-column prop="DepartmentName" label="部门名称" width="120">
-      </el-table-column>
-      <!-- <el-table-column prop="Rolejson" label="角色名称" width="120">
-      </el-table-column> -->
-      <el-table-column prop="Email" label="邮箱" width="120">
-      </el-table-column>
-      <el-table-column prop="Mobile" label="手机" width="120">
-      </el-table-column>
-      <el-table-column prop="Issuper" label="是否超管" width="100" :formatter="formatIsAdmin">
-      </el-table-column>
-      <el-table-column prop="State" label="是否启用" min-width="100" :formatter="formatIsDisabled">
+      <el-table-column prop="Sort" label="排序" width="120">
       </el-table-column>
       <el-table-column prop="Memo" label="备注" min-width="100">
       </el-table-column>
@@ -95,6 +106,47 @@
 
     </el-card>
     </el-col>
+
+
+
+    <!--列表-->
+    <!-- <el-table @row-dblclick='Rowdblclick' :data="users" highlight-current-row @selection-change="selsChange" style="width: 100%;">
+      <el-table-column type="selection" width="55">
+      </el-table-column>
+      <el-table-column type="index" width="60">
+      </el-table-column>
+      <el-table-column prop="mingcheng" label="名称" width="120">
+      </el-table-column>
+      <el-table-column prop="zhanghao" label="账号" width="120">
+      </el-table-column>
+      <el-table-column prop="zhenshixingming" label="真实姓名" width="120">
+      </el-table-column>
+      <el-table-column prop="bumenmingcheng" label="部门名称" width="120">
+      </el-table-column>
+      <el-table-column prop="juesemingcheng" label="角色名称" width="120">
+      </el-table-column>
+      <el-table-column prop="youxiang" label="邮箱" width="120">
+      </el-table-column>
+      <el-table-column prop="shoujihaoma" label="手机" width="120">
+      </el-table-column>
+      <el-table-column prop="shifouchaoguan" label="是否超管" width="100" :formatter="formatIsAdmin">
+      </el-table-column>
+      <el-table-column prop="chuangjianriqi" label="是否启用" min-width="100" :formatter="formatIsDisabled">
+      </el-table-column>
+      <el-table-column prop="beizhu" label="备注" min-width="100">
+      </el-table-column>
+      <el-table-column label="操作" width="300">
+        <template slot-scope="scope"><el-button size="mini" v-if="buttons.updateshow==true" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+          <el-button type="danger" v-if="buttons.delshow==true" size="mini" @click="handleDel(scope.$index, scope.row)">删除</el-button>
+        </template>
+      </el-table-column>
+    </el-table> -->
+
+    <!--工具条-->
+    <!-- <el-col :span="24" class="toolbar"><el-pagination layout="prev, pager, next" @current-change="handleCurrentChange" :page-size="10" :total="total"
+        style="float:right;">
+      </el-pagination>
+    </el-col> -->
 
         <a-modal title="分配按钮" v-model="dialogFormVisibleRoles" @ok="dialogFormVisibleRoles = true" @click="dialogFormVisibleRoles = true">
       <template>
@@ -134,165 +186,27 @@
     </a-modal>
 
     <!--添加界面-->
-    <a-modal title="添加用户" @ok="dialogFormVisibleAdd = true" @click="createData" v-model="dialogFormVisibleAdd">
-        <!-- <a-tabs @change="callback" type="card">
-          <a-tab-pane tab="基本信息" key="1">
-      <template>
-        <a-form @submit="handleSubmit" :form="form">
-          <a-form-item label='名称' :labelCol="{ span: 5 }" :wrapperCol="{ span: 12 }">
-            <a-input
-              v-decorator="[
-                'Name',
-                {rules: [{ required: true, message: '输入名称' }]}
-              ]"
-            />
-          </a-form-item>
-          <a-form-item label='账号' :labelCol="{ span: 5 }" :wrapperCol="{ span: 12 }">
-            <a-input
-              v-decorator="[
-                'Username',
-                {rules: [{ required: true, message: '输入账号' }]}
-              ]"
-            />
-          </a-form-item>
-          <a-form-item label='密码' :labelCol="{ span: 5 }" :wrapperCol="{ span: 12 }">
-            <a-input
-              v-decorator="[
-                'password',
-                {rules: [{ required: true, message: '输入密码' }]}
-              ]"
-            />
-          </a-form-item>
-
-          <a-form-item label='部门' :labelCol="{ span: 5 }" :wrapperCol="{ span: 12 }">
-            <a-select
-              v-decorator="[
-                'DepartmentId',
-                {rules: [{ required: true, message: '选择部门' }]}
-              ]"
-              placeholder='选择部门'
-              @change="this.handleSelectChangeDepartment">
-              <a-select-option v-for="item in departments" :key="item.Id" :value="item.Id">{{item.Name}}</a-select-option>
-            </a-select>
-          </a-form-item>
-          
-          <a-form-item
-              label='角色'
-              :labelCol="{ span: 5 }"
-              :wrapperCol="{ span: 12 }">
-              <a-select size="large" mode="multiple" style="width: 100%" @change="handleChangeSelect" 
-          v-decorator="[
-          'RoleIds',
-              {rules: [{ required: true, message: '请选择角色' }]}
-            ]"
-           placeholder="选择角色">
-            <a-select-option v-for="item in userRoles" :key="item.Id">{{item.Name}}</a-select-option>
-          </a-select>
-            </a-form-item>
-
-            <a-row>
-              <a-col :span="12">
-                <a-form-item label='是否超管'>
-                  <a-switch @change='aSwitch' v-model="editForm.Issuper" v-decorator="['Issuper', { valuePropName: 'checked' }]"/>                  
-                </a-form-item>
-              </a-col>
-
-              <a-col :span="12">
-                <a-form-item label='是否启用'>
-                  <a-switch @change='aSwitch' v-model="editForm.State" v-decorator="['State', { valuePropName: 'checked' }]"/>
-               </a-form-item>
-              </a-col>
-            </a-row>
-
-          <a-form-item
-            :wrapperCol="{ span: 12, offset: 5 }">
-            <a-button type='primary' htmlType='submit'>
-              Submit
-            </a-button>
-          </a-form-item>
-        </a-form>
-</template>
-          </a-tab-pane>
-        </a-tabs> -->
-
-
-
-
-
-
-      <template>
-        <a-tabs @change="callback" type="card">
-          <a-tab-pane tab="基本信息" key="1">
-        <el-form :model="editForm" label-width="100px" :rules="editFormRules" ref="editForm">
+    <a-modal title="1添加" @ok="dialogFormVisibleAdd = true" @click="createData" v-model="dialogFormVisibleAdd">
+      <el-form :model="editForm" label-width="100px" :rules="editFormRules" ref="editForm">
+        <el-form-item label="父编号:" prop="PId">
+          <el-input-number v-model="editForm.PId" auto-complete="off"></el-input-number>
+        </el-form-item>
         <el-form-item label="名称:" prop="Name">
           <el-input v-model="editForm.Name" auto-complete="off"></el-input>
         </el-form-item>
-        <el-form-item label="账号:" prop="Username">
-          <el-input v-model="editForm.Username" auto-complete="off" :disabled="disabledZhangHao" placeholder="设置后不可更改"></el-input>
+        <el-form-item label="参数:" prop="Param">
+          <el-input v-model="editForm.Param" auto-complete="off"></el-input>
         </el-form-item>
-        <el-form-item label="密码:" prop="PasWord">
-          <el-input type="password" :disabled="disabledMima" v-model="editForm.PasWord" auto-complete="off"></el-input>
+        <el-form-item label="排序:">
+          <el-input-number v-model="editForm.Sort"></el-input-number>
         </el-form-item>
-
-        <el-form-item label="部门:">
-            <el-select v-model="editForm.DepartmentId" placeholder="请选择">
-                <el-option v-for="item in departments" :key="item.Name" :label="item.Name" :value="item.Id">
-                  {{item.Name}}</el-option>
-            </el-select>
+        <el-form-item label="是否启用:">
+          <a-switch @change='aState' v-model="editForm.State"/>
         </el-form-item>
-          <a-form-item
-              label='角色'
-              :labelCol="{ span: 5 }"
-              :wrapperCol="{ span: 12 }"
-            >
-              <a-select size="large" v-model="editForm.RoleIds" mode="multiple" style="width: 100%" @change="handleChangeSelect" 
-          v-decorator="[
-          'RoleIds',
-              {rules: [{ required: true, message: '请选择角色' }]}
-            ]"
-           placeholder="选择角色">
-            <a-select-option v-for="item in userRoles" :key="item.Id">{{item.Name}}</a-select-option>
-          </a-select>
-            </a-form-item>
-
-        <a-row>
-          <a-col :span="12">
-          <el-form-item label="是否超管:">
-            <a-switch @change='aSwitch' v-model="editForm.Issuper"/>
-          </el-form-item>
-          </a-col>
-          <a-col :span="12">
-          <el-form-item label="是否启用:">
-            <a-switch @change='aState' v-model="editForm.State"/>
-          </el-form-item>
-          </a-col>
-        </a-row>
+        <el-form-item label="备注:">
+          <el-input type="textarea" v-model="editForm.Memo"></el-input>
+        </el-form-item>
       </el-form>
-
-          </a-tab-pane>
-          <a-tab-pane tab="联系方式" key="20">
-            <el-form label-width="100px">
-              <el-form-item label="姓名:" prop="">
-                <el-input auto-complete="off"></el-input>
-              </el-form-item>
-              <el-form-item label="手机:" prop="Mobile">
-                <el-input v-model="editForm.Mobile"></el-input>
-              </el-form-item>
-              <el-form-item label="QQ:" prop="">
-                <el-input ></el-input>
-              </el-form-item>
-              <el-form-item label="邮箱:" prop="Email">
-                <el-input v-model="editForm.Email"></el-input>
-              </el-form-item>
-              <el-form-item label="备注:">
-                <el-input type="textarea" v-model="editForm.Memo"></el-input>
-              </el-form-item>
-            </el-form>
-          </a-tab-pane>
-        </a-tabs>
-      </template>
-
-
       <div slot="footer" class="dialog-footer">
         <el-button @click.native="dialogFormVisibleAdd=false">取消</el-button>
         <el-button v-if="dialogStatus=='create'" type="primary" @click="createData">添加</el-button>
@@ -302,76 +216,34 @@
 
     <!--编辑界面-->
     <a-modal title="编辑用户" @ok="dialogFormVisibleEdit = true" @click="updateData" v-model="dialogFormVisibleEdit">
-      <template>
-        <a-tabs @change="callback" type="card">
-          <a-tab-pane tab="基本信息" key="1">
-        <el-form :model="editForm" label-width="100px" :rules="editFormRules" ref="editForm">
+       <el-form :model="editForm" label-width="100px" :rules="editFormRules" ref="editForm">
+        <el-form-item label="父编号:" prop="PId">
+          <el-input v-model="editForm.PId" auto-complete="off"></el-input>
+        </el-form-item>
         <el-form-item label="名称:" prop="Name">
           <el-input v-model="editForm.Name" auto-complete="off"></el-input>
         </el-form-item>
-        <el-form-item label="账号:" prop="Username">
-          <el-input v-model="editForm.Username" auto-complete="off" :disabled="disabledZhangHao" placeholder="设置后不可更改"></el-input>
+        <el-form-item label="参数:" prop="Param">
+          <el-input v-model="editForm.Username" auto-complete="off"></el-input>
         </el-form-item>
-        <el-form-item label="密码:" prop="PasWord-">
-          <el-input type="password" :disabled="disabledMima" v-model="editForm.PasWord" auto-complete="off"></el-input>
+        <el-form-item label="排序:">
+          <el-input-number v-model="editForm.Sort"></el-input-number>
         </el-form-item>
-        <el-form-item label="部门:">
-            <el-select v-model="editForm.DepartmentId" placeholder="请选择">
-                <el-option v-for="item in departments" :key="item.Name" :label="item.Name" :value="item.Id">
-                  {{item.Name}}</el-option>
-            </el-select>
+        <el-form-item label="是否启用:">
+          <a-switch @change='aState' v-model="editForm.State"/>
         </el-form-item>
-        <el-form-item label="角色:">
-        <template>
-          <a-select size="large" v-model="editForm.RoleIds" mode="multiple" style="width: 100%" @change="handleChangeSelect" placeholder="选择角色">
-            <a-select-option v-for="item in userRoles" :key="item.Id">{{item.Name}}</a-select-option>
-          </a-select>
-        </template>
+        <el-form-item label="备注:">
+          <el-input type="textarea" v-model="editForm.Memo"></el-input>
         </el-form-item>
-        <a-row>
-          <a-col :span="12">
-          <el-form-item label="是否超管:">
-            <a-switch @change='aSwitch' v-model="editForm.Issuper"/>
-          </el-form-item>
-          </a-col>
-          <a-col :span="12">
-          <el-form-item label="是否启用:">
-            <a-switch @change='aState' v-model="editForm.State"/>
-          </el-form-item>
-          </a-col>
-        </a-row>
       </el-form>
-
-          </a-tab-pane>
-          <a-tab-pane tab="联系方式" key="20">
-            <el-form label-width="100px">
-              <el-form-item label="姓名:" prop="">
-                <el-input auto-complete="off"></el-input>
-              </el-form-item>
-              <el-form-item label="手机:" prop="Mobile">
-                <el-input v-model="editForm.Mobile"></el-input>
-              </el-form-item>
-              <el-form-item label="QQ:" prop="">
-                <el-input ></el-input>
-              </el-form-item>
-              <el-form-item label="邮箱:" prop="Email">
-                <el-input v-model="editForm.Email"></el-input>
-              </el-form-item>
-              <el-form-item label="备注:">
-                <el-input type="textarea" v-model="editForm.Memo"></el-input>
-              </el-form-item>
-            </el-form>
-          </a-tab-pane>
-        </a-tabs>
-
-      </template>
-
       <div slot="footer" class="dialog-footer">
         <el-button @click.native="dialogFormVisibleEdit=false">取消</el-button>
         <el-button v-if="dialogStatus=='create'" type="primary" @click="createData">添加</el-button>
         <el-button v-else type="primary" @click="updateData">修改</el-button>
       </div>
     </a-modal>
+
+
     </el-card>
   </section>
 </template>
@@ -381,6 +253,22 @@ import store from "@/store/index.js"; //引入本地存储
 import util from "@/utils/table.js";
 import { handlePost, handleGet } from "@/api/apihelper.js";
 import { paraHelper } from "@/utils/para.js"; //请求参数格式
+
+const columnsData = [{
+  // title: 'Name',
+  dataIndex: 'name',
+}];
+const DataSource = [{
+  key: '1',
+  name: '证件类别',
+}, {
+  key: '2',
+  name: '数据类型',
+}, {
+  key: '3',
+  name: '数据来源',
+}];
+
 
 const columnsTree= [
 //   {
@@ -522,48 +410,40 @@ const rowSelectionTree = {
 };
 
 const treeData = [{
-  title: '0-0',
+  title: '城域网',
   key: '0-0',
   children: [{
-    title: '0-0-0',
+    title: '局域网',
     key: '0-0-0',
     children: [
-      { title: '0-0-0-0', key: '0-0-0-0' },
-      { title: '0-0-0-1', key: '0-0-0-1' },
-      { title: '0-0-0-2', key: '0-0-0-2' },
+      { title: 'vlan1', key: '0-0-0-0' },
+      { title: 'vlan2', key: '0-0-0-1' },
+      { title: 'vlan3', key: '0-0-0-2' },
     ],
   }, {
-    title: '0-0-1',
+    title: 'VPN',
     key: '0-0-1',
     children: [
-      { title: '0-0-1-0', key: '0-0-1-0' },
-      { title: '0-0-1-1', key: '0-0-1-1' },
-      { title: '0-0-1-2', key: '0-0-1-2' },
+      { title: 'VPN1', key: '0-0-1-0' },
+      { title: 'VPN2', key: '0-0-1-1' },
+      { title: 'VPN3', key: '0-0-1-2' },
     ],
-  }, {
-    title: '0-0-2',
-    key: '0-0-2',
   }],
 }, {
-  title: '0-1',
+  title: '广域网',
   key: '0-1',
   children: [
-    { title: '0-1-0-0', key: '0-1-0-0' },
-    { title: '0-1-0-1', key: '0-1-0-1' },
-    { title: '0-1-0-2', key: '0-1-0-2' },
+    // { title: '0-1-0-0', key: '0-1-0-0' },
+    // { title: '0-1-0-1', key: '0-1-0-1' },
+    // { title: '0-1-0-2', key: '0-1-0-2' },
   ],
-}, {
-  title: '0-2',
-  key: '0-2',
 }]
 export default {
   data() {
     return {
-      //表单
-      formLayout: 'horizontal',
-      form: this.$form.createForm(this),
-      //部门树查询
-      TreeId:0,
+
+      DataSource,
+      columnsData,
 
       //按钮KEY
       buttonKey:'',
@@ -617,6 +497,10 @@ export default {
           ]
         },
       ],
+      defaultProps: {
+        children: "children",
+        label: "label"
+      },
       filterText: "",
 
       bllCode: {
@@ -656,7 +540,7 @@ export default {
       dialogFormVisibleRoles:false,
       filters: {},
       users: [],
-      userRoles: [],
+      roles: [],
       total: 0,
       page: 1,
       sels: [], // 列表选中列
@@ -692,7 +576,7 @@ export default {
         youxiang: [
           {
             type: "email",
-            required: true,
+            required: false,
             message: "邮箱格式不正确",
             trigger: "blur"
           }
@@ -723,13 +607,15 @@ export default {
         shifouqiyong: "",
         beizhu: ""
       },
-      // 编辑界面数据
+      // 编辑界面数据.
+
+
       editForm: {
-        RoleIds:[]
+        Pid:0
       },
-      Roles: [],
 
       departments: [],
+      menus: [], //菜单列表
 
 
       // 编辑界面数据
@@ -767,34 +653,9 @@ export default {
     }
   },
   methods: {
-    //表单
-    handleSubmit (e) {
-      e.preventDefault()
-      this.form.validateFields((err, values) => {
-        if (!err) {
-          console.log('Received values of form: ', values)
-          this.editForm = values
-          console.log('Received values of form: ', this.editForm)
-        }
-      })
-    },
-    handleSelectChangeDepartment (value) {
-      console.log(value)
-      this.form.setFieldsValue({
-        note: `Hi, ${value === 'male' ? 'man' : 'lady'}!`,
-      })
-    },
-        //是否显示
-    aSwitch(checked){
-      this.editForm.Issuper = checked
-    },
     //是否启用
     aState(checked){
       this.editForm.State = checked
-    },
-    //tabs
-    callback (key) {
-      console.log(key)
     },
     //穿梭框
       getMock() {
@@ -885,12 +746,6 @@ export default {
     // },
     onSelect (selectedKeys, info) {
       console.log('selected', selectedKeys, info)
-      // console.log ('nooooooo',info.node.title)
-      // console.log ('nooooooo',info.node.$options.propsData.dataRef.Key)
-      this.TreeId = info.node.$options.propsData.dataRef.Key
-      console.log ('nooooooo',this.TreeId)
-      this.getTreeList(info.node.$options.propsData.dataRef.Key)
-
     },
     //
     nodeClick(data9){
@@ -899,40 +754,16 @@ export default {
     changeClick(data){
       console.log(data);
       },
+    filterNode(value, data) {
+      if (!value) return true;
+      return data.label.indexOf(value) !== -1;
+    },
     handleNodeClick(data) {
       console.log(data);
     },
     //行点击事件
-    Rowdblclick(row) {
-        this.dialogStatus = "update";
-      this.dialogFormVisibleEdit = true;
-      this.disabledZhangHao = true;
-      this.disabledMima = true;
-      this.editForm = {};
-      const paraId = {
-        Id: row.Id,
-      }; 
-      this.para.Code = 'GetYsdatabaseYsAdmin';
-      this.para.Data = JSON.stringify(paraId);
-      handlePost(this.para).then(res => {
-        if (res.IsSuccess == true) {
-      this.editForm = Object.assign({}, res.Data);
-
-      this.para.Data = "";
-      this.para.Code = 'GetListYsdatabaseYsDepartment';
-      handlePost(this.para).then(res => {
-        if (res.IsSuccess == true) {
-          this.departments = res.Data.List;
-          this.para.Code = 'GetListYsdatabaseYsRole';
-          handlePost(this.para).then(res => {
-            if (res.IsSuccess == true) {
-              this.roles = res.Data.List;
-            }
-          });
-        }
-      });
-        }
-      });
+    Rowdblclick() {
+      this.handleAdd();
     },
     //窗口控制
     handleOkEdit() {
@@ -949,7 +780,6 @@ export default {
     //多选角色
     handleChangeSelect(value) {
       console.log(`Selected: ${value}`);
-      // this.editForm.RoleIds = value
     },
     popupScroll(){
       console.log('popupScroll')
@@ -990,11 +820,11 @@ export default {
     getDataList() {
       //取列表
       const paraSelect = {
-        Name:this.filters.data,
+        Name: this.filters.data,
         Page: this.page,
         Size: 10
       };
-      this.para.Code = 'GetListYsdatabaseYsAdmin';
+      this.para.Code = 'GetListYsdatabaseYsDictionary';
       this.para.Data = JSON.stringify(paraSelect);
       handlePost(this.para)
         .then(res => {
@@ -1002,69 +832,38 @@ export default {
             this.total = res.Data.Count;
             this.users = res.Data.List;
           }
-          console.log("userslist:", this.users);
-          this.para.Data = "";
-          this.para.Code = 'GetListYsdatabaseYsDepartment';
-          handlePost(this.para).then(res => {
-            if (res.IsSuccess == true) {
-              this.departments = res.Data.List;
-              this.para.Code = 'GetListYsdatabaseYsRole';
-              handlePost(this.para).then(res => {
-                if (res.IsSuccess == true) {
-                  this.userRoles = res.Data.List;
-                  console.log("roles:", this.roles);
-                }
-              });
+          // this.para.Data = "";
+          // this.para.Code = 'GetListYsdatabaseYsDepartment';          
+          // handlePost(this.para).then(res => {
+          //   if (res.IsSuccess == true) {
+          //     this.departments = res.Data.List;
+          //     console.log("departments111111:", this.departments);
+          //     this.para.Code = 'GetListYsdatabaseYsRole';
+          //     handlePost(this.para).then(res => {
+          //       if (res.IsSuccess == true) {
+          //         this.roles = res.Data.List;
+          //         console.log("roles:", this.roles);
+          //       }
+          //     });
             
-            }
-          });
-          //取部门树
-      const paraTree = {
-        // Page: this.page,
-        // Size: 10
-      };
-      // this.dataList = [];
-      this.para.Code = 'GetTreeYsdatabaseYsDepartment';
-      this.para.Data = JSON.stringify(paraTree);
-      handlePost(this.para).then(res => {
-        if (res.IsSuccess == true) {
-          this.dataList = res.Data;
-              const paraData = {
-                Del: "删除",
-                Edit: "编辑",
-                key: "0",
-                title: "全部",
-              }
-              this.dataList.unshift(paraData)
-          console.log ('this.dataList:::000000',this.dataList)
-          // this.getMenuName()
+          //   }
+          // });
 
-        }
-      });
-
-
-        })
-        .catch(err => {
-          console.log(err);
-        });
-    },
-    // 按部门查询
-    getTreeList(data) {
-      //取列表
-      var numberData = parseInt (data)
-      const paraSelect = {
-        DepartmentId:numberData,
-        Page: this.page,
-        Size: 10
-      };
-      this.para.Code = 'GetListYsdatabaseYsAdmin';
-      this.para.Data = JSON.stringify(paraSelect);
-      handlePost(this.para)
-        .then(res => {
-          if (res.IsSuccess == true) {
-            this.total = res.Data.Count;
-            this.users = res.Data.List;
-          }
+      //     //取部门树
+      // const paraTree = {
+      //   // Page: this.page,
+      //   // Size: 10
+      // };
+      // // this.dataList = [];
+      // this.para.Code = 'GetTreeYsdatabaseYsDepartment';
+      // this.para.Data = JSON.stringify(paraTree);
+      // handlePost(this.para).then(res => {
+      //   if (res.IsSuccess == true) {
+      //     this.dataList = res.Data;
+      //     console.log ('this.dataList:::000000',this.dataList)
+      //     this.getMenuName()
+      //   }
+      // });
 
 
         })
@@ -1072,40 +871,43 @@ export default {
           console.log(err);
         });
 
-    
+        
+       
+
     },
     //
     
     //闭包
-    // getMenuName() {
-    //         var menus  = this.dataList
-    //         var Key = 1
-    //         var name = "" ;
-    //         for (var i = 0; i < menus.length; i++) {
-    //           if (menus[i].Key == Key) {
-    //             name = menus[i].Name;
-    //             break;
-    //           }
-    //           else {
-    //             (function () {
-    //               var m = arguments[0];
-    //               var menuKey = arguments[1];
-    //               for (var j = 0; j < m.length; j++) {
-    //                 if (m[j].Key == menuKey) {
-    //                   name = m[j].Name;
-    //                   break;
-    //                 }
-    //                 else if (m[j].children != null && m[j].children.length > 0) {
-    //                   arguments.callee(m[j].children, val);//递归匿名方法
-    //                 }
-    //               }
-    //             })(menus[i].children, Key);
-    //           }
-    //         }
-    //         return name;
-    //         // return alert (name)
-    //         //
-    //       },
+    getMenuName() {
+            var menus  = this.dataList
+            var Key = 1
+            var name = "" ;
+            for (var i = 0; i < menus.length; i++) {
+              if (menus[i].Key == Key) {
+                name = menus[i].Name;
+                break;
+              }
+              else {
+                (function () {
+                  var m = arguments[0];
+                  var menuKey = arguments[1];
+                  for (var j = 0; j < m.length; j++) {
+                    if (m[j].Key == menuKey) {
+                      name = m[j].Name;
+                      break;
+                    }
+                    else if (m[j].children != null && m[j].children.length > 0) {
+                      arguments.callee(m[j].children, val);//递归匿名方法
+                    }
+                  }
+                })(menus[i].children, Key);
+              }
+            }
+            return name;
+            // return alert (name)
+            //
+            
+          },
     // 删除
     handleDel(index, row) {
       this.$confirm("确认删除该记录吗?", "提示", {
@@ -1127,12 +929,7 @@ export default {
                   message: "删除成功！",
                   type: "success"
                 });
-              }else {
-                  this.$message({
-                    message: res.Code + ':' + res.message,
-                    type: "warning"
-                  });
-                }
+              }
             })
             .catch(err => {
               console.log(err);
@@ -1148,72 +945,44 @@ export default {
       this.dialogFormVisibleEdit = true;
       this.disabledZhangHao = true;
       this.disabledMima = true;
-      this.editForm = {};
-      const paraId = {
-        Id: row.Id,
-      }; 
-      this.para.Code = 'GetYsdatabaseYsAdmin';
-      this.para.Data = JSON.stringify(paraId);
-      handlePost(this.para).then(res => {
-        if (res.IsSuccess == true) {
-      this.editForm = Object.assign({}, res.Data);
-          // this.dataList = res.Data;
-
+      this.editForm = Object.assign({}, row);
       this.para.Data = "";
       this.para.Code = 'GetListYsdatabaseYsDepartment';
+      console.log(this.para);
       handlePost(this.para).then(res => {
         if (res.IsSuccess == true) {
           this.departments = res.Data.List;
           this.para.Code = 'GetListYsdatabaseYsRole';
-          this.para.Data = '{}';
           handlePost(this.para).then(res => {
             if (res.IsSuccess == true) {
               this.roles = res.Data.List;
-            }else {
-                  this.$message({
-                    message: res.Code + ':' + res.message,
-                    type: "warning"
-                  });
-                }
+            }
           });
         }
       });
-
-        }
-      });
-
-
-      
     },
     // 显示新增界面
     handleAdd() {
       this.dialogStatus = "create";
       this.dialogFormVisibleAdd = true;
-      this.disabledZhangHao = false;
-      this.disabledMima = false;
       this.editForm = {
         Issuper: true,
         State: true
       };
-      this.para.Code = 'GetListYsdatabaseYsDepartment';      
-      handlePost(this.para).then(res => {
-        if (res.IsSuccess == true) {
-          this.departments = res.Data.List;
-          // console.log(this.departments);
-          this.para.Code = 'GetListYsdatabaseYsRole';
-          handlePost(this.para).then(res => {
-            if (res.IsSuccess == true) {
-              this.roles = res.Data.List;
-              // console.log(this.roles);
-            }else {
-                  this.$message({
-                    message: res.Code + ':' + res.message,
-                    type: "warning"
-                  });
-                }
-          });
-        }
-      });
+      // this.para.Code = 'GetListYsdatabaseYsDepartment';      
+      // handlePost(this.para).then(res => {
+      //   if (res.IsSuccess == true) {
+      //     this.departments = res.Data.List;
+      //     // console.log(this.departments);
+      //     this.para.Code = 'GetListYsdatabaseYsRole';
+      //     handlePost(this.para).then(res => {
+      //       if (res.IsSuccess == true) {
+      //         this.roles = res.Data.List;
+      //         // console.log(this.roles);
+      //       }
+      //     });
+      //   }
+      // });
     },
     // 编辑
     updateData() {
@@ -1233,19 +1002,9 @@ export default {
                 .then(res => {
                   if (res.IsSuccess == true) {
                     this.$refs["editForm"].resetFields();
-                    this.dialogFormVisibleEdit = false;
+                    this.dialogFormVisibleAdd = false;
                     this.getDataList(); //刷新列表
-                    this.$message({
-                        message: "修改成功！",
-                        type: "success"
-                      });
                   }
-                  else {
-                  this.$message({
-                    message: res.Code + ':' + res.message,
-                    type: "warning"
-                  });
-                }
                 })
                 .catch(err => {
                   console.log(err);
@@ -1270,14 +1029,12 @@ export default {
             // console.log (this.para)
 
             // this.editForm.KeyId = (parseInt(Math.random() * 100)).toString() // mock a id
-            // this.editForm = {
-              // RoleIds:[0,1,2]
-            // }
+
             const paraObj = Object.assign({}, this.editForm);
-            console.log (paraObj)
+            // console.log (paraObj)
             this.para.Data = JSON.stringify(paraObj);
-            this.para.Code = 'AddYsdatabaseYsAdmin';
-            console.log('parapara111',this.para);
+            this.para.Code = 'AddYsdatabaseYsDictionary';
+            console.log(this.para);
             handlePost(this.para).then(res => {
               if (res.IsSuccess == true) {
                 this.$refs["editForm"].resetFields();
@@ -1287,12 +1044,7 @@ export default {
                   message: "添加成功！",
                   type: "success"
                 });
-              }else {
-                  this.$message({
-                    message: res.Code + ':' + res.message,
-                    type: "warning"
-                  });
-                }
+              }
             });
           });
         }
@@ -1325,12 +1077,8 @@ export default {
                   message: "删除成功！",
                   type: "success"
                 });
-              }else {
-                  this.$message({
-                    message: res.Code + ':' + res.message,
-                    type: "warning"
-                  });
-                }
+              } else {
+              }
             })
             .catch(err => {
               console.log(err);
@@ -1373,5 +1121,5 @@ export default {
   /* width: 480px; */
   height: 68rem;
 }
-
+#components-table-demo-size h4 { margin-bottom: 16px; }
 </style>

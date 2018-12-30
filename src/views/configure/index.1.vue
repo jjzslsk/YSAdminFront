@@ -44,7 +44,19 @@
           </el-select>
         </el-form-item><br> -->
         <el-form-item label="系统数据库:">
-          <el-input style="width:30rem" type="input" rows="5" v-model="users.usersSysDB"></el-input>
+          <el-select
+            v-model="SysDB"
+            filterable
+            allow-create
+            default-first-option
+            placeholder="请选择">
+            <el-option
+              v-for="item in usersSysDBList"
+              :key="item"
+              :label="item"
+              :value="item">
+            </el-option>
+          </el-select>
         </el-form-item><br>
         <el-form-item label="数据库类型:">
           <el-select
@@ -107,8 +119,6 @@ export default {
       SysDB: [],
       SysCache: [],
       SysDBType:[],
-      usersSysDB:'',
-      usersSysCache:''
 
     };
   },
@@ -123,14 +133,6 @@ export default {
           this.usersSysDBList = this.users.SysDBList;
           this.usersSysCacheList = this.users.SysCacheList;
           this.usersSysDBType = this.users.SysDBType;
-          this.usersSysDB = this.users.SysDB;
-          this.usersSysCache = this.users.SysCache;
-
-          // 默认缓存-SysCache
-          // 系统数据库-SysDB
-          // 系统数据库类型-SysDBType
-          // 文件上传路径-UpFilePath
-
 
         }
       });

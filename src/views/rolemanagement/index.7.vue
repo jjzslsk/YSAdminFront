@@ -9,17 +9,18 @@
           <!-- <a-button type="primary" @click="handleAdd">编辑</a-button> -->
           <a-button type="primary" @click="Refresh">刷新</a-button>
           <!-- <a-button type="primary" @click="allotButton">分配按钮</a-button> -->
+          <a-button type="primary" @click="allotMent">分配权限</a-button>
       <a-button type="danger" @click="batchRemove" :disabled="this.sels.length===0">{{button.batchRemove}}</a-button>
       <el-form-item style="float: right;">
           <a-button type="primary" @click="getKeyList">查询</a-button>
         </el-form-item>
         <el-form-item style="float: right;">
           <a-input-group compact>
-            <a-select  @change="this.handleSelectChange" defaultValue="按钮名称" style="width: 40%">
+            <a-select v-model="selectValue"  @change="this.handleSelectChange" defaultValue="名称" style="width: 40%">
                 <a-select-option value='Id'>Id</a-select-option>
-                <a-select-option value='Icon'>图标</a-select-option>
-                <a-select-option value='ClassName'>参数</a-select-option>
-                <a-select-option value='Name'>按钮名称</a-select-option>
+                <a-select-option value='Name'>名称</a-select-option>
+                <a-select-option value='Sort'>排序</a-select-option>
+                <a-select-option value='Memo'>备注</a-select-option>
             </a-select>
           <a-input style="width: 60%" defaultValue="" v-model="filters.data"/>
         </a-input-group>
@@ -27,24 +28,13 @@
       </el-form>
 
     <!--列表--> 
-      <!-- <a-table defaultExpandAllRows :pagination="false" size="small" :columns="columnsTree" :dataSource="dataTree" :rowSelection="rowSelectionTree">
-          <span slot="tags" slot-scope="tags">
-            <a-checkbox></a-checkbox>
-          </span>
-          <span slot="action" slot-scope="text, record">
-            <a href="javascript:;">{{record.edit}}</a>
-            <a-divider type="vertical" />
-            <a href="javascript:;">{{record.del}}</a>
-          </span>
-      </a-table> -->
-
           <el-table @row-dblclick='Rowdblclick' stripe :data="dataList" highlight-current-row @selection-change="selsChange" style="width: 100%;">
             <el-table-column v-for="item in tableLabel" :key="item.Label" :label="item.Label" :prop="item.prop" :width='item.width' :type='item.type'>
             </el-table-column>
             <el-table-column label="操作" width="100" fixed="right">
               <template slot-scope="scope">
-                <el-button type="text"  @click="handleEdit(scope.$index, scope.row)">{{button.edit}}</el-button>
-                <el-button type="text"  @click="handleDel(scope.$index, scope.row)">{{button.del}}</el-button>
+                <el-button type="text" size="mini" @click="handleEdit(scope.$index, scope.row)">{{button.edit}}</el-button>
+                <el-button type="text" ssize="mini" @click="handleDel(scope.$index, scope.row)">{{button.del}}</el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -55,6 +45,8 @@
         style="float:right;">
       </el-pagination>
     </el-col>
+
+
 
         <!--图标-->
     <a-modal title="添加图标" @ok="handleOk" @click="allotIcon" v-model="dialogFormVisibleIcon" >
@@ -102,7 +94,25 @@
       </div>
     </a-modal>
 
-            <!--按钮-->
+        <!--二维权限-->
+    <a-modal class="allotMent" title="分配权限" @ok="handleOkData" @click="allotMent" v-model="dialogFormVisibleData">
+          <a-table defaultExpandAllRows :pagination="false" size="small" :columns="columnsTree" :dataSource="dataTree" :rowSelection="rowSelectionTree">
+              <span slot="tags" slot-scope="tags">
+                <a-checkbox></a-checkbox>
+              </span>
+              <span slot="action" slot-scope="text, record">
+                <a href="javascript:;">{{record.edit}}</a>
+                <a-divider type="vertical" />
+                <a href="javascript:;">{{record.del}}</a>
+              </span>
+          </a-table>
+      <div slot="footer" class="dialog-footer">
+        <a-button @click.native="dialogFormVisibleData=false">取消</a-button>
+        <a-button type="primary" @click.native="dialogFormVisibleData=false">确认</a-button>
+      </div>
+    </a-modal>
+
+    <!--按钮-->
     <el-dialog title="添加" :visible.sync="dialogFormVisibleButton" :close-on-click-modal="false">
              <div style="text-align: center" class="transferBox">
           <el-transfer
@@ -127,56 +137,46 @@
           </el-transfer>
       </div>
       <div slot="footer" class="dialog-footer">
-        <a-button  @click.native="dialogFormVisibleButton=false">取消</a-button>
-        <a-button  type="primary" @click.native="dialogFormVisibleButton=false">确认</a-button>
+        <a-button @click.native="dialogFormVisibleButton=false">取消</a-button>
+        <a-button type="primary" @click.native="dialogFormVisibleButton=false">确认</a-button>
       </div>
     </el-dialog>
 
     <!--添加界面-->
-    <a-modal title="添加按钮" @ok="handleOkAdd" @click="createData" v-model="dialogFormVisibleAdd">
+    <a-modal title="添加角色" @ok="handleOkAdd" @click="createData" v-model="dialogFormVisibleAdd">
       <el-form :model="editForm" label-width="100px" :rules="editFormRules" ref="editForm">
-        <el-form-item label="按钮名称:" prop="Name">
+        <el-form-item label="角色名称:" prop="Name">
           <el-input v-model="editForm.Name" auto-complete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="样式:" prop="ClassName">
-          <el-input v-model="editForm.ClassName" auto-complete="off"></el-input>
-        </el-form-item>
-                <el-form-item label="图标:" prop="">
-          <el-input placeholder="请输入内容" v-model="editForm.Icon" class="input-with-select">
-            <a-icon type="picture"  slot="append" @click="allotIcon"/>
-          </el-input>
         </el-form-item>
         <el-form-item label="排序:">
           <el-input-number v-model="editForm.Sort"></el-input-number>
         </el-form-item>
+        <el-form-item label="备注:" prop="Memo">
+          <el-input v-model="editForm.Memo" auto-complete="off"></el-input>
+        </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <a-button  @click.native="dialogFormVisibleAdd=false">{{button.cancel}}</a-button>
-        <a-button  type="primary" @click="createData">{{button.add}}</a-button>
+        <a-button @click.native="dialogFormVisibleAdd=false">{{button.cancel}}</a-button>
+        <a-button type="primary" @click="createData">{{button.add}}</a-button>
       </div>
     </a-modal>
 
     <!--编辑界面-->
-    <a-modal title="编辑按钮" @ok="handleOkEdit" @click="updateData" v-model="dialogFormVisibleEdit">
+    <a-modal title="编辑角色" @ok="handleOkEdit" @click="updateData" v-model="dialogFormVisibleEdit">
       <el-form :model="editForm" label-width="100px" :rules="editFormRules" ref="editForm">
-        <el-form-item label="按钮名称:" prop="Name">
+        <el-form-item label="角色名称:" prop="Name">
           <el-input v-model="editForm.Name" auto-complete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="样式:" prop="Classname">
-          <el-input v-model="editForm.Classname" auto-complete="off"></el-input>
-        </el-form-item>
-                <el-form-item label="图标:" prop="">
-          <el-input placeholder="请输入内容" v-model="editForm.Icon" class="input-with-select">
-            <a-icon type="picture"  slot="append" @click="allotIcon"/>
-          </el-input>
         </el-form-item>
         <el-form-item label="排序:">
           <el-input-number v-model="editForm.Sort"></el-input-number>
         </el-form-item>
+        <el-form-item label="备注:" prop="Memo">
+          <el-input v-model="editForm.Memo" auto-complete="off"></el-input>
+        </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <a-button  @click.native="dialogFormVisibleEdit=false">{{button.cancel}}</a-button>        
-        <a-button  type="primary" @click="updateData">{{button.modify}}</a-button>
+        <a-button @click.native="dialogFormVisibleEdit=false">{{button.cancel}}</a-button>        
+        <a-button type="primary" @click="updateData">{{button.modify}}</a-button>
       </div>
     </a-modal>
     </el-card>
@@ -203,31 +203,54 @@ const columnsTree = [
   key: 'name',
   dataIndex: 'name',
 },{
-  title: '图标',
+  title: '浏览',
   key: 'icon',
   dataIndex: 'icon',
+  scopedSlots: { customRender: 'tags' },
 },{
-  title: '标记',
+  title: '添加',
   key: 'code',
   dataIndex: 'code',
+  scopedSlots: { customRender: 'tags' },
 },{
-  title: '链接地址',
+  title: '下话单',
   key: 'url',
   dataIndex: 'url',
+  scopedSlots: { customRender: 'tags' },
 },{
-  title: '是否显示',
+  title: '重发通知',
   key: 'show',
   dataIndex: 'show',
   scopedSlots: { customRender: 'tags' },
 },{
-  title: '排序',
+  title: '重置',
   key: 'sort',
   dataIndex: 'sort',
+  scopedSlots: { customRender: 'tags' },
 },{
-  title: '操作',
+  title: '编辑',
   key: 'action',
   dataIndex: 'action',
-  scopedSlots: { customRender: 'action' },
+  scopedSlots: { customRender: 'tags' },
+  // scopedSlots: { customRender: 'action' },
+},{
+  title: '删除',
+  key: 'del',
+  dataIndex: 'del',
+  scopedSlots: { customRender: 'tags' },
+  // scopedSlots: { customRender: 'action' },
+},{
+  title: '查询',
+  key: 'query',
+  dataIndex: 'query',
+  scopedSlots: { customRender: 'tags' },
+  // scopedSlots: { customRender: 'action' },
+},{
+  title: '导出',
+  key: 'export',
+  dataIndex: 'export',
+  scopedSlots: { customRender: 'tags' },
+  // scopedSlots: { customRender: 'action' },
 }];
 
 const dataTree = [{
@@ -324,6 +347,7 @@ export default {
         return data;
       };
     return {
+      selectValue:'Name',
             //穿梭框
         data: generateData(),
         value3: [1],
@@ -344,27 +368,28 @@ export default {
       
       bllCode: {
         //接口标识，由后端提供
-        add: "AddYsdatabaseYsButton", //添加
-        edit: "UpdateYsdatabaseYsButton", //修改
-        del: "DelYsdatabaseYsButton", //删除
-        getList: "GetListYsdatabaseYsButton", //获取列表
-        getObj: "GetYsdatabaseYsButton", //获取对象（单个）
+        add: "AddYsdatabaseYsRole", //添加
+        edit: "UpdateYsdatabaseYsRole", //修改
+        del: "DelYsdatabaseYsRole", //删除
+        getList: "GetListYsdatabaseYsRole", //获取列表
+        getObj: "GetYsdatabaseYsRole", //获取对象（单个）
         getRolesList: "GetListYsdatabaseYsRole" //获取角色
       },
       tableLabel: [
         { type: "selection", width: "50" },
-        { Label: "ID", prop: "Id", width: "50", type: "index" },
-        { Label: "图标", prop: "Icon", width: "50" },
-        { Label: "按钮名称", prop: "Name", width: "100" },
-        // { Label: "权限标识", prop: "Url"},
-        // { Label: "排序", prop: "Sort", width: "50" },
-        {Label:'说明',prop:"beizhu"},
+        { Label: "ID", prop: "id", width: "50", type: "index" },
+        { Label: "名称", prop: "Name", width: "100" },
+        // { Label: "上级菜单", prop: "Pid", width: "80" },
+        // { Label: "链接地址", prop: "Url"},
+        // { Label: "页面标识", prop: "Param",width: "150"},
+        // { Label: "图标", prop: "Icon", width: "50" },
+        { Label: "排序", prop: "Sort", width: "50" },
         // {Label:'是否管理后台',prop:"shifouguanlihoutai",width:'150'},
         // {Label:'是否需要登录',prop:"shifouxuyaodenglu",width:'150'},
         // {Label:'创建时间',prop:"beizhu",width:'150'},
-        // {Label:'备注',prop:"beizhu",width:'150'},
+        {Label:'备注',prop:"Memo"},
       ],
-      filtersName: "按钮名称",
+      filtersName: "角色名称",
       button: {
         query: "查询",
         add: "添加",
@@ -385,11 +410,11 @@ export default {
       },
       // para: paraHelper,
       dialogStatus: "",
+      dialogFormVisibleData:false,
       dialogFormVisibleButton:false,
       dialogFormVisibleIcon:false,
       dialogFormVisibleAdd: false,
       dialogFormVisibleEdit: false,
-      filters: {},
       ListsuperiorMenu: [],
       dataList: [], //主页数据
       total: 0,
@@ -437,9 +462,20 @@ export default {
         paixu: "",
         tubiao: ""
       },
-      selectValue:'Name',
 
       filterdataListData: [],
+    //搜索
+    handleSelectChange (value) {
+      console.log (value)
+      this.selectValue = value
+      console.log (this.selectValue)
+      // this.form.setFieldsValue({
+      //   note: `Hi, ${value === 'male' ? 'man' : 'lady'}!`,
+      // })
+    },
+      //查询条件
+      filters: {
+      },
       ids: [],
       page: 1,
       addFormVisible: false, // 添加界面是否显示
@@ -465,6 +501,9 @@ export default {
     handleOkAdd(){
       this.dialogFormVisibleAdd = false;
     },
+    handleOkData(){
+      this.dialogFormVisibleData = false;
+    },
         //刷新页面
     Refresh() {
       (this.filters = {
@@ -484,21 +523,13 @@ export default {
     allotButton() {
       this.dialogFormVisibleButton = true;
     },
+    //分配二维权限
+    allotMent() {
+      this.dialogFormVisibleData = true;
+    },
     //行点击事件
-    Rowdblclick(row) {
-      this.dialogStatus = "update";
-      this.dialogFormVisibleEdit = true;
-      this.editForm = {};
-      const paraId = {
-        Id: row.Id,
-      }; 
-      this.para.Code = 'GetYsdatabaseYsButton';
-      this.para.Data = JSON.stringify(paraId);
-      handlePost(this.para).then(res => {
-        if (res.IsSuccess == true) {
-      this.editForm = Object.assign({}, res.Data);
-        }
-      });
+    Rowdblclick() {
+      this.handleAdd();
     },
     //加载按钮
     loadButton(data) {
@@ -541,15 +572,7 @@ export default {
       this.page = val;
       this.getDataList();
     },
-        //搜索
-    handleSelectChange (value) {
-      this.selectValue = value
-      // this.form.setFieldsValue({
-      //   note: `Hi, ${value === 'male' ? 'man' : 'lady'}!`,
-      // })
-    },
     // 获取列表
- 
     getDataList() {
       var dataSource = this.selectValue
       const paraId = [{
@@ -582,10 +605,6 @@ export default {
         }
       });
     },
-
-      
-
- 
     // 删除
     handleDel(index, row) {
       this.$confirm("确认删除该记录吗?", "提示", {
@@ -613,17 +632,23 @@ export default {
     },
     // 显示编辑界面
     handleEdit(index, row) {
-    this.dialogStatus = "update";
+      this.dialogStatus = "update";
       this.dialogFormVisibleEdit = true;
-      this.editForm = {};
-      const paraId = {
-        Id: row.Id,
-      }; 
-      this.para.Code = 'GetYsdatabaseYsButton';
-      this.para.Data = JSON.stringify(paraId);
+      // this.$refs["editForm"].resetFields(); //重置editForm
+      this.editForm = Object.assign({}, row);
+      let paert = {
+        Pid: -1
+      };
+      this.para.Data = JSON.stringify(paert);
+      this.para.Code = this.bllCode.getList;
       handlePost(this.para).then(res => {
         if (res.IsSuccess == true) {
-      this.editForm = Object.assign({}, res.Data);
+          this.ListsuperiorMenu = res.Data.List;
+          let top = {
+            Id: 0,
+            Name: "无"
+          };
+          this.ListsuperiorMenu.push(top);
         }
       });
     },
@@ -813,5 +838,8 @@ export default {
     transition: transform .3s ease-in-out;
     transition: transform .3s ease-in-out,-webkit-transform .3s ease-in-out;
     will-change: transform;
+}
+.allotMent {
+  width: 600px !important;
 }
 </style>

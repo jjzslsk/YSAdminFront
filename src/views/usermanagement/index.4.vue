@@ -135,91 +135,7 @@
 
     <!--添加界面-->
     <a-modal title="添加用户" @ok="dialogFormVisibleAdd = true" @click="createData" v-model="dialogFormVisibleAdd">
-        <!-- <a-tabs @change="callback" type="card">
-          <a-tab-pane tab="基本信息" key="1">
-      <template>
-        <a-form @submit="handleSubmit" :form="form">
-          <a-form-item label='名称' :labelCol="{ span: 5 }" :wrapperCol="{ span: 12 }">
-            <a-input
-              v-decorator="[
-                'Name',
-                {rules: [{ required: true, message: '输入名称' }]}
-              ]"
-            />
-          </a-form-item>
-          <a-form-item label='账号' :labelCol="{ span: 5 }" :wrapperCol="{ span: 12 }">
-            <a-input
-              v-decorator="[
-                'Username',
-                {rules: [{ required: true, message: '输入账号' }]}
-              ]"
-            />
-          </a-form-item>
-          <a-form-item label='密码' :labelCol="{ span: 5 }" :wrapperCol="{ span: 12 }">
-            <a-input
-              v-decorator="[
-                'password',
-                {rules: [{ required: true, message: '输入密码' }]}
-              ]"
-            />
-          </a-form-item>
-
-          <a-form-item label='部门' :labelCol="{ span: 5 }" :wrapperCol="{ span: 12 }">
-            <a-select
-              v-decorator="[
-                'DepartmentId',
-                {rules: [{ required: true, message: '选择部门' }]}
-              ]"
-              placeholder='选择部门'
-              @change="this.handleSelectChangeDepartment">
-              <a-select-option v-for="item in departments" :key="item.Id" :value="item.Id">{{item.Name}}</a-select-option>
-            </a-select>
-          </a-form-item>
-          
-          <a-form-item
-              label='角色'
-              :labelCol="{ span: 5 }"
-              :wrapperCol="{ span: 12 }">
-              <a-select size="large" mode="multiple" style="width: 100%" @change="handleChangeSelect" 
-          v-decorator="[
-          'RoleIds',
-              {rules: [{ required: true, message: '请选择角色' }]}
-            ]"
-           placeholder="选择角色">
-            <a-select-option v-for="item in userRoles" :key="item.Id">{{item.Name}}</a-select-option>
-          </a-select>
-            </a-form-item>
-
-            <a-row>
-              <a-col :span="12">
-                <a-form-item label='是否超管'>
-                  <a-switch @change='aSwitch' v-model="editForm.Issuper" v-decorator="['Issuper', { valuePropName: 'checked' }]"/>                  
-                </a-form-item>
-              </a-col>
-
-              <a-col :span="12">
-                <a-form-item label='是否启用'>
-                  <a-switch @change='aSwitch' v-model="editForm.State" v-decorator="['State', { valuePropName: 'checked' }]"/>
-               </a-form-item>
-              </a-col>
-            </a-row>
-
-          <a-form-item
-            :wrapperCol="{ span: 12, offset: 5 }">
-            <a-button type='primary' htmlType='submit'>
-              Submit
-            </a-button>
-          </a-form-item>
-        </a-form>
-</template>
-          </a-tab-pane>
-        </a-tabs> -->
-
-
-
-
-
-
+      
       <template>
         <a-tabs @change="callback" type="card">
           <a-tab-pane tab="基本信息" key="1">
@@ -230,10 +146,9 @@
         <el-form-item label="账号:" prop="Username">
           <el-input v-model="editForm.Username" auto-complete="off" :disabled="disabledZhangHao" placeholder="设置后不可更改"></el-input>
         </el-form-item>
-        <el-form-item label="密码:" prop="PasWord">
+        <el-form-item label="密码:" prop="PasWord-">
           <el-input type="password" :disabled="disabledMima" v-model="editForm.PasWord" auto-complete="off"></el-input>
         </el-form-item>
-
         <el-form-item label="部门:">
             <el-select v-model="editForm.DepartmentId" placeholder="请选择">
                 <el-option v-for="item in departments" :key="item.Name" :label="item.Name" :value="item.Id">
@@ -241,16 +156,16 @@
             </el-select>
         </el-form-item>
           <a-form-item
-              label='角色'
+              label='Gender'
               :labelCol="{ span: 5 }"
               :wrapperCol="{ span: 12 }"
             >
               <a-select size="large" v-model="editForm.RoleIds" mode="multiple" style="width: 100%" @change="handleChangeSelect" 
           v-decorator="[
-          'RoleIds',
+          'gender',
               {rules: [{ required: true, message: '请选择角色' }]}
             ]"
-           placeholder="选择角色">
+           placeholder="1选择角色">
             <a-select-option v-for="item in userRoles" :key="item.Id">{{item.Name}}</a-select-option>
           </a-select>
             </a-form-item>
@@ -559,9 +474,6 @@ const treeData = [{
 export default {
   data() {
     return {
-      //表单
-      formLayout: 'horizontal',
-      form: this.$form.createForm(this),
       //部门树查询
       TreeId:0,
 
@@ -767,26 +679,9 @@ export default {
     }
   },
   methods: {
-    //表单
-    handleSubmit (e) {
-      e.preventDefault()
-      this.form.validateFields((err, values) => {
-        if (!err) {
-          console.log('Received values of form: ', values)
-          this.editForm = values
-          console.log('Received values of form: ', this.editForm)
-        }
-      })
-    },
-    handleSelectChangeDepartment (value) {
-      console.log(value)
-      this.form.setFieldsValue({
-        note: `Hi, ${value === 'male' ? 'man' : 'lady'}!`,
-      })
-    },
         //是否显示
     aSwitch(checked){
-      this.editForm.Issuper = checked
+      this.editForm.Isvisiable = checked
     },
     //是否启用
     aState(checked){
@@ -1127,12 +1022,7 @@ export default {
                   message: "删除成功！",
                   type: "success"
                 });
-              }else {
-                  this.$message({
-                    message: res.Code + ':' + res.message,
-                    type: "warning"
-                  });
-                }
+              }
             })
             .catch(err => {
               console.log(err);
@@ -1165,16 +1055,10 @@ export default {
         if (res.IsSuccess == true) {
           this.departments = res.Data.List;
           this.para.Code = 'GetListYsdatabaseYsRole';
-          this.para.Data = '{}';
           handlePost(this.para).then(res => {
             if (res.IsSuccess == true) {
               this.roles = res.Data.List;
-            }else {
-                  this.$message({
-                    message: res.Code + ':' + res.message,
-                    type: "warning"
-                  });
-                }
+            }
           });
         }
       });
@@ -1205,12 +1089,7 @@ export default {
             if (res.IsSuccess == true) {
               this.roles = res.Data.List;
               // console.log(this.roles);
-            }else {
-                  this.$message({
-                    message: res.Code + ':' + res.message,
-                    type: "warning"
-                  });
-                }
+            }
           });
         }
       });
@@ -1240,12 +1119,6 @@ export default {
                         type: "success"
                       });
                   }
-                  else {
-                  this.$message({
-                    message: res.Code + ':' + res.message,
-                    type: "warning"
-                  });
-                }
                 })
                 .catch(err => {
                   console.log(err);
@@ -1287,12 +1160,7 @@ export default {
                   message: "添加成功！",
                   type: "success"
                 });
-              }else {
-                  this.$message({
-                    message: res.Code + ':' + res.message,
-                    type: "warning"
-                  });
-                }
+              }
             });
           });
         }
@@ -1325,12 +1193,8 @@ export default {
                   message: "删除成功！",
                   type: "success"
                 });
-              }else {
-                  this.$message({
-                    message: res.Code + ':' + res.message,
-                    type: "warning"
-                  });
-                }
+              } else {
+              }
             })
             .catch(err => {
               console.log(err);

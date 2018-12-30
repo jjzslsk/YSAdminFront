@@ -16,11 +16,11 @@
         </el-form-item>
         <el-form-item style="float: right;">
           <a-input-group compact>
-            <a-select  @change="this.handleSelectChange" defaultValue="名称" style="width: 40%">
+            <a-select v-model="selectValue"  @change="this.handleSelectChange" defaultValue="名称" style="width: 40%">
                 <a-select-option value='Id'>Id</a-select-option>
-                <a-select-option value='Pid'>名称</a-select-option>
-                <a-select-option value='Url'>排序</a-select-option>
-                <a-select-option value='Name'>备注</a-select-option>
+                <a-select-option value='Name'>名称</a-select-option>
+                <a-select-option value='Sort'>排序</a-select-option>
+                <a-select-option value='Memo'>备注</a-select-option>
             </a-select>
           <a-input style="width: 60%" defaultValue="" v-model="filters.data"/>
         </a-input-group>
@@ -97,9 +97,15 @@
         <!--二维权限-->
     <a-modal class="allotMent" title="分配权限" @ok="handleOkData" @click="allotMent" v-model="dialogFormVisibleData">
           <a-table defaultExpandAllRows :pagination="false" size="small" :columns="columnsTree" :dataSource="dataTree" :rowSelection="rowSelectionTree">
-              <span slot="tags" slot-scope="tags">
+              <!-- <span slot="tags" slot-scope="tags">
                 <a-checkbox></a-checkbox>
-              </span>
+              </span> -->
+              <template slot="tags" slot-scope="text, record, index">
+                <!-- <a-switch defaultChecked @change='onChangeSwitch(text,record)'/> -->
+                <!-- <a-switch size="small" @change='onChangeSwitch'/> -->
+                <a-checkbox v-model="record.enable"  @click="onChangeClick" @change='onChangeSwitch(text, record, index)'></a-checkbox>
+                <!-- <editable-cell :text="text" @change="onCellChange(record.key, 'name')"/> -->
+              </template>
               <span slot="action" slot-scope="text, record">
                 <a href="javascript:;">{{record.edit}}</a>
                 <a-divider type="vertical" />
@@ -250,6 +256,14 @@ const columnsTree = [
   key: 'export',
   dataIndex: 'export',
   scopedSlots: { customRender: 'tags' },
+  // enable:
+  // scopedSlots: { customRender: 'action' },
+},{
+  title: 'tags',
+  key: 'tags',
+  dataIndex: 'tags',
+  scopedSlots: { customRender: 'tags' },
+  // enable:
   // scopedSlots: { customRender: 'action' },
 }];
 
@@ -263,6 +277,7 @@ const dataTree = [{
   age: 60,
   edit:'编辑',
   del:'删除',
+  enable:false,
   children: [{
     key: 11,
     name: '导航菜单',
@@ -294,6 +309,7 @@ const dataTree = [{
     age: 72,
     edit:'编辑',
     del:'删除',
+    enable:true,
   }],
 }, {
   key: 2,
@@ -347,6 +363,8 @@ export default {
         return data;
       };
     return {
+      checkboxModel:false,
+      selectValue:'Name',
             //穿梭框
         data: generateData(),
         value3: [1],
@@ -465,7 +483,9 @@ export default {
       filterdataListData: [],
     //搜索
     handleSelectChange (value) {
+      console.log (value)
       this.selectValue = value
+      console.log (this.selectValue)
       // this.form.setFieldsValue({
       //   note: `Hi, ${value === 'male' ? 'man' : 'lady'}!`,
       // })
@@ -488,6 +508,29 @@ export default {
     };
   },
   methods: {
+    //表开关
+    onChangeSwitch(text, record, index){
+      console.log (text, record, index)
+      // console.log (text, record, index)
+      // console.log(`checked = ${e.target.checked}`)
+
+            // console.log('setIsCheckInterface--rowdata===',rowdata)
+      // this.paraSwitch.Code = this.bllCode.isCheck;
+      // let data = {
+      //   id: rowdata.id,
+      //   shifouyanzheng: rowdata.shifouyanzheng
+      // };
+      // this.paraSwitch.Data = JSON.stringify(data);
+      // handlePost(this.paraSwitch).then(res => {
+      //   if (res.IsSuccess == true) {
+      //     this.getDataList();
+      //   }
+      // });
+    },
+    onChangeClick(e){
+      console.log(`checked = ${e.target.checked}`)
+      console.log (this.checkboxModel)
+    },
     //窗口事件
     handleOk() {
       this.dialogFormVisibleIcon = false;
@@ -525,8 +568,20 @@ export default {
       this.dialogFormVisibleData = true;
     },
     //行点击事件
-    Rowdblclick() {
-      this.handleAdd();
+    Rowdblclick(row) {
+      this.dialogStatus = "update";
+      this.dialogFormVisibleEdit = true;
+      this.editForm = {};
+      const paraId = {
+        Id: row.Id,
+      }; 
+      this.para.Code = 'GetYsdatabaseYsRole';
+      this.para.Data = JSON.stringify(paraId);
+      handlePost(this.para).then(res => {
+        if (res.IsSuccess == true) {
+      this.editForm = Object.assign({}, res.Data);
+        }
+      });
     },
     //加载按钮
     loadButton(data) {
@@ -571,14 +626,30 @@ export default {
     },
     // 获取列表
     getDataList() {
-      const paraId = {
+      var dataSource = this.selectValue
+      const paraId = [{
         Page: this.page,
-        Name: this.filters.data,
+        Data: this.filters.data,
         Size: 10
-      };
-      // this.dataList = [];
+      }];
+
+      var keyMap = {
+            "Data" : dataSource,
+        };
+
+        for(var i = 0;i < paraId.length;i++){
+                var obj = paraId[i];
+                for(var key in obj){
+                          var newKey = keyMap[key];
+                          if(newKey){
+                                    obj[newKey] = obj[key];
+                                    delete obj[key];
+                            }
+                    }
+        }
+        
       this.para.Code = this.bllCode.getList;
-      this.para.Data = JSON.stringify(paraId);
+      this.para.Data = JSON.stringify(paraId[0]);
       handlePost(this.para).then(res => {
         if (res.IsSuccess == true) {
           this.total = res.Data.Count;
@@ -613,23 +684,17 @@ export default {
     },
     // 显示编辑界面
     handleEdit(index, row) {
-      this.dialogStatus = "update";
+    this.dialogStatus = "update";
       this.dialogFormVisibleEdit = true;
-      // this.$refs["editForm"].resetFields(); //重置editForm
-      this.editForm = Object.assign({}, row);
-      let paert = {
-        Pid: -1
-      };
-      this.para.Data = JSON.stringify(paert);
-      this.para.Code = this.bllCode.getList;
+      this.editForm = {};
+      const paraId = {
+        Id: row.Id,
+      }; 
+      this.para.Code = 'GetYsdatabaseYsRole';
+      this.para.Data = JSON.stringify(paraId);
       handlePost(this.para).then(res => {
         if (res.IsSuccess == true) {
-          this.ListsuperiorMenu = res.Data.List;
-          let top = {
-            Id: 0,
-            Name: "无"
-          };
-          this.ListsuperiorMenu.push(top);
+      this.editForm = Object.assign({}, res.Data);
         }
       });
     },
