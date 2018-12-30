@@ -31,8 +31,9 @@
           <el-table @row-dblclick='Rowdblclick' stripe :data="dataList" highlight-current-row @selection-change="selsChange" style="width: 100%;">
             <el-table-column v-for="item in tableLabel" :key="item.Label" :label="item.Label" :prop="item.prop" :width='item.width' :type='item.type'>
             </el-table-column>
-            <el-table-column label="操作" width="100" fixed="right">
+            <el-table-column label="操作" width="180" fixed="right">
               <template slot-scope="scope">
+                <el-button type="text" size="mini" @click="allotMent(scope.$index, scope.row)">分配权限</el-button>
                 <el-button type="text" size="mini" @click="handleEdit(scope.$index, scope.row)">{{button.edit}}</el-button>
                 <el-button type="text" ssize="mini" @click="handleDel(scope.$index, scope.row)">{{button.del}}</el-button>
               </template>
@@ -258,13 +259,6 @@ const columnsTree = [
   scopedSlots: { customRender: 'tags' },
   // enable:
   // scopedSlots: { customRender: 'action' },
-},{
-  title: 'tags',
-  key: 'tags',
-  dataIndex: 'tags',
-  scopedSlots: { customRender: 'tags' },
-  // enable:
-  // scopedSlots: { customRender: 'action' },
 }];
 
 const dataTree = [{
@@ -277,7 +271,6 @@ const dataTree = [{
   age: 60,
   edit:'编辑',
   del:'删除',
-  enable:false,
   children: [{
     key: 11,
     name: '导航菜单',
@@ -298,7 +291,6 @@ const dataTree = [{
     age: 30,
     edit:'编辑',
     del:'删除',
-    tags: ['nice', 'developer','111'],
   }, {
     key: 13,
     name: '部门管理',
@@ -309,7 +301,6 @@ const dataTree = [{
     age: 72,
     edit:'编辑',
     del:'删除',
-    enable:true,
   }],
 }, {
   key: 2,

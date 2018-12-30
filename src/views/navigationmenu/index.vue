@@ -75,7 +75,7 @@
       </el-pagination>
     </el-col> -->
 
-      <a-table defaultExpandAllRows :pagination="false" :columns="columnsTree" :dataSource="dataList" :rowSelection="rowSelectionTree">
+      <a-table defaultExpandAllRows :pagination="false" :columns="columnsTree" :dataSource="dataList">
           <a slot="name" slot-scope="text" href="javascript:;">{{text}}</a>
           <span slot="customTitle"><a-icon type="smile-o" /> Name</span>
 
@@ -961,7 +961,7 @@ export default {
               });
             }else {
                   this.$message({
-                    message: res.Code + ':' + res.message,
+                    message: res.Code + ':' + res.Message,
                     type: "warning"
                   });
                 }
@@ -1057,7 +1057,7 @@ export default {
                 this.$refs["editForm"].resetFields();
                 this.dialogFormVisibleEdit = false;
                   this.$message({
-                    message: res.Code + ':' + res.message,
+                    message: res.Code + ':' + res.Message,
                     type: "warning"
                   });
               }
@@ -1096,7 +1096,7 @@ export default {
                   this.dialogFormVisibleAdd = false;
 
                   this.$message({
-                    message: res.Code + ':' + res.message,
+                    message: res.Code + ':' + res.Message,
                     type: "warning"
                   });
                 }

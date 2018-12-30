@@ -46,7 +46,7 @@
       </el-pagination>
     </el-col> -->
 
-          <a-table defaultExpandAllRows :pagination="false" :columns="columnsTree" :dataSource="dataList" :rowSelection="rowSelectionTree">
+          <a-table defaultExpandAllRows :pagination="false" :columns="columnsTree" :dataSource="dataList">
           <a slot="name" slot-scope="text" href="javascript:;">{{text}}</a>
           <!-- <span slot="customTitle"><a-icon type="smile-o" /> Name</span> -->
 
@@ -156,8 +156,11 @@
         <el-form-item label="部门名称:" prop="Name">
           <el-input v-model="editForm.Name" auto-complete="off"></el-input>
         </el-form-item>
-        <el-form-item label="上级部门:" prop="Pid">
-          <el-input v-model="editForm.Pid" auto-complete="off"></el-input>
+        <el-form-item label="上级部门:">
+            <el-select v-model="editForm.Pid" placeholder="请选择">
+                <el-option v-for="item in departments" :key="item.Name" :label="item.Name" :value="item.Id">
+                  {{item.Name}}</el-option>
+            </el-select>
         </el-form-item>
         <el-form-item label="排序:">
           <el-input-number v-model="editForm.Sort"></el-input-number>
@@ -178,8 +181,11 @@
         <el-form-item label="部门名称:" prop="Name">
           <el-input v-model="editForm.Name" auto-complete="off"></el-input>
         </el-form-item>
-        <el-form-item label="上级部门:" prop="Pid">
-          <el-input v-model="editForm.Pid" auto-complete="off"></el-input>
+        <el-form-item label="上级部门:">
+            <el-select v-model="editForm.Pid" placeholder="请选择">
+                <el-option v-for="item in departments" :key="item.Name" :label="item.Name" :value="item.Id">
+                  {{item.Name}}</el-option>
+            </el-select>
         </el-form-item>
         <el-form-item label="排序:">
           <el-input-number v-model="editForm.Sort"></el-input-number>
@@ -370,6 +376,7 @@ export default {
         getObj: "GetYsdatabaseYsDepartment", //获取对象（单个）
         getRolesList: "GetListYsdatabaseYsRole" //获取角色
       },
+      departments: [],
       tableLabel: [
         { type: "selection", width: "50" },
         { Label: "ID", prop: "id", width: "50", type: "index" },
@@ -474,27 +481,26 @@ export default {
     };
   },
   methods: {
+        //搜索
+    handleSelectChange (value) {
+      this.selectValue = value
+      // this.form.setFieldsValue({
+      //   note: `Hi, ${value === 'male' ? 'man' : 'lady'}!`,
+      // })
+    },
     // 显示编辑界面
     onEdit(row) {
-      console.log (row)
       this.dialogStatus = "update";
       this.dialogFormVisibleEdit = true;
-      // this.$refs["editForm"].resetFields(); //重置editForm
-      this.editForm = {},
-      this.editForm = Object.assign({}, row);
-      let paert = {
-        Pid: -1
-      };
-      this.para.Data = JSON.stringify(paert);
-      this.para.Code = this.bllCode.getList;
+      this.editForm = {};
+      const paraId = {
+        Id: row.Key,
+      }; 
+      this.para.Code = 'GetYsdatabaseYsDepartment';
+      this.para.Data = JSON.stringify(paraId);
       handlePost(this.para).then(res => {
         if (res.IsSuccess == true) {
-          this.ListsuperiorMenu = res.Data;
-          let top = {
-            Id: 0,
-            Name: "无"
-          };
-          this.ListsuperiorMenu.push(top);
+          this.editForm = Object.assign({}, res.Data);
         }
       });
     },
@@ -624,7 +630,12 @@ export default {
                 message: "删除成功！",
                 type: "success"
               });
-            }
+            }else {
+                  this.$message({
+                    message: res.Code + ':' + res.Message,
+                    type: "warning"
+                  });
+                }
           });
         })
         .catch(() => {});
@@ -654,28 +665,19 @@ export default {
 
     // 显示添加界面
     handleAdd() {
+      this.editForm = {};
       this.dialogStatus = "create";
       this.dialogFormVisibleAdd = true;
-      // this.$refs["editForm"].resetFields(); //重置editForm
-      this.editForm = {
-
-      };
-
-      let paert = {
-        Pid: -1
-      };
-      this.para.Data = JSON.stringify(paert);
-      this.para.Code = this.bllCode.getList;
-      console.log(this.para);
+      this.para.Code = 'GetListYsdatabaseYsDepartment';      
       handlePost(this.para).then(res => {
         if (res.IsSuccess == true) {
-          this.ListsuperiorMenu = res.Data.List;
-          let top = {
-            Id: 0,
-            Name: "无"
-          };
-          this.ListsuperiorMenu.push(top);
-        }
+          this.departments = res.Data.List;
+        }else {
+                  this.$message({
+                    message: res.Code + ':' + res.Message,
+                    type: "warning"
+                  });
+                }
       });
     },
     // 编辑
@@ -704,6 +706,10 @@ export default {
               } else {
                 this.$refs["editForm"].resetFields();
                 this.dialogFormVisibleEdit = false;
+                  this.$message({
+                    message: res.Code + ':' + res.Message,
+                    type: "warning"
+                  });
               }
             });
           });
@@ -738,6 +744,10 @@ export default {
                 } else {
                   this.$refs["editForm"].resetFields();
                   this.dialogFormVisibleAdd = false;
+                  this.$message({
+                    message: res.Code + ':' + res.Message,
+                    type: "warning"
+                  });
                 }
               });
             })

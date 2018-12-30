@@ -354,8 +354,8 @@ export default {
       tableLabel: [
         { type: "selection", width: "50" },
         { Label: "ID", prop: "Id", width: "50", type: "index" },
-        { Label: "图标", prop: "Icon", width: "50" },
-        { Label: "按钮名称", prop: "Name", width: "100" },
+        { Label: "图标", prop: "Icon", width: "100" },
+        { Label: "按钮名称", prop: "Name", width: "200" },
         // { Label: "权限标识", prop: "Url"},
         // { Label: "排序", prop: "Sort", width: "50" },
         {Label:'说明',prop:"beizhu"},
