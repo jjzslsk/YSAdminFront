@@ -887,9 +887,9 @@ export default {
       console.log('selected', selectedKeys, info)
       // console.log ('nooooooo',info.node.title)
       // console.log ('nooooooo',info.node.$options.propsData.dataRef.Key)
-      this.TreeId = info.node.$options.propsData.dataRef.Key
+      this.TreeId = info.node.dataRef.Key
       console.log ('nooooooo',this.TreeId)
-      this.getTreeList(info.node.$options.propsData.dataRef.Key)
+      this.getTreeList(info.node.dataRef.Key)
 
     },
     //
@@ -1032,7 +1032,7 @@ export default {
               const paraData = {
                 Del: "删除",
                 Edit: "编辑",
-                key: "0",
+                Key: "",
                 title: "全部",
               }
               this.dataList.unshift(paraData)
@@ -1052,7 +1052,24 @@ export default {
     getTreeList(data) {
       //取列表
       var numberData = parseInt (data)
-      const paraSelect = {
+      if(data.length < 1){
+        const paraSelect = {
+        Page: this.page,
+        Size: 10
+      };
+      this.para.Code = 'GetListYsdatabaseYsAdmin';
+      this.para.Data = JSON.stringify(paraSelect);
+      handlePost(this.para)
+        .then(res => {
+          if (res.IsSuccess == true) {
+            this.total = res.Data.Count;
+            this.users = res.Data.List;
+          }
+
+        })
+      }
+      else {
+        const paraSelect = {
         DepartmentId:numberData,
         Page: this.page,
         Size: 10
@@ -1068,11 +1085,7 @@ export default {
 
 
         })
-        .catch(err => {
-          console.log(err);
-        });
-
-    
+      }
     },
     //
     

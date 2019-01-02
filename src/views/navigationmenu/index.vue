@@ -331,6 +331,7 @@ const columnsTree = [
   Key: 'Name',
   dataIndex: 'Name',
   scopedSlots: { customRender: 'name' },
+  width: 160
 },
 {
   title: '图标',
@@ -357,6 +358,7 @@ const columnsTree = [
   Key: 'action',
   dataIndex: 'action',
   scopedSlots: { customRender: 'action' },
+  width: 200
 }];
 
 //表主体数据
