@@ -1,4 +1,7 @@
 <template>
+      <a-locale-provider :locale="locale">
+
+
   <div id="app">
         <!--登入动画-->
     <transition name="rotate-fall">
@@ -28,18 +31,26 @@
       </div>
   </body> -->
   </div>
+    </a-locale-provider>
+
 </template>
 <script>
+import zhCN from 'ant-design-vue/lib/locale-provider/zh_CN'
 import { mainSidebar,contentWrapper,mainFooter,controlSidebar,headerTop } from './components/Modular/'
 export default {
   name: 'App',
-    components: {
-      headerTop,
-    mainSidebar,
-    contentWrapper,
-    mainFooter,
-    controlSidebar
-  },
+  data () {
+      return {
+        locale: zhCN,
+      }
+    },
+  //   components: {
+  //     headerTop,
+  //   mainSidebar,
+  //   contentWrapper,
+  //   mainFooter,
+  //   controlSidebar
+  // },
 }
   // $.widget.bridge('uibutton', $.ui.button);
 

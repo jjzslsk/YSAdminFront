@@ -96,7 +96,7 @@
     </el-card>
     </el-col>
 
-        <a-modal title="分配按钮" v-model="dialogFormVisibleRoles" @ok="dialogFormVisibleRoles = true" @click="dialogFormVisibleRoles = true">
+        <a-modal title="分配角色" v-model="dialogFormVisibleRoles" @ok="dialogFormVisibleRoles = true" @click="dialogFormVisibleRoles = true">
       <template>
         <a-transfer
           :titles="['未选角色', '已选角色']"

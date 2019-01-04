@@ -972,7 +972,7 @@ export default {
         .catch(() => {});
     },
 
-        //双击编辑
+    //双击编辑
     Rowdblclick(val) {
       this.currentRow = val;
       this.getDataList();

@@ -6,12 +6,18 @@
         <template>
           <a-card style="margin-bottom:1.6rem;">
          <template>
-          <a-form layout='inline'>
+          <a-form @submit="handleSearch" :form="form" layout='inline'>
             <a-form-item label='操作人' >
             <a-input />
             </a-form-item>
             <a-form-item label='操作时间' >
-            <a-date-picker style="width: 40%"/>&nbsp;-&nbsp;<a-date-picker style="width: 40%"/>
+              <a-range-picker
+                :showTime="{ format: 'HH:mm' }"
+                format="YYYY-MM-DD HH:mm"
+                :placeholder="['Start Time', 'End Time']"
+                @change="onChange"
+                @ok="onOk"
+              />
             </a-form-item>
             <a-form-item label='操作表' >
             <a-input />
@@ -179,49 +185,6 @@
       </div>
     </el-dialog>
 
-    <!--添加界面-->
-    <a-modal title="添加部门" @ok="handleOkAdd" @click="createData" v-model="dialogFormVisibleAdd">
-      <el-form :model="editForm" label-width="100px" :rules="editFormRules" ref="editForm">
-        <el-form-item label="部门名称:" prop="Name">
-          <el-input v-model="editForm.Name" auto-complete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="上级部门:" prop="Pid">
-          <el-input v-model="editForm.Pid" auto-complete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="排序:">
-          <el-input-number v-model="editForm.Sort"></el-input-number>
-        </el-form-item>
-        <el-form-item label="备注:" prop="Memo">
-          <el-input v-model="editForm.Memo" auto-complete="off"></el-input>
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <a-button @click.native="dialogFormVisibleAdd=false">{{button.cancel}}</a-button>
-        <a-button type="primary" @click="createData">{{button.add}}</a-button>
-      </div>
-    </a-modal>
-
-    <!--编辑界面-->
-    <a-modal title="编辑部门" @ok="handleOkEdit" @click="updateData" v-model="dialogFormVisibleEdit">
-      <el-form :model="editForm" label-width="100px" :rules="editFormRules" ref="editForm">
-        <el-form-item label="部门名称:" prop="Name">
-          <el-input v-model="editForm.Name" auto-complete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="上级部门:" prop="Pid">
-          <el-input v-model="editForm.Pid" auto-complete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="排序:">
-          <el-input-number v-model="editForm.Sort"></el-input-number>
-        </el-form-item>
-        <el-form-item label="备注:" prop="Memo">
-          <el-input v-model="editForm.Memo" auto-complete="off"></el-input>
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <a-button @click.native="dialogFormVisibleEdit=false">{{button.cancel}}</a-button>        
-        <a-button type="primary" @click="updateData">{{button.modify}}</a-button>        
-      </div>
-    </a-modal>
     </el-card>
   </section>
 </template>
@@ -367,6 +330,7 @@ export default {
         return data;
       };
     return {
+      form: this.$form.createForm(this),
             //穿梭框
         data: generateData(),
         value3: [1],
@@ -499,6 +463,23 @@ export default {
     };
   },
   methods: {
+
+    //提交查询表单
+    handleSearch  (e) {
+      e.preventDefault()
+      this.form.validateFields((error, values) => {
+        console.log('error', error)
+        console.log('Received values of form: ', values)
+      })
+    },
+    //时间选择
+    onChange(value, dateString) {
+      console.log('Selected Time: ', value);
+      console.log('Formatted Selected Time: ', dateString);
+    },
+    onOk(value) {
+      console.log('onOk: ', value);
+    },
         //搜索
     handleSelectChange (value) {
       this.selectValue = value
