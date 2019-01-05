@@ -34,12 +34,12 @@
           </span>
         </div> -->
 
-        <!-- <el-form-item style="float: right;"> -->
-          <!-- <a-button type="primary" @click="getKeyList">查询</a-button> -->
+        <el-form-item style="float: right;">
+          <a-button type="primary" @click="getKeyList">查询</a-button>
           <!-- <a-button type="primary" @click="getQueryList">1查询</a-button> -->
 
-        <!-- </el-form-item> -->
-        <!-- <el-form-item style="float: right;">
+        </el-form-item>
+        <el-form-item style="float: right;">
           <a-input-group compact>
             <a-select  @change="this.handleSelectChange" defaultValue="菜单名称" style="width: 40%">
                 <a-select-option value='Id'>Id</a-select-option>
@@ -52,7 +52,7 @@
             </a-select>
           <a-input style="width: 60%" defaultValue="" v-model="filters.data"/>
         </a-input-group>
-        </el-form-item> -->
+        </el-form-item>
         
       </el-form>
 
@@ -75,13 +75,9 @@
       </el-pagination>
     </el-col> -->
 
-      <a-table style="margin-top:2rem" defaultExpandAllRows :pagination="false" :columns="columnsTree" :dataSource="dataList">
+      <a-table defaultExpandAllRows :pagination="false" :columns="columnsTree" :dataSource="dataList">
           <a slot="name" slot-scope="text" href="javascript:;">{{text}}</a>
           <span slot="customTitle"><a-icon type="smile-o" /> Name</span>
-
-          <template slot="statu" slot-scope="text,record">
-              <a-badge v-if="record.Show==='√'" status="success" />
-          </template>
 
           <template slot="action" slot-scope="text, record">
             <a href="javascript:;" @click="allotButton(record.Key)">分配按钮</a>
@@ -168,7 +164,7 @@
       </div>
     </a-modal> -->
 
-    <a-modal class="amodalButton" title="分配按钮" v-model="dialogFormVisibleButton" @ok="handleOkButton" @click="allotMenuButton">
+    <a-modal title="分配按钮" v-model="dialogFormVisibleButton" @ok="handleOkButton" @click="allotIcon">
       <template>
         <a-transfer
           :titles="['未选按钮', '已选按钮']"
@@ -183,7 +179,7 @@
 
       <div slot="footer" class="dialog-footer">
         <a-button @click.native="dialogFormVisibleButton=false">取消</a-button>
-        <a-button type="primary" @click="allotMenuButton">确认</a-button>
+        <a-button type="primary" @click.native="dialogFormVisibleButton=false">确认</a-button>
       </div>
     </a-modal>
 
@@ -349,9 +345,11 @@ const columnsTree = [
   title: '链接地址',
   Key: 'Url',
   dataIndex: 'Url',
-},
-{ title: '显示状态', dataIndex: 'Show', key: 'Show', scopedSlots: { customRender: 'statu' } },
-,{
+},{
+  title: '是否显示',
+  Key: 'Show',
+  dataIndex: 'Show',
+},{
   title: '排序',
   Key: 'Sort',
   dataIndex: 'Sort',
@@ -361,8 +359,7 @@ const columnsTree = [
   dataIndex: 'action',
   scopedSlots: { customRender: 'action' },
   width: 200
-},
-];
+}];
 
 //表主体数据
 // const dataTree = [{
@@ -608,10 +605,6 @@ export default {
       chosen: false,
       key: "5",
       title: "导入",
-      },{
-      chosen: false,
-      key: "8",
-      title: "导出",
       },
       { chosen: true,
       key: "6",
@@ -621,10 +614,6 @@ export default {
       chosen: false,
       key: "7",
       title: "批量删除",
-      },{
-      chosen: false,
-      key: "9",
-      title: "批量添加",
       }, 
   ],
 
@@ -684,22 +673,6 @@ export default {
         .catch(() => {});
       // const dataSource = [...this.dataSource]
       // this.dataSource = dataSource.filter(item => item.key !== key)
-    },
-    //
-    allotMenuButton(){
-
-      this.$confirm("确认为该菜单分配按钮吗?", "提示", {
-        type: "warning",
-        confirmButtonText: "确定",
-        cancelButtonText: "取消"
-      })
-        .then(() => {
-          this.dialogFormVisibleButton=false
-                        this.$message({
-                message: "分配按钮-成功！",
-                type: "success"
-              });
-        })
     },
         // 显示编辑界面
     onEdit(row) {

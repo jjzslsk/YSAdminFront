@@ -2,34 +2,40 @@
   <section class="app-container">
     <el-card class="box-card">
         
-    <!--工具条-->
+
+
+          <!--工具条-->
       <el-form :inline="true" :model="filters" @submit.native.prevent>
-      
+          <a-button  v-if="buttons.selectshow==true" type="primary" v-on:click="getKeyList">刷新</a-button>
+          <a-button type="primary" @click="handleAdd">{{button.add}}</a-button>
+      <!-- <a-button type="danger" @click="batchRemove" :disabled="this.sels.length===0">{{button.batchRemove}}</a-button> -->
+          <!-- <a-button type="primary" @click="handleAdd">编辑</a-button> -->
+          <a-button type="primary" @click="Refresh">刷新</a-button>
+          <!-- <a-button type="primary" @click="allotButton">分配按钮</a-button> -->
+          <!-- <a-button type="primary" @click="allotMent">分配权限</a-button> -->
+      <!-- <a-button type="danger" @click="batchRemove" :disabled="this.sels.length===0">{{button.batchRemove}}</a-button> -->
       <el-form-item style="float: right;">
           <a-button type="primary" @click="getKeyList">查询</a-button>
         </el-form-item>
         <el-form-item style="float: right;">
           <a-input-group compact>
-            <a-select  @change="this.handleSelectChange" defaultValue="名称" style="width: 40%">
-                <a-select-option value='Name'>名称</a-select-option>
-                <!-- <a-select-option value='Sort'>排序</a-select-option>
-                <a-select-option value='Param'>参数</a-select-option> -->
+            <a-select  @change="this.handleSelectChange" defaultValue="部门名称" style="width: 40%">
+                <a-select-option value='Id'>Id</a-select-option>
+                <a-select-option value='Pid'>部门名称</a-select-option>
+                <a-select-option value='Url'>排序</a-select-option>
                 <!-- <a-select-option value='Name'>名称</a-select-option> -->
             </a-select>
           <a-input style="width: 60%" defaultValue="" v-model="filters.data"/>
         </a-input-group>
         </el-form-item>
-        <el-form-item style="float: right;">
-          <a-button  v-if="buttons.selectshow==true" type="primary" v-on:click="getKeyList">刷新</a-button>
-          <a-button type="primary" @click="handleAdd">添加字典</a-button>
-          <!-- <a-button type="primary" @click="handleAdd">编辑</a-button> -->
-          <a-button type="primary" @click="Refresh">刷新</a-button>
-          <!-- <a-button type="primary" @click="allotButton">分配按钮</a-button> -->
-          <!-- <a-button type="primary" @click="allotMent">权限</a-button> -->
-          <!-- <a-button type="primary" @click="allotRoles">角色</a-button> -->
-      <a-button type="danger" @click="batchRemove" :disabled="this.sels.length===0">{{button.batchRemove}}</a-button>
-      </el-form-item>
       </el-form>
+
+
+        <a-table defaultExpandAllRows :pagination="false" :columns="columnsTreeDictionary" :dataSource="dataList">
+          <!-- <a slot="name" slot-scope="text" href="javascript:;">{{text}}</a> -->
+
+          
+        </a-table>
 
     <!-- 部门树形 -->
   <!-- <el-col style="height:100%;width:20%;">
@@ -75,7 +81,7 @@
     <!-- <el-col style="width:80%;" class="UserTable"> -->
     <!-- <el-card class="box-card" > -->
 
-    <el-table @row-dblclick='Rowdblclick' :data="users" highlight-current-row @selection-change="selsChange" style="width: 100%;">
+    <!-- <el-table @row-dblclick='Rowdblclick' :data="users" highlight-current-row @selection-change="selsChange" style="width: 100%;">
       <el-table-column type="selection" width="55">
       </el-table-column>
       <el-table-column type="index" width="60">
@@ -96,13 +102,13 @@
           <a @click="handleDel(scope.$index, scope.row)">删除</a>
         </template>
       </el-table-column>
-    </el-table>
+    </el-table> -->
 
       <!--工具条-->
-    <el-col :span="24" class="toolbar"><el-pagination layout="prev, pager, next" @current-change="handleCurrentChange" :page-size="10" :total="total"
+    <!-- <el-col :span="24" class="toolbar"><el-pagination layout="prev, pager, next" @current-change="handleCurrentChange" :page-size="10" :total="total"
         style="float:right;">
       </el-pagination>
-    </el-col>
+    </el-col> -->
 
     <!-- </el-card> -->
     <!-- </el-col> -->
@@ -269,6 +275,18 @@ const DataSource = [{
   name: '数据来源',
 }];
 
+
+const columnsTreeDictionary= [
+//   {
+//   dataIndex: 'name',
+//   key: 'name',
+//   slots: { title: 'customTitle' },
+// }
+,{
+  title: '菜单名称',
+  key: 'title',
+  dataIndex: 'title',
+}];
 
 const columnsTree= [
 //   {
@@ -441,6 +459,8 @@ const treeData = [{
 export default {
   data() {
     return {
+
+      columnsTreeDictionary,
 
       DataSource,
       columnsData,
@@ -824,13 +844,14 @@ export default {
         Page: this.page,
         Size: 10
       };
-      this.para.Code = 'GetListYsdatabaseYsDictionary';
+      this.para.Code = 'GetTreeYsdatabaseYsDictionary';
       this.para.Data = JSON.stringify(paraSelect);
       handlePost(this.para)
         .then(res => {
           if (res.IsSuccess == true) {
-            this.total = res.Data.Count;
-            this.users = res.Data.List;
+            // this.total = res.Data.Count;
+            this.dataList = res.Data;
+            alert (this.dataList)
           }
           // this.para.Data = "";
           // this.para.Code = 'GetListYsdatabaseYsDepartment';          

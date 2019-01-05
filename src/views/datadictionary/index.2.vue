@@ -31,6 +31,13 @@
       </el-form-item>
       </el-form>
 
+
+        <a-table defaultExpandAllRows :pagination="false" :columns="columnsTreeDictionary" :dataSource="dataList">
+          <!-- <a slot="name" slot-scope="text" href="javascript:;">{{text}}</a> -->
+
+          
+        </a-table>
+
     <!-- 部门树形 -->
   <!-- <el-col style="height:100%;width:20%;">
   <el-card class="box-card"> -->
@@ -75,7 +82,7 @@
     <!-- <el-col style="width:80%;" class="UserTable"> -->
     <!-- <el-card class="box-card" > -->
 
-    <el-table @row-dblclick='Rowdblclick' :data="users" highlight-current-row @selection-change="selsChange" style="width: 100%;">
+    <!-- <el-table @row-dblclick='Rowdblclick' :data="users" highlight-current-row @selection-change="selsChange" style="width: 100%;">
       <el-table-column type="selection" width="55">
       </el-table-column>
       <el-table-column type="index" width="60">
@@ -96,13 +103,13 @@
           <a @click="handleDel(scope.$index, scope.row)">删除</a>
         </template>
       </el-table-column>
-    </el-table>
+    </el-table> -->
 
       <!--工具条-->
-    <el-col :span="24" class="toolbar"><el-pagination layout="prev, pager, next" @current-change="handleCurrentChange" :page-size="10" :total="total"
+    <!-- <el-col :span="24" class="toolbar"><el-pagination layout="prev, pager, next" @current-change="handleCurrentChange" :page-size="10" :total="total"
         style="float:right;">
       </el-pagination>
-    </el-col>
+    </el-col> -->
 
     <!-- </el-card> -->
     <!-- </el-col> -->
@@ -269,6 +276,18 @@ const DataSource = [{
   name: '数据来源',
 }];
 
+
+const columnsTreeDictionary= [
+//   {
+//   dataIndex: 'name',
+//   key: 'name',
+//   slots: { title: 'customTitle' },
+// }
+,{
+  title: '菜单名称',
+  key: 'title',
+  dataIndex: 'title',
+}];
 
 const columnsTree= [
 //   {
@@ -441,6 +460,8 @@ const treeData = [{
 export default {
   data() {
     return {
+
+      columnsTreeDictionary,
 
       DataSource,
       columnsData,
@@ -824,13 +845,14 @@ export default {
         Page: this.page,
         Size: 10
       };
-      this.para.Code = 'GetListYsdatabaseYsDictionary';
+      this.para.Code = 'GetTreeYsdatabaseYsDictionary';
       this.para.Data = JSON.stringify(paraSelect);
       handlePost(this.para)
         .then(res => {
           if (res.IsSuccess == true) {
-            this.total = res.Data.Count;
-            this.users = res.Data.List;
+            // this.total = res.Data.Count;
+            this.dataList = res.Data;
+            alert (this.dataList)
           }
           // this.para.Data = "";
           // this.para.Code = 'GetListYsdatabaseYsDepartment';          

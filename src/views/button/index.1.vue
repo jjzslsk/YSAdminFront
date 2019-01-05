@@ -3,43 +3,28 @@
     <el-card class="box-card">
         
     <!--工具条-->
-
-        <!--工具条-->
       <el-form :inline="true" :model="filters" @submit.native.prevent>
           <a-button  v-if="buttons.selectshow==true" type="primary" v-on:click="getKeyList">刷新</a-button>
           <a-button type="primary" @click="handleAdd">{{button.add}}</a-button>
           <!-- <a-button type="primary" @click="handleAdd">编辑</a-button> -->
           <a-button type="primary" @click="Refresh">刷新</a-button>
           <!-- <a-button type="primary" @click="allotButton">分配按钮</a-button> -->
-      <a-button
-        type="primary"
-        @click="start"
-        :disabled="!hasSelected"
-        :loading="loading"
-      >
-        批量删除
-        <template v-if="hasSelected">
-          {{`(${selectedRowKeys.length})`}}
-        </template>
-      </a-button>
+      <a-button type="danger" @click="batchRemove" :disabled="this.sels.length===0">{{button.batchRemove}}</a-button>
       <el-form-item style="float: right;">
           <a-button type="primary" @click="getKeyList">查询</a-button>
         </el-form-item>
         <el-form-item style="float: right;">
           <a-input-group compact>
             <a-select  @change="this.handleSelectChange" defaultValue="按钮名称" style="width: 40%">
-                <!-- <a-select-option value='Id'>Id</a-select-option> -->
+                <a-select-option value='Id'>Id</a-select-option>
                 <a-select-option value='Icon'>图标</a-select-option>
-                <a-select-option value='ClassName'>样式</a-select-option>
+                <a-select-option value='ClassName'>参数</a-select-option>
                 <a-select-option value='Name'>按钮名称</a-select-option>
             </a-select>
           <a-input style="width: 60%" defaultValue="" v-model="filters.data"/>
         </a-input-group>
         </el-form-item>
       </el-form>
-
-
-
 
     <!--列表--> 
       <!-- <a-table defaultExpandAllRows :pagination="false" size="small" :columns="columnsTree" :dataSource="dataTree" :rowSelection="rowSelectionTree">
@@ -53,7 +38,7 @@
           </span>
       </a-table> -->
 
-          <!-- <el-table @row-dblclick='Rowdblclick' stripe :data="dataList" highlight-current-row @selection-change="selsChange" style="width: 100%;">
+          <el-table @row-dblclick='Rowdblclick' stripe :data="dataList" highlight-current-row @selection-change="selsChange" style="width: 100%;">
             <el-table-column v-for="item in tableLabel" :key="item.Label" :label="item.Label" :prop="item.prop" :width='item.width' :type='item.type'>
             </el-table-column>
             <el-table-column label="操作" width="100" fixed="right">
@@ -62,53 +47,14 @@
                 <el-button type="text"  @click="handleDel(scope.$index, scope.row)">{{button.del}}</el-button>
               </template>
             </el-table-column>
-          </el-table> -->
+          </el-table>
 
           <!-- 分页 -->
-        <!-- <el-col :span="24" class="toolbar">
+        <el-col :span="24" class="toolbar">
       <el-pagination layout="prev, pager, next" @current-change="handleCurrentChange" :page-size="10" :total="total"
         style="float:right;">
       </el-pagination>
-    </el-col> -->
-    <a-table :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}" :pagination='false' :dataSource="dataList" :columns="columns">
-    <div slot="filterDropdown" slot-scope="{ setSelectedKeys, selectedKeys, confirm, clearFilters }" class='custom-filter-dropdown'>
-      <a-input
-        ref="searchInput"
-        placeholder='Search name'
-        :value="selectedKeys[0]"
-        @change="e => setSelectedKeys(e.target.value ? [e.target.value] : [])"
-        @pressEnter="() => handleSearch(selectedKeys, confirm)"
-      />
-      <a-button type='primary' @click="() => handleSearch(selectedKeys, confirm)">快速定位</a-button>
-      <a-button @click="() => handleReset(clearFilters)">取消</a-button>
-    </div>
-    <a-icon slot="filterIcon" slot-scope="filtered" type='smile-o' :style="{ color: filtered ? '#108ee9' : '#aaa' }" />
-    <template slot="customRender" slot-scope="text">
-      <span v-if="searchText">
-        <template v-for="(fragment, i) in text.split(new RegExp(`(?<=${searchText})|(?=${searchText})`, 'i'))">
-          <span v-if="fragment.toLowerCase() === searchText.toLowerCase()" :key="i" class="highlight">{{fragment}}</span>
-          <template v-else>{{fragment}}</template>
-        </template>
-      </span>
-      <template v-else>{{text}}</template>
-    </template>
-    <template slot="statu" slot-scope="text,record">
-        <a-badge v-if="record.Isvisiable" status="success" />
-    </template>
-    <template slot="action" slot-scope="text, record">
-            <a href="javascript:;" @click="onEdit(record)">编辑</a>
-            <a-divider type="vertical" />
-            <a href="javascript:;" @click="onDelete(record)">删除</a>
-          </template>
-  </a-table>
-
-    <a-pagination style="margin-top:2rem;text-align: right;" 
-    showSizeChanger
-     showQuickJumper 
-     v-model="current" 
-     :total="total"
-     :showTotal="(total, range) => ` 共${total}条记录 第 ${range[0]}/${range[1]}页` "
-      @showSizeChange="onShowSizeChange" />
+    </el-col>
 
         <!--图标-->
     <a-modal title="添加图标" @ok="handleOk" @click="allotIcon" v-model="dialogFormVisibleIcon" >
@@ -200,12 +146,9 @@
             <a-icon type="picture"  slot="append" @click="allotIcon"/>
           </el-input>
         </el-form-item>
-        <el-form-item label="是否显示:">
-          <a-switch @change='aSwitch' v-model="editForm.Isvisiable"/>
-        </el-form-item>
-        <!-- <el-form-item label="排序:">
+        <el-form-item label="排序:">
           <el-input-number v-model="editForm.Sort"></el-input-number>
-        </el-form-item> -->
+        </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <a-button  @click.native="dialogFormVisibleAdd=false">{{button.cancel}}</a-button>
@@ -227,12 +170,9 @@
             <a-icon type="picture"  slot="append" @click="allotIcon"/>
           </el-input>
         </el-form-item>
-        <el-form-item label="是否显示:">
-          <a-switch @change='aSwitch' v-model="editForm.Isvisiable"/>
-        </el-form-item>
-        <!-- <el-form-item label="排序:">
+        <el-form-item label="排序:">
           <el-input-number v-model="editForm.Sort"></el-input-number>
-        </el-form-item> -->
+        </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <a-button  @click.native="dialogFormVisibleEdit=false">{{button.cancel}}</a-button>        
@@ -251,29 +191,6 @@ import store from "@/store/index.js"; //引入本地存储
 import util from "@/utils/table.js";
 import { paraHelper } from "@/utils/para.js"; //请求参数格式
 import { handlePost, handleGet } from "@/api/apihelper.js";
-
-//列表
-const dataButton = [{
-  key: '1',
-  name: 'John Brown',
-  age: 32,
-  address: 'New York No. 1 Lake Park',
-}, {
-  key: '2',
-  name: 'Joe Black',
-  age: 42,
-  address: 'London No. 1 Lake Park',
-}, {
-  key: '3',
-  name: 'Jim Green',
-  age: 32,
-  address: 'Sidney No. 1 Lake Park',
-}, {
-  key: '4',
-  name: 'Jim Red',
-  age: 32,
-  address: 'London No. 2 Lake Park',
-}]
 
 const columnsTree = [
 //   {
@@ -392,16 +309,6 @@ const rowSelectionTree = {
 };
 
 export default {
-    watch:{
-      pageSize(val) {
-        console.log('pageSize',val);
-      },
-      current(val) {
-        console.log('current',val);
-        this.page = val;
-        this.getDataList();
-      }
-    },
   data() {
         // 穿梭框
         const generateData = _ => {
@@ -416,64 +323,7 @@ export default {
         }
         return data;
       };
-      
     return {
-      //批量选择
-      selectedRowKeys: [], // Check here to configure the default column
-      loading: false,
-      //分页
-      current:1,
-      //列表
-      dataButton,
-      searchText: '',
-            columns: [{
-        title: '按钮名称',
-        dataIndex: 'Name',
-        key: 'Name',
-        scopedSlots: {
-          filterDropdown: 'filterDropdown',
-          filterIcon: 'filterIcon',
-          customRender: 'customRender',
-        },
-        onFilter: (value, record) => record.name.toLowerCase().includes(value.toLowerCase()),
-        onFilterDropdownVisibleChange: (visible) => {
-          if (visible) {
-            setTimeout(() => {
-              this.$refs.searchInput.focus()
-            })
-          }
-        },
-      }, {
-        title: '图标',
-        dataIndex: 'Icon',
-        key: 'Icon',
-      },
-      { title: '状态', dataIndex: 'Isvisiable', key: 'Isvisiable', scopedSlots: { customRender: 'statu' } },
-      {
-        title: '样式',
-        dataIndex: 'Classname',
-        key: 'Classname',
-      },{
-        title: '操作',
-        Key: 'action',
-        dataIndex: 'action',
-        scopedSlots: { customRender: 'action' },
-        width: 200
-      }, 
-      // {
-      //   title: 'Address',
-      //   dataIndex: 'address',
-      //   key: 'address',
-      //   filters: [{
-      //     text: 'London',
-      //     value: 'London',
-      //   }, {
-      //     text: 'New York',
-      //     value: 'New York',
-      //   }],
-      //   onFilter: (value, record) => record.address.indexOf(value) === 0,
-      // }
-      ],
             //穿梭框
         data: generateData(),
         value3: [1],
@@ -544,7 +394,6 @@ export default {
       dataList: [], //主页数据
       total: 0,
       page: 1,
-      size:10,
       sels: [], // 列表选中列
       editFormRules: {
         Name: [
@@ -605,109 +454,7 @@ export default {
       }
     };
   },
-  computed: {
-    hasSelected() {
-      return this.selectedRowKeys.length > 0
-    }
-  },
   methods: {
-    //批量选择
-    start () {
-      this.loading = true;
-      // ajax request after empty completing
-      this.$confirm("确认执行删除操作吗？", "提示", {
-        type: "warning",
-        confirmButtonText: "确定",
-        cancelButtonText: "取消"
-      })
-      .then(() => {
-        setTimeout(() => {
-        this.loading = false;
-        // this.selectedRowKeys = [];
-
-      // this.idData = this.sels.map(item => item.id).toString();//转换为字符串
-      // var Ids = this.sels.map(item => item.Id);
-          const paraId = {
-            Ids: this.selectedRowKeys
-          };
-          this.para.Code = this.bllCode.del;
-          this.para.Data = JSON.stringify(paraId);
-          handlePost(this.para).then(res => {
-            this.getDataList();
-            this.$message({
-              message: "删除成功！",
-              type: "success"
-            });
-          });
-
-      }, 1000);
-        })
-
-
-      
-    },
-    onSelectChange (selectedRowKeys) {
-      console.log('selectedRowKeys changed: ', selectedRowKeys);
-      this.selectedRowKeys = selectedRowKeys
-    },
-        //是否显示
-    aSwitch(checked){
-      this.editForm.Isvisiable = checked
-    },
-            // 显示编辑界面
-    onEdit(row) {
-      // ----------
-      this.dialogStatus = "update";
-      this.dialogFormVisibleEdit = true;
-      this.editForm = {};
-      const paraId = {
-        Id: row.Id,
-      }; 
-      this.para.Code = 'GetYsdatabaseYsButton';
-      this.para.Data = JSON.stringify(paraId);
-      handlePost(this.para).then(res => {
-        if (res.IsSuccess == true) {
-      this.editForm = Object.assign({}, res.Data);
-
-
-        }
-      });
-    },
-        onDelete (data) {
-      console.log (data)
-        this.$confirm("确认删除该记录吗?", "提示", {
-        type: "warning",
-        confirmButtonText: "确定",
-        cancelButtonText: "取消"
-      })
-        .then(() => {
-          const paraId = {
-            Id: data.Id
-          };
-          this.para.Code = 'DelYsdatabaseYsButton';
-          this.para.Data = JSON.stringify(paraId);
-          handlePost(this.para).then(res => {
-            if (res.IsSuccess == true) {
-              this.getDataList();
-              this.$message({
-                message: "删除成功！",
-                type: "success"
-              });
-            }
-          });
-        })
-        .catch(() => {});
-    },
-    //列表
-    handleSearch (selectedKeys, confirm) {
-      confirm()
-      this.searchText = selectedKeys[0]
-    },
-
-    handleReset (clearFilters) {
-      clearFilters()
-      this.searchText = ''
-    },
     //窗口事件
     handleOk() {
       this.dialogFormVisibleIcon = false;
@@ -794,13 +541,6 @@ export default {
       this.page = val;
       this.getDataList();
     },
-    onShowSizeChange(current, pageSize) {
-        console.log('111',current, pageSize);
-        // this.page = val;
-        this.page = current;
-        this.size = pageSize;
-        this.getDataList();
-      },
         //搜索
     handleSelectChange (value) {
       this.selectValue = value
@@ -815,7 +555,7 @@ export default {
       const paraId = [{
         Page: this.page,
         Data: this.filters.data,
-        Size: this.size
+        Size: 10
       }];
 
       var keyMap = {
@@ -894,8 +634,9 @@ export default {
       this.dialogFormVisibleAdd = true;
       // this.$refs["editForm"].resetFields(); //重置editForm
       this.editForm = {
-        Isvisiable:true,
+
       };
+
       let paert = {
         Pid: -1
       };
@@ -1073,25 +814,4 @@ export default {
     transition: transform .3s ease-in-out,-webkit-transform .3s ease-in-out;
     will-change: transform;
 }
-/* ----------------------------------- */
-.custom-filter-dropdown {
-  padding: 8px;
-  border-radius: 6px;
-  background: #fff;
-  box-shadow: 0 1px 6px rgba(0, 0, 0, .2);
-}
-
-.custom-filter-dropdown input {
-  width: 130px;
-  margin-right: 8px;
-}
-
-.custom-filter-dropdown button {
-  margin-right: 8px;
-}
-
-.highlight {
-  color: #f50;
-}
-
 </style>

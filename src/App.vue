@@ -184,4 +184,12 @@ export default {
 .allotMent {
   width: 780px !important;
 }
+.amodalButton .ant-transfer{
+  text-align: center;
+}.amodalButton .ant-transfer-list{
+  text-align: initial;
+}
+.ant-pagination-total-text {
+  float: left;
+}
 </style>
