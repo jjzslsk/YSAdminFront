@@ -41,11 +41,43 @@
           </el-table>
 
           <!-- 分页 -->
-        <el-col :span="24" class="toolbar">
+        <!-- <el-col :span="24" class="toolbar">
       <el-pagination layout="prev, pager, next" @current-change="handleCurrentChange" :page-size="10" :total="total"
         style="float:right;">
       </el-pagination>
-    </el-col>
+    </el-col> -->
+
+        <a-table :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}" :pagination='false' :dataSource="dataList" :columns="columns">
+    <div slot="filterDropdown" slot-scope="{ setSelectedKeys, selectedKeys, confirm, clearFilters }" class='custom-filter-dropdown'>
+      <a-input
+        ref="searchInput"
+        placeholder='Search name'
+        :value="selectedKeys[0]"
+        @change="e => setSelectedKeys(e.target.value ? [e.target.value] : [])"
+        @pressEnter="() => handleSearch(selectedKeys, confirm)"
+      />
+      <a-button type='primary' @click="() => handleSearch(selectedKeys, confirm)">快速定位</a-button>
+      <a-button @click="() => handleReset(clearFilters)">取消</a-button>
+    </div>
+    <a-icon slot="filterIcon" slot-scope="filtered" type='smile-o' :style="{ color: filtered ? '#108ee9' : '#aaa' }" />
+    <template slot="customRender" slot-scope="text">
+      <span v-if="searchText">
+        <template v-for="(fragment, i) in text.split(new RegExp(`(?<=${searchText})|(?=${searchText})`, 'i'))">
+          <span v-if="fragment.toLowerCase() === searchText.toLowerCase()" :key="i" class="highlight">{{fragment}}</span>
+          <template v-else>{{fragment}}</template>
+        </template>
+      </span>
+      <template v-else>{{text}}</template>
+    </template>
+    <template slot="statu" slot-scope="text,record">
+        <a-badge v-if="record.Isvisiable" status="success" text="正常" />
+    </template>
+    <template slot="action" slot-scope="text, record">
+            <a href="javascript:;" @click="onEdit(record)">编辑</a>
+            <a-divider type="vertical" />
+            <a href="javascript:;" @click="onDelete(record)">删除</a>
+          </template>
+  </a-table>
 
 
 
@@ -354,6 +386,70 @@ export default {
         return data;
       };
     return {
+            //批量选择
+      selectedRowKeys: [], // Check here to configure the default column
+      selectedRows:[],
+      loading: false,
+      loadingRefresh: false,
+
+      //列表
+      // dataButton,
+      searchText: '',
+                  columns: [{
+        title: '名称',
+        dataIndex: 'Name',
+        key: 'Name',
+        scopedSlots: {
+          filterDropdown: 'filterDropdown',
+          filterIcon: 'filterIcon',
+          customRender: 'customRender',
+        },
+        onFilter: (value, record) => record.name.toLowerCase().includes(value.toLowerCase()),
+        onFilterDropdownVisibleChange: (visible) => {
+          if (visible) {
+            setTimeout(() => {
+              this.$refs.searchInput.focus()
+            })
+          }
+        },
+      }, {
+        title: '编号',
+        dataIndex: 'Id',
+        key: 'Id',
+      },{
+        title: '排序',
+        dataIndex: 'Sort',
+        key: 'Sort',
+      },
+      {
+        title: '备注',
+        dataIndex: 'Memo',
+        key: 'Memo',
+      },
+
+      // { title: '显示状态', dataIndex: 'Isvisiable', key: 'Isvisiable', scopedSlots: { customRender: 'statu' } },
+      {
+        title: '操作',
+        Key: 'action',
+        dataIndex: 'action',
+        scopedSlots: { customRender: 'action' },
+        width: 200
+      }, 
+      // {
+      //   title: 'Address',
+      //   dataIndex: 'address',
+      //   key: 'address',
+      //   filters: [{
+      //     text: 'London',
+      //     value: 'London',
+      //   }, {
+      //     text: 'New York',
+      //     value: 'New York',
+      //   }],
+      //   onFilter: (value, record) => record.address.indexOf(value) === 0,
+      // }
+      ],
+      
       checkboxModel:false,
       selectValue:'Name',
             //穿梭框
@@ -499,6 +595,26 @@ export default {
     };
   },
   methods: {
+        //列表
+    handleSearch (selectedKeys, confirm) {
+      confirm()
+      this.searchText = selectedKeys[0]
+    },
+
+    handleReset (clearFilters) {
+      clearFilters()
+      this.searchText = ''
+    },
+        onSelectChange (selectedRowKeys,selectedRows) {
+      this.selectedRows = []
+      console.log('selectedRowKeys changed: ', selectedRowKeys,selectedRows);
+      this.selectedRowKeys = selectedRowKeys
+       selectedRows.forEach(car =>{
+        this.selectedRows.push(car.Id)
+      })
+      console.log (this.selectedRows)
+      
+    },
     //表开关
     onChangeSwitch(text, record, index){
       console.log (text, record, index)

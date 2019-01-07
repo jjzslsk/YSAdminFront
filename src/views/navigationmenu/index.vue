@@ -80,7 +80,7 @@
           <span slot="customTitle"><a-icon type="smile-o" /> Name</span>
 
           <template slot="statu" slot-scope="text,record">
-              <a-badge v-if="record.Show==='√'" status="success" />
+              <a-badge v-if="record.Show==='√'" status="success" text="正常" />
           </template>
 
           <template slot="action" slot-scope="text, record">

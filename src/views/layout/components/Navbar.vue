@@ -2,7 +2,7 @@
   <el-menu class="navbar" mode="horizontal">
     <nx-hamburger class="hamburger-container" :toggleClick="toggleSideBar" :isActive="sidebar.opened"></nx-hamburger>
 
-    <!-- <nx-breadcrumb class="breadcrumb-container"></nx-breadcrumb> -->
+    <nx-breadcrumb class="breadcrumb-container"></nx-breadcrumb>
       <!-- <tags-view class="tags-view"></tags-view> -->
 
 

@@ -9,7 +9,7 @@
           <a-button  v-if="buttons.selectshow==true" type="primary" v-on:click="getKeyList">刷新</a-button>
           <a-button type="primary" @click="handleAdd">{{button.add}}</a-button>
           <!-- <a-button type="primary" @click="handleAdd">编辑</a-button> -->
-          <a-button type="primary" @click="Refresh">刷新</a-button>
+          <a-button type="primary" :loading="loadingRefresh" @click="Refresh">刷新</a-button>
           <!-- <a-button type="primary" @click="allotButton">分配按钮</a-button> -->
       <a-button
         type="primary"
@@ -93,7 +93,7 @@
       <template v-else>{{text}}</template>
     </template>
     <template slot="statu" slot-scope="text,record">
-        <a-badge v-if="record.Isvisiable" status="success" />
+        <a-badge v-if="record.Isvisiable" status="success" text="正常" />
     </template>
     <template slot="action" slot-scope="text, record">
             <a href="javascript:;" @click="onEdit(record)">编辑</a>
@@ -420,7 +420,9 @@ export default {
     return {
       //批量选择
       selectedRowKeys: [], // Check here to configure the default column
+      selectedRows:[],
       loading: false,
+      loadingRefresh: false,
       //分页
       current:1,
       //列表
@@ -448,12 +450,13 @@ export default {
         dataIndex: 'Icon',
         key: 'Icon',
       },
-      { title: '状态', dataIndex: 'Isvisiable', key: 'Isvisiable', scopedSlots: { customRender: 'statu' } },
       {
         title: '样式',
         dataIndex: 'Classname',
         key: 'Classname',
-      },{
+      },
+      { title: '显示状态', dataIndex: 'Isvisiable', key: 'Isvisiable', scopedSlots: { customRender: 'statu' } },
+      {
         title: '操作',
         Key: 'action',
         dataIndex: 'action',
@@ -628,16 +631,19 @@ export default {
       // this.idData = this.sels.map(item => item.id).toString();//转换为字符串
       // var Ids = this.sels.map(item => item.Id);
           const paraId = {
-            Ids: this.selectedRowKeys
+            Ids: this.selectedRows
           };
           this.para.Code = this.bllCode.del;
           this.para.Data = JSON.stringify(paraId);
           handlePost(this.para).then(res => {
+            if (res.IsSuccess == true) {
             this.getDataList();
             this.$message({
               message: "删除成功！",
               type: "success"
             });
+            this.selectedRowKeys = []
+            }
           });
 
       }, 1000);
@@ -646,9 +652,15 @@ export default {
 
       
     },
-    onSelectChange (selectedRowKeys) {
-      console.log('selectedRowKeys changed: ', selectedRowKeys);
+    onSelectChange (selectedRowKeys,selectedRows) {
+      this.selectedRows = []
+      console.log('selectedRowKeys changed: ', selectedRowKeys,selectedRows);
       this.selectedRowKeys = selectedRowKeys
+       selectedRows.forEach(car =>{
+        this.selectedRows.push(car.Id)
+      })
+      console.log (this.selectedRows)
+      
     },
         //是否显示
     aSwitch(checked){
@@ -720,11 +732,13 @@ export default {
     },
         //刷新页面
     Refresh() {
-      (this.filters = {
-        Page: 1,
-        Size: 15
-      }),
+        this.loadingRefresh = true;
+        setTimeout(() => {
+        this.loadingRefresh = false;
+        this.page = 1
+        this.current = 1
         this.getDataList();
+      }, 1000);
     },
         //穿梭框
     handleChange(value, direction, movedKeys) {
@@ -811,6 +825,7 @@ export default {
     // 获取列表
  
     getDataList() {
+      this.selectedRowKeys = []
       var dataSource = this.selectValue
       const paraId = [{
         Page: this.page,
