@@ -1,8 +1,6 @@
 <template>
   <section class="app-container">
     <el-card class="box-card">
-        
-    <!--工具条-->
 
         <!--工具条-->
       <el-form :inline="true" :model="filters" @submit.native.prevent>
@@ -82,7 +80,7 @@
       <a-button type='primary' @click="() => handleSearch(selectedKeys, confirm)">快速定位</a-button>
       <a-button @click="() => handleReset(clearFilters)">取消</a-button>
     </div>
-    <a-icon slot="filterIcon" slot-scope="filtered" type='smile-o' :style="{ color: filtered ? '#108ee9' : '#aaa' }" />
+    <a-icon slot="filterIcon" slot-scope="filtered" type='tag' :style="{ color: filtered ? '#108ee9' : '#aaa' }" />
     <template slot="customRender" slot-scope="text">
       <span v-if="searchText">
         <template v-for="(fragment, i) in text.split(new RegExp(`(?<=${searchText})|(?=${searchText})`, 'i'))">
@@ -545,9 +543,11 @@ export default {
       filters: {},
       ListsuperiorMenu: [],
       dataList: [], //主页数据
+      //分页初始化
       total: 0,
       page: 1,
       size:10,
+
       sels: [], // 列表选中列
       editFormRules: {
         Name: [
@@ -648,9 +648,6 @@ export default {
 
       }, 1000);
         })
-
-
-      
     },
     onSelectChange (selectedRowKeys,selectedRows) {
       this.selectedRows = []
@@ -710,7 +707,7 @@ export default {
         })
         .catch(() => {});
     },
-    //列表
+    //列表查询
     handleSearch (selectedKeys, confirm) {
       confirm()
       this.searchText = selectedKeys[0]
@@ -732,6 +729,7 @@ export default {
     },
         //刷新页面
     Refresh() {
+        this.filters = {}
         this.loadingRefresh = true;
         setTimeout(() => {
         this.loadingRefresh = false;
@@ -808,6 +806,7 @@ export default {
       this.page = val;
       this.getDataList();
     },
+    //分页操作
     onShowSizeChange(current, pageSize) {
         console.log('111',current, pageSize);
         // this.page = val;

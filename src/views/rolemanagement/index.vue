@@ -2,21 +2,31 @@
   <section class="app-container">
     <el-card class="box-card">
         
-    <!--工具条-->
+      <!--工具条-->
       <el-form :inline="true" :model="filters" @submit.native.prevent>
           <a-button  v-if="buttons.selectshow==true" type="primary" v-on:click="getKeyList">刷新</a-button>
           <a-button type="primary" @click="handleAdd">{{button.add}}</a-button>
           <!-- <a-button type="primary" @click="handleAdd">编辑</a-button> -->
-          <a-button type="primary" @click="Refresh">刷新</a-button>
+          <a-button type="primary" :loading="loadingRefresh" @click="Refresh">刷新</a-button>
+          <!-- <a-button type="primary" @click="allotMent">分配权限</a-button> -->
           <!-- <a-button type="primary" @click="allotButton">分配按钮</a-button> -->
-          <a-button type="primary" @click="allotMent">分配权限</a-button>
-      <a-button type="danger" @click="batchRemove" :disabled="this.sels.length===0">{{button.batchRemove}}</a-button>
+      <a-button
+        type="primary"
+        @click="start"
+        :disabled="!hasSelected"
+        :loading="loading"
+      >
+        批量删除
+        <template v-if="hasSelected">
+          {{`(${selectedRowKeys.length})`}}
+        </template>
+      </a-button>
       <el-form-item style="float: right;">
           <a-button type="primary" @click="getKeyList">查询</a-button>
         </el-form-item>
         <el-form-item style="float: right;">
           <a-input-group compact>
-            <a-select v-model="selectValue"  @change="this.handleSelectChange" defaultValue="名称" style="width: 40%">
+            <a-select  @change="this.handleSelectChange" defaultValue="名称" style="width: 40%">
                 <a-select-option value='Id'>Id</a-select-option>
                 <a-select-option value='Name'>名称</a-select-option>
                 <a-select-option value='Sort'>排序</a-select-option>
@@ -28,7 +38,7 @@
       </el-form>
 
     <!--列表--> 
-          <el-table @row-dblclick='Rowdblclick' stripe :data="dataList" highlight-current-row @selection-change="selsChange" style="width: 100%;">
+          <!-- <el-table @row-dblclick='Rowdblclick' stripe :data="dataList" highlight-current-row @selection-change="selsChange" style="width: 100%;">
             <el-table-column v-for="item in tableLabel" :key="item.Label" :label="item.Label" :prop="item.prop" :width='item.width' :type='item.type'>
             </el-table-column>
             <el-table-column label="操作" width="180" fixed="right">
@@ -38,7 +48,7 @@
                 <el-button type="text" ssize="mini" @click="handleDel(scope.$index, scope.row)">{{button.del}}</el-button>
               </template>
             </el-table-column>
-          </el-table>
+          </el-table> -->
 
           <!-- 分页 -->
         <!-- <el-col :span="24" class="toolbar">
@@ -59,7 +69,7 @@
       <a-button type='primary' @click="() => handleSearch(selectedKeys, confirm)">快速定位</a-button>
       <a-button @click="() => handleReset(clearFilters)">取消</a-button>
     </div>
-    <a-icon slot="filterIcon" slot-scope="filtered" type='smile-o' :style="{ color: filtered ? '#108ee9' : '#aaa' }" />
+    <a-icon slot="filterIcon" slot-scope="filtered" type='tag' :style="{ color: filtered ? '#108ee9' : '#aaa' }" />
     <template slot="customRender" slot-scope="text">
       <span v-if="searchText">
         <template v-for="(fragment, i) in text.split(new RegExp(`(?<=${searchText})|(?=${searchText})`, 'i'))">
@@ -73,11 +83,21 @@
         <a-badge v-if="record.Isvisiable" status="success" text="正常" />
     </template>
     <template slot="action" slot-scope="text, record">
+            <a href="javascript:;" @click="allotMent(record)">分配权限</a>
+            <a-divider type="vertical" />
             <a href="javascript:;" @click="onEdit(record)">编辑</a>
             <a-divider type="vertical" />
             <a href="javascript:;" @click="onDelete(record)">删除</a>
           </template>
   </a-table>
+
+      <a-pagination style="margin-top:2rem;text-align: right;" 
+    showSizeChanger
+     showQuickJumper 
+     v-model="current" 
+     :total="total"
+     :showTotal="(total, range) => ` 共${total}条记录 第 ${range[0]}/${range[1]}页` "
+      @showSizeChange="onShowSizeChange" />
 
 
 
@@ -371,6 +391,17 @@ const rowSelectionTree = {
 };
 
 export default {
+  //分页触发
+      watch:{
+      pageSize(val) {
+        console.log('pageSize',val);
+      },
+      current(val) {
+        console.log('current',val);
+        this.page = val;
+        this.getDataList();
+      }
+    },
   data() {
         // 穿梭框
         const generateData = _ => {
@@ -392,6 +423,8 @@ export default {
       loading: false,
       loadingRefresh: false,
 
+      //分页
+      current:1,
       //列表
       // dataButton,
       searchText: '',
@@ -521,8 +554,11 @@ export default {
       dialogFormVisibleEdit: false,
       ListsuperiorMenu: [],
       dataList: [], //主页数据
+      //分页初始化
       total: 0,
       page: 1,
+      size:10,
+
       sels: [], // 列表选中列
       editFormRules: {
         Name: [
@@ -594,7 +630,110 @@ export default {
       }
     };
   },
+    computed: {
+    hasSelected() {
+      return this.selectedRowKeys.length > 0
+    }
+  },
   methods: {
+        //分页操作
+    onShowSizeChange(current, pageSize) {
+        console.log('111',current, pageSize);
+        // this.page = val;
+        this.page = current;
+        this.size = pageSize;
+        this.getDataList();
+      },
+        //批量选择
+    start () {
+      this.loading = true;
+      // ajax request after empty completing
+      this.$confirm("确认执行删除操作吗？", "提示", {
+        type: "warning",
+        confirmButtonText: "确定",
+        cancelButtonText: "取消"
+      })
+      .then(() => {
+        setTimeout(() => {
+        this.loading = false;
+        // this.selectedRowKeys = [];
+
+      // this.idData = this.sels.map(item => item.id).toString();//转换为字符串
+      // var Ids = this.sels.map(item => item.Id);
+          const paraId = {
+            Ids: this.selectedRows
+          };
+          this.para.Code = this.bllCode.del;
+          this.para.Data = JSON.stringify(paraId);
+          handlePost(this.para).then(res => {
+            if (res.IsSuccess == true) {
+            this.getDataList();
+            this.$message({
+              message: "删除成功！",
+              type: "success"
+            });
+            this.selectedRowKeys = []
+            }
+          });
+
+      }, 1000);
+        })
+    },
+        //列表查询
+    handleSearch (selectedKeys, confirm) {
+      confirm()
+      this.searchText = selectedKeys[0]
+    },
+
+    handleReset (clearFilters) {
+      clearFilters()
+      this.searchText = ''
+    },
+                // 显示编辑界面
+    onEdit(row) {
+      // ----------
+      this.dialogStatus = "update";
+      this.dialogFormVisibleEdit = true;
+      this.editForm = {};
+      const paraId = {
+        Id: row.Id,
+      }; 
+      this.para.Code = 'GetYsdatabaseYsRole';
+      this.para.Data = JSON.stringify(paraId);
+      handlePost(this.para).then(res => {
+        if (res.IsSuccess == true) {
+      this.editForm = Object.assign({}, res.Data);
+
+
+        }
+      });
+    },
+    //表记录删除
+      onDelete (data) {
+      console.log (data)
+        this.$confirm("确认删除该记录吗?", "提示", {
+        type: "warning",
+        confirmButtonText: "确定",
+        cancelButtonText: "取消"
+      })
+        .then(() => {
+          const paraId = {
+            Id: data.Id
+          };
+          this.para.Code = 'DelYsdatabaseYsRole';
+          this.para.Data = JSON.stringify(paraId);
+          handlePost(this.para).then(res => {
+            if (res.IsSuccess == true) {
+              this.getDataList();
+              this.$message({
+                message: "删除成功！",
+                type: "success"
+              });
+            }
+          });
+        })
+        .catch(() => {});
+    },
         //列表
     handleSearch (selectedKeys, confirm) {
       confirm()
@@ -651,13 +790,15 @@ export default {
     handleOkData(){
       this.dialogFormVisibleData = false;
     },
-        //刷新页面
     Refresh() {
-      (this.filters = {
-        Page: 1,
-        Size: 15
-      }),
+        this.filters = {}
+        this.loadingRefresh = true;
+        setTimeout(() => {
+        this.loadingRefresh = false;
+        this.page = 1
+        this.current = 1
         this.getDataList();
+      }, 1000);
     },
         //穿梭框
     handleChange(value, direction, movedKeys) {
@@ -733,11 +874,12 @@ export default {
     },
     // 获取列表
     getDataList() {
+      this.selectedRowKeys = []
       var dataSource = this.selectValue
       const paraId = [{
         Page: this.page,
         Data: this.filters.data,
-        Size: 10
+        Size: this.size
       }];
 
       var keyMap = {
@@ -995,4 +1137,24 @@ export default {
 .allotMent {
   width: 600px !important;
 }
+.custom-filter-dropdown {
+  padding: 8px;
+  border-radius: 6px;
+  background: #fff;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, .2);
+}
+
+.custom-filter-dropdown input {
+  width: 130px;
+  margin-right: 8px;
+}
+
+.custom-filter-dropdown button {
+  margin-right: 8px;
+}
+
+.highlight {
+  color: #f50;
+}
+
 </style>
