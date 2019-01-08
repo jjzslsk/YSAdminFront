@@ -9,8 +9,8 @@
           <!-- <a-button type="primary" @click="handleAdd">编辑</a-button> -->
           <a-button type="primary" @click="Refresh">刷新</a-button>
           <!-- <a-button type="primary" @click="allotButton">分配按钮</a-button> -->
-          <a-button type="primary" @click="allotMent">权限</a-button>
-          <a-button type="primary" @click="allotRoles">角色</a-button>
+          <!-- <a-button type="primary" @click="allotMent">权限</a-button> -->
+          <!-- <a-button type="primary" @click="allotRoles">角色</a-button> -->
       <a-button type="danger" @click="batchRemove" :disabled="this.sels.length===0">{{button.batchRemove}}</a-button>
       <el-form-item style="float: right;">
           <a-button type="primary" @click="getKeyList">查询</a-button>
@@ -79,8 +79,10 @@
       </el-table-column>
       <el-table-column prop="Memo" label="备注" min-width="100">
       </el-table-column>
-      <el-table-column label="操作" fixed="right">
+      <el-table-column label="操作" fixed="right" width="160">
         <template slot-scope="scope">
+          <a @click="allotMent">权限</a>
+          <a @click="allotRoles">角色</a>
           <a @click="handleEdit(scope.$index, scope.row)">编辑</a>
           <a @click="handleDel(scope.$index, scope.row)">删除</a>
         </template>
@@ -92,6 +94,38 @@
         style="float:right;">
       </el-pagination>
     </el-col>
+
+        <a-table :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}" :pagination='false' :dataSource="dataList" :columns="columns">
+    <div slot="filterDropdown" slot-scope="{ setSelectedKeys, selectedKeys, confirm, clearFilters }" class='custom-filter-dropdown'>
+      <a-input
+        ref="searchInput"
+        placeholder='Search name'
+        :value="selectedKeys[0]"
+        @change="e => setSelectedKeys(e.target.value ? [e.target.value] : [])"
+        @pressEnter="() => handleSearch(selectedKeys, confirm)"
+      />
+      <a-button type='primary' @click="() => handleSearch(selectedKeys, confirm)">快速定位</a-button>
+      <a-button @click="() => handleReset(clearFilters)">取消</a-button>
+    </div>
+    <a-icon slot="filterIcon" slot-scope="filtered" type='tag' :style="{ color: filtered ? '#108ee9' : '#aaa' }" />
+    <template slot="customRender" slot-scope="text">
+      <span v-if="searchText">
+        <template v-for="(fragment, i) in text.split(new RegExp(`(?<=${searchText})|(?=${searchText})`, 'i'))">
+          <span v-if="fragment.toLowerCase() === searchText.toLowerCase()" :key="i" class="highlight">{{fragment}}</span>
+          <template v-else>{{fragment}}</template>
+        </template>
+      </span>
+      <template v-else>{{text}}</template>
+    </template>
+    <template slot="statu" slot-scope="text,record">
+        <a-badge v-if="record.Isvisiable" status="success" text="正常" />
+    </template>
+    <template slot="action" slot-scope="text, record">
+            <a href="javascript:;" @click="onEdit(record)">编辑</a>
+            <a-divider type="vertical" />
+            <a href="javascript:;" @click="onDelete(record)">删除</a>
+          </template>
+  </a-table>
 
     </el-card>
     </el-col>
@@ -559,6 +593,65 @@ const treeData = [{
 export default {
   data() {
     return {
+            //批量选择
+      selectedRowKeys: [], // Check here to configure the default column
+      selectedRows:[],
+      loading: false,
+      loadingRefresh: false,
+      //分页
+      current:1,
+      //列表
+      // dataButton,
+      searchText: '',
+            columns: [{
+        title: '按钮名称',
+        dataIndex: 'Name',
+        key: 'Name',
+        scopedSlots: {
+          filterDropdown: 'filterDropdown',
+          filterIcon: 'filterIcon',
+          customRender: 'customRender',
+        },
+        onFilter: (value, record) => record.name.toLowerCase().includes(value.toLowerCase()),
+        onFilterDropdownVisibleChange: (visible) => {
+          if (visible) {
+            setTimeout(() => {
+              this.$refs.searchInput.focus()
+            })
+          }
+        },
+      }, {
+        title: '图标',
+        dataIndex: 'Icon',
+        key: 'Icon',
+      },
+      {
+        title: '样式',
+        dataIndex: 'Classname',
+        key: 'Classname',
+      },
+      { title: '显示状态', dataIndex: 'Isvisiable', key: 'Isvisiable', scopedSlots: { customRender: 'statu' } },
+      {
+        title: '操作',
+        Key: 'action',
+        dataIndex: 'action',
+        scopedSlots: { customRender: 'action' },
+        width: 200
+      }, 
+      // {
+      //   title: 'Address',
+      //   dataIndex: 'address',
+      //   key: 'address',
+      //   filters: [{
+      //     text: 'London',
+      //     value: 'London',
+      //   }, {
+      //     text: 'New York',
+      //     value: 'New York',
+      //   }],
+      //   onFilter: (value, record) => record.address.indexOf(value) === 0,
+      // }
+      ],
       //表单
       formLayout: 'horizontal',
       form: this.$form.createForm(this),
@@ -766,7 +859,129 @@ export default {
       this.$refs.tree2.filter(val);
     }
   },
+    computed: {
+    hasSelected() {
+      return this.selectedRowKeys.length > 0
+    }
+  },
   methods: {
+        //批量选择
+    start () {
+      this.loading = true;
+      // ajax request after empty completing
+      this.$confirm("确认执行删除操作吗？", "提示", {
+        type: "warning",
+        confirmButtonText: "确定",
+        cancelButtonText: "取消"
+      })
+      .then(() => {
+        setTimeout(() => {
+        this.loading = false;
+        // this.selectedRowKeys = [];
+
+      // this.idData = this.sels.map(item => item.id).toString();//转换为字符串
+      // var Ids = this.sels.map(item => item.Id);
+          const paraId = {
+            Ids: this.selectedRows
+          };
+          this.para.Code = this.bllCode.del;
+          this.para.Data = JSON.stringify(paraId);
+          handlePost(this.para).then(res => {
+            if (res.IsSuccess == true) {
+            this.getDataList();
+            this.$message({
+              message: "删除成功！",
+              type: "success"
+            });
+            this.selectedRowKeys = []
+            }else {
+                  this.$message({
+                    message: res.Code + ':' + res.Message,
+                    type: "warning"
+                  });
+                }
+          });
+
+      }, 1000);
+        })
+    },
+    onSelectChange (selectedRowKeys,selectedRows) {
+      this.selectedRows = []
+      console.log('selectedRowKeys changed: ', selectedRowKeys,selectedRows);
+      this.selectedRowKeys = selectedRowKeys
+       selectedRows.forEach(car =>{
+        this.selectedRows.push(car.Id)
+      })
+      console.log (this.selectedRows)
+      
+    },
+        //是否显示
+    aSwitch(checked){
+      this.editForm.Isvisiable = checked
+    },
+            // 显示编辑界面
+    onEdit(row) {
+      // ----------
+      this.dialogStatus = "update";
+      this.dialogFormVisibleEdit = true;
+      this.editForm = {};
+      const paraId = {
+        Id: row.Id,
+      }; 
+      this.para.Code = 'GetYsdatabaseYsButton';
+      this.para.Data = JSON.stringify(paraId);
+      handlePost(this.para).then(res => {
+        if (res.IsSuccess == true) {
+      this.editForm = Object.assign({}, res.Data);
+        }else {
+                  this.$message({
+                    message: res.Code + ':' + res.Message,
+                    type: "warning"
+                  });
+                }
+      });
+    },
+    //删除
+        onDelete (data) {
+      console.log (data)
+        this.$confirm("确认删除该记录吗?", "提示", {
+        type: "warning",
+        confirmButtonText: "确定",
+        cancelButtonText: "取消"
+      })
+        .then(() => {
+          const paraId = {
+            Id: data.Id
+          };
+          this.para.Code = 'DelYsdatabaseYsButton';
+          this.para.Data = JSON.stringify(paraId);
+          handlePost(this.para).then(res => {
+            if (res.IsSuccess == true) {
+              this.getDataList();
+              this.$message({
+                message: "删除成功！",
+                type: "success"
+              });
+            }else {
+                  this.$message({
+                    message: res.Code + ':' + res.Message,
+                    type: "warning"
+                  });
+                }
+          });
+        })
+        .catch(() => {});
+    },
+    //列表查询
+    handleSearch (selectedKeys, confirm) {
+      confirm()
+      this.searchText = selectedKeys[0]
+    },
+
+    handleReset (clearFilters) {
+      clearFilters()
+      this.searchText = ''
+    },
     //表单
     handleSubmit (e) {
       e.preventDefault()
@@ -844,11 +1059,14 @@ export default {
     },
         //刷新页面
     Refresh() {
-      (this.filters = {
-        Page: 1,
-        Size: 15
-      }),
+        this.filters = {}
+        this.loadingRefresh = true;
+        setTimeout(() => {
+        this.loadingRefresh = false;
+        this.page = 1
+        this.current = 1
         this.getDataList();
+      }, 1000);
     },
         //穿梭框
     handleChange(value, direction, movedKeys) {
@@ -1384,7 +1602,7 @@ export default {
 } */
 .box-card {
   /* width: 480px; */
-  height: 68rem;
+  /* height: 68rem; */
 }
 
 </style>

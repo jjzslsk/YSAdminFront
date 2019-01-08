@@ -57,8 +57,15 @@
             <a-divider type="vertical" />
             <a href="javascript:;" @click="onDelete(record)">{{record.Del}}</a>
           </template>
-          
         </a-table>
+
+            <a-pagination style="margin-top:2rem;text-align: right;" 
+    showSizeChanger
+     showQuickJumper 
+     v-model="current" 
+     :total="total"
+     :showTotal="(total, range) => ` 共${total}条记录 第 ${range[0]}/${range[1]}页` "
+      @showSizeChange="onShowSizeChange" />
 
     
 
@@ -326,6 +333,13 @@ export default {
         return data;
       };
     return {
+            //批量选择
+      selectedRowKeys: [], // Check here to configure the default column
+      selectedRows:[],
+      loading: false,
+      loadingRefresh: false,
+      //分页
+      current:1,
           //图标
     allotIcon() {
       this.dialogFormVisibleIcon = true;
@@ -481,6 +495,25 @@ export default {
     };
   },
   methods: {
+        handleCurrentChange(val) {
+      this.page = val;
+      this.getDataList();
+    },
+    //分页操作
+    onShowSizeChange(current, pageSize) {
+        console.log('111',current, pageSize);
+        // this.page = val;
+        this.page = current;
+        this.size = pageSize;
+        this.getDataList();
+      },
+        //搜索
+    handleSelectChange (value) {
+      this.selectValue = value
+      // this.form.setFieldsValue({
+      //   note: `Hi, ${value === 'male' ? 'man' : 'lady'}!`,
+      // })
+    },
         //搜索
     handleSelectChange (value) {
       this.selectValue = value

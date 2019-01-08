@@ -591,6 +591,7 @@ export default {
         paixu: "",
         tubiao: ""
       },
+      //初始化搜索字段
       selectValue:'Name',
 
       filterdataListData: [],
@@ -643,7 +644,12 @@ export default {
               type: "success"
             });
             this.selectedRowKeys = []
-            }
+            }else {
+                  this.$message({
+                    message: res.Code + ':' + res.Message,
+                    type: "warning"
+                  });
+                }
           });
 
       }, 1000);
@@ -677,11 +683,15 @@ export default {
       handlePost(this.para).then(res => {
         if (res.IsSuccess == true) {
       this.editForm = Object.assign({}, res.Data);
-
-
-        }
+        }else {
+                  this.$message({
+                    message: res.Code + ':' + res.Message,
+                    type: "warning"
+                  });
+                }
       });
     },
+    //删除
         onDelete (data) {
       console.log (data)
         this.$confirm("确认删除该记录吗?", "提示", {
@@ -702,7 +712,12 @@ export default {
                 message: "删除成功！",
                 type: "success"
               });
-            }
+            }else {
+                  this.$message({
+                    message: res.Code + ':' + res.Message,
+                    type: "warning"
+                  });
+                }
           });
         })
         .catch(() => {});
@@ -762,7 +777,12 @@ export default {
       handlePost(this.para).then(res => {
         if (res.IsSuccess == true) {
       this.editForm = Object.assign({}, res.Data);
-        }
+        }else {
+                  this.$message({
+                    message: res.Code + ':' + res.Message,
+                    type: "warning"
+                  });
+                }
       });
     },
     //加载按钮
@@ -822,7 +842,6 @@ export default {
       // })
     },
     // 获取列表
- 
     getDataList() {
       this.selectedRowKeys = []
       var dataSource = this.selectValue
@@ -853,7 +872,12 @@ export default {
         if (res.IsSuccess == true) {
           this.total = res.Data.Count;
           this.dataList = res.Data.List;
-        }
+        }else {
+                  this.$message({
+                    message: res.Code + ':' + res.Message,
+                    type: "warning"
+                  });
+                }
       });
     },
 
@@ -881,6 +905,12 @@ export default {
                 type: "success"
               });
             }
+            else {
+                  this.$message({
+                    message: res.Code + ':' + res.Message,
+                    type: "warning"
+                  });
+                }
           });
         })
         .catch(() => {});
@@ -898,7 +928,13 @@ export default {
       handlePost(this.para).then(res => {
         if (res.IsSuccess == true) {
       this.editForm = Object.assign({}, res.Data);
-        }
+        }else {
+                  this.$message({
+                    message: res.Code + ':' + res.Message,
+                    type: "warning"
+                  });
+                }
+        
       });
     },
 
@@ -924,7 +960,12 @@ export default {
             Name: "无"
           };
           this.ListsuperiorMenu.push(top);
-        }
+        }else {
+                  this.$message({
+                    message: res.Code + ':' + res.Message,
+                    type: "warning"
+                  });
+                }
       });
     },
     // 编辑
@@ -953,6 +994,10 @@ export default {
               } else {
                 this.$refs["editForm"].resetFields();
                 this.dialogFormVisibleEdit = false;
+                  this.$message({
+                    message: res.Code + ':' + res.Message,
+                    type: "warning"
+                  });
               }
             });
           });
@@ -987,6 +1032,10 @@ export default {
                 } else {
                   this.$refs["editForm"].resetFields();
                   this.dialogFormVisibleAdd = false;
+                  this.$message({
+                    message: res.Code + ':' + res.Message,
+                    type: "warning"
+                  });
                 }
               });
             })
