@@ -6,8 +6,8 @@
       <el-form :inline="true" :model="filters" @submit.native.prevent>
           <el-button v-if="buttons.selectshow==true" type="primary" v-on:click="getKeyList">刷新</el-button>
           <a-button type="primary" @click="handleAdd">{{button.add}}</a-button>
+          <a-button type="primary" :loading="loadingRefresh" @click="Refresh">刷新</a-button>
           <!-- <a-button type="primary" @click="handleEdit">编辑</a-button> -->
-          <a-button type="primary" @click="Refresh">刷新</a-button>
         <!-- <el-form-item> -->
           <!-- <a-button type="primary" @click="allotButton">获取菜单按钮</a-button> -->
         <!-- </el-form-item> -->
@@ -76,8 +76,30 @@
     </el-col> -->
 
       <a-table style="margin-top:2rem" defaultExpandAllRows :pagination="false" :columns="columnsTree" :dataSource="dataList">
-          <a slot="name" slot-scope="text" href="javascript:;">{{text}}</a>
-          <span slot="customTitle"><a-icon type="smile-o" /> Name</span>
+          <!-- <a slot="name" slot-scope="text" href="javascript:;">{{text}}</a> -->
+          <!-- <span slot="customTitle"><a-icon type="smile-o" /> Name</span> -->
+
+              <div slot="filterDropdown" slot-scope="{ setSelectedKeys, selectedKeys, confirm, clearFilters }" class='custom-filter-dropdown'>
+      <a-input
+        ref="searchInput"
+        placeholder='请输入名称'
+        :value="selectedKeys[0]"
+        @change="e => setSelectedKeys(e.target.value ? [e.target.value] : [])"
+        @pressEnter="() => handleSearch(selectedKeys, confirm)"
+      />
+      <a-button type='primary' @click="() => handleSearch(selectedKeys, confirm)">快速定位</a-button>
+      <a-button @click="() => handleReset(clearFilters)">取消</a-button>
+    </div>
+    <a-icon slot="filterIcon" slot-scope="filtered" type='tag' :style="{ color: filtered ? '#108ee9' : '#aaa' }" />
+    <template slot="customRender" slot-scope="text">
+      <span v-if="searchText">
+        <template v-for="(fragment, i) in text.split(new RegExp(`(?<=${searchText})|(?=${searchText})`, 'i'))">
+          <span v-if="fragment.toLowerCase() === searchText.toLowerCase()" :key="i" class="highlight">{{fragment}}</span>
+          <template v-else>{{fragment}}</template>
+        </template>
+      </span>
+      <template v-else>{{text}}</template>
+    </template>
 
           <template slot="statu" slot-scope="text,record">
               <a-badge v-if="record.Show==='√'" status="success" text="正常" />
@@ -90,8 +112,15 @@
             <a-divider type="vertical" />
             <a href="javascript:;" @click="onDelete(record)">{{record.Del}}</a>
           </template>
-          
         </a-table>
+
+            <a-pagination style="margin-top:2rem;text-align: right;" 
+    showSizeChanger
+     showQuickJumper 
+     v-model="current" 
+     :total="total"
+     :showTotal="(total, range) => ` 共${total}条记录 第 ${range[0]}/${range[1]}页` "
+      @showSizeChange="onShowSizeChange" />
 
         <!--图标-->
     <a-modal title="添加图标" @ok="handleOk" @click="allotIcon" v-model="dialogFormVisibleIcon" >
@@ -330,13 +359,33 @@ import { handlePost, handleGet } from "@/api/apihelper.js";
 
 //表头部
 const columnsTree = [
-,{
-  title: '菜单名称',
-  Key: 'Name',
-  dataIndex: 'Name',
-  scopedSlots: { customRender: 'name' },
-  width: 160
-},
+// {
+//   title: '菜单名称',
+//   Key: 'Name',
+//   dataIndex: 'Name',
+//   scopedSlots: { customRender: 'name' },
+//   width: 160
+// }
+{
+        title: '名称',
+        dataIndex: 'Name',
+        key: 'Name',
+        width: 180,
+        scopedSlots: {
+          filterDropdown: 'filterDropdown',
+          filterIcon: 'filterIcon',
+          customRender: 'customRender',
+        },
+        onFilter: (value, record) => record.name.toLowerCase().includes(value.toLowerCase()),
+        onFilterDropdownVisibleChange: (visible) => {
+          if (visible) {
+            setTimeout(() => {
+              this.$refs.searchInput.focus()
+            })
+          }
+        },
+      }
+,
 {
   title: '图标',
   Key: 'Icon',
@@ -445,6 +494,17 @@ const rowSelectionTree = {
 export default {
   data() {
     return {
+      searchText: '',
+      //初始化搜索字段
+      selectValue:'Name',
+            //批量选择
+      selectedRowKeys: [], // Check here to configure the default column
+      selectedRows:[],
+      loading: false,
+      loadingRefresh: false,
+      //分页
+      current:1,
+
       //按钮KEY
       buttonKey:'',
       //菜单按钮
@@ -569,7 +629,11 @@ export default {
       //查询条件
       filters: {},
       ids: [],
+      //分页初始化
+      total: 0,
       page: 1,
+      size:10,
+
       addFormVisible: false, // 添加界面是否显示
       addFormRules: {
         name: [
@@ -630,7 +694,7 @@ export default {
 
     };
   },
-
+  selectedKeys: [],
   selectedRowKeys: [], // Check here to configure the default column
   loading: false,
   computed: {
@@ -640,8 +704,55 @@ export default {
   },
 
 
+  watch: {
+        checkedKeys(val) {
+      console.log('onCheck', val)
+    },
+    filterText(val) {
+      this.$refs.tree2.filter(val);
+    },
 
+    pageSize(val) {
+        
+        console.log('pageSize',val);
+      },
+      current(val) {
+        console.log('current',val);
+        this.page = val;
+        this.getDataList();
+      }
+  },
+    computed: {
+    hasSelected() {
+      return this.selectedRowKeys.length > 0
+    }
+  },
   methods: {
+        //分页操作
+    onShowSizeChange(current, pageSize) {
+        console.log('111',current, pageSize);
+        // this.page = val;
+        this.page = current;
+        this.size = pageSize;
+        this.getDataList();
+      },
+        //搜索
+    handleSelectChange (value) {
+      this.selectValue = value
+      // this.form.setFieldsValue({
+      //   note: `Hi, ${value === 'male' ? 'man' : 'lady'}!`,
+      // })
+    },
+       //列表查询
+    handleSearch (selectedKeys, confirm) {
+      confirm()
+      this.searchText = selectedKeys[0]
+    },
+
+    handleReset (clearFilters) {
+      clearFilters()
+      this.searchText = ''
+    },
     start () {
       this.loading = true;
       // ajax request after empty completing
@@ -750,11 +861,14 @@ export default {
     },
         //刷新页面
     Refresh() {
-      (this.filters = {
-        Page: 1,
-        Size: 15
-      }),
+        this.filters = {}
+        this.loadingRefresh = true;
+        setTimeout(() => {
+        this.loadingRefresh = false;
+        this.page = 1
+        this.current = 1
         this.getDataList();
+      }, 1000);
     },
     //图标
     allotIcon() {
@@ -1229,5 +1343,25 @@ export default {
     transition: transform .3s ease-in-out;
     transition: transform .3s ease-in-out,-webkit-transform .3s ease-in-out;
     will-change: transform;
+}
+/* ----------------------------------- */
+.custom-filter-dropdown {
+  padding: 8px;
+  border-radius: 6px;
+  background: #fff;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, .2);
+}
+
+.custom-filter-dropdown input {
+  width: 130px;
+  margin-right: 8px;
+}
+
+.custom-filter-dropdown button {
+  margin-right: 8px;
+}
+
+.highlight {
+  color: #f50;
 }
 </style>

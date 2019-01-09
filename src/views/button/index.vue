@@ -72,7 +72,7 @@
     <div slot="filterDropdown" slot-scope="{ setSelectedKeys, selectedKeys, confirm, clearFilters }" class='custom-filter-dropdown'>
       <a-input
         ref="searchInput"
-        placeholder='Search name'
+        placeholder='请输入名称'
         :value="selectedKeys[0]"
         @change="e => setSelectedKeys(e.target.value ? [e.target.value] : [])"
         @pressEnter="() => handleSearch(selectedKeys, confirm)"

@@ -125,7 +125,7 @@
     <div slot="filterDropdown" slot-scope="{ setSelectedKeys, selectedKeys, confirm, clearFilters }" class='custom-filter-dropdown'>
       <a-input
         ref="searchInput"
-        placeholder='Search name'
+        placeholder='请输入名称'
         :value="selectedKeys[0]"
         @change="e => setSelectedKeys(e.target.value ? [e.target.value] : [])"
         @pressEnter="() => handleSearch(selectedKeys, confirm)"
@@ -321,8 +321,8 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click.native="dialogFormVisibleAddType=false">取消</el-button>
-        <el-button v-if="dialogStatus=='create'" type="primary" @click="createData">添加</el-button>
-        <el-button v-else type="primary" @click="updateData">修改</el-button>
+        <el-button v-if="dialogStatus=='create'" type="primary" @click="dialogFormVisibleAddType=false">添加</el-button>
+        <el-button v-else type="primary" @click="dialogFormVisibleAddType=false">修改</el-button>
       </div>
     </a-modal>
 
@@ -344,8 +344,8 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click.native="dialogFormVisibleEditType=false">取消</el-button>
-        <el-button v-if="dialogStatus=='create'" type="primary" @click="createData">添加</el-button>
-        <el-button v-else type="primary" @click="updateData">修改</el-button>
+        <el-button v-if="dialogStatus=='create'" type="primary" @click="dialogFormVisibleAddType=false">添加</el-button>
+        <el-button v-else type="primary" @click="dialogFormVisibleAddType=false">修改</el-button>
       </div>
     </a-modal>
 

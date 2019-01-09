@@ -7,11 +7,22 @@
           <a-button  v-if="buttons.selectshow==true" type="primary" v-on:click="getKeyList">刷新</a-button>
           <a-button type="primary" @click="handleAdd">{{button.add}}</a-button>
           <!-- <a-button type="primary" @click="handleAdd">编辑</a-button> -->
-          <a-button type="primary" @click="Refresh">刷新</a-button>
+          <a-button type="primary" :loading="loadingRefresh" @click="Refresh">刷新</a-button>          
           <!-- <a-button type="primary" @click="allotButton">分配按钮</a-button> -->
           <!-- <a-button type="primary" @click="allotMent">权限</a-button> -->
           <!-- <a-button type="primary" @click="allotRoles">角色</a-button> -->
-      <a-button type="danger" @click="batchRemove" :disabled="this.sels.length===0">{{button.batchRemove}}</a-button>
+      <a-button
+        type="primary"
+        @click="start"
+        :disabled="!hasSelected"
+        :loading="loading"
+      >
+        批量删除
+        <template v-if="hasSelected">
+          {{`(${selectedRowKeys.length})`}}
+        </template>
+      </a-button>
+
       <el-form-item style="float: right;">
           <a-button type="primary" @click="getKeyList">查询</a-button>
         </el-form-item>
@@ -19,8 +30,10 @@
           <a-input-group compact>
             <a-select  @change="this.handleSelectChange" defaultValue="名称" style="width: 40%">
                 <a-select-option value='Id'>Id</a-select-option>
-                <a-select-option value='Pid'>名称</a-select-option>
-                <a-select-option value='Url'>账号</a-select-option>
+                <a-select-option value='Name'>名称</a-select-option>
+                <a-select-option value='Username'>账号</a-select-option>
+                <a-select-option value='Mobile'>电话</a-select-option>
+                <a-select-option value='Memo'>备注</a-select-option>
                 <!-- <a-select-option value='Name'>名称</a-select-option> -->
             </a-select>
           <a-input style="width: 60%" defaultValue="" v-model="filters.data"/>
@@ -28,8 +41,10 @@
         </el-form-item>
       </el-form>
 
+    <!-- <a-row> -->
+
     <!-- 部门树形 -->
-  <el-col style="height:100%;margin-top: 2.5rem;" :span="4">
+  <a-col style="height:100%;margin-top: 2.5rem; width:14rem;float: left;padding-bottom:20px;">
   <el-card class="box-card">
   <!-- <div slot="header" class="clearfix">
     <el-input
@@ -40,7 +55,7 @@
   </div> -->
   <div class="text item">
     <template>
-      <a-tree
+      <a-tree style="height: 60rem;"
         defaultExpandAll
         :defaultSelectedKeys="['0']"
         @select="onSelect"
@@ -49,16 +64,13 @@
     </template>
   </div>
 </el-card>
+    </a-col>
 
-    </el-col>
-    <el-col :span="20" class="UserTable">
+    <a-col class="UserTable" style="margin-top: 2.5rem;">
     <el-card class="box-card">
-
-    <el-table @row-dblclick='Rowdblclick' :data="users" highlight-current-row @selection-change="selsChange" style="width: 100%;">
+    <!-- <el-table @row-dblclick='Rowdblclick' :data="users" highlight-current-row @selection-change="selsChange" style="width: 100%;">
       <el-table-column type="selection" width="55">
       </el-table-column>
-      <!-- <el-table-column type="index" width="60">
-      </el-table-column> -->
       <el-table-column prop="Id" label="Id" width="60">
       </el-table-column>
       <el-table-column prop="Name" label="名称" width="120">
@@ -67,8 +79,6 @@
       </el-table-column>
       <el-table-column prop="DepartmentName" label="部门名称" width="120">
       </el-table-column>
-      <!-- <el-table-column prop="Rolejson" label="角色名称" width="120">
-      </el-table-column> -->
       <el-table-column prop="Email" label="邮箱" width="120">
       </el-table-column>
       <el-table-column prop="Mobile" label="手机" width="120">
@@ -87,19 +97,19 @@
           <a @click="handleDel(scope.$index, scope.row)">删除</a>
         </template>
       </el-table-column>
-    </el-table>
+    </el-table> -->
 
       <!--工具条-->
-    <el-col :span="24" class="toolbar"><el-pagination layout="prev, pager, next" @current-change="handleCurrentChange" :page-size="10" :total="total"
+    <!-- <el-col :span="24" class="toolbar"><el-pagination layout="prev, pager, next" @current-change="handleCurrentChange" :page-size="10" :total="total"
         style="float:right;">
       </el-pagination>
-    </el-col>
+    </el-col> -->
 
-        <a-table :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}" :pagination='false' :dataSource="dataList" :columns="columns">
+        <a-table :scroll="{ x: 1300 }" :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}" :pagination='false' :dataSource="users" :columns="columns">
     <div slot="filterDropdown" slot-scope="{ setSelectedKeys, selectedKeys, confirm, clearFilters }" class='custom-filter-dropdown'>
       <a-input
         ref="searchInput"
-        placeholder='Search name'
+        placeholder='请输入名称'
         :value="selectedKeys[0]"
         @change="e => setSelectedKeys(e.target.value ? [e.target.value] : [])"
         @pressEnter="() => handleSearch(selectedKeys, confirm)"
@@ -117,18 +127,37 @@
       </span>
       <template v-else>{{text}}</template>
     </template>
-    <template slot="statu" slot-scope="text,record">
-        <a-badge v-if="record.Isvisiable" status="success" text="正常" />
+    <template slot="Issuper" slot-scope="text,record">
+        <a-badge v-if="record.Issuper" status="success" text="超管" />
+    </template>
+    <template slot="State" slot-scope="text,record">
+        <a-badge v-if="record.State" status="success" text="启用" />
     </template>
     <template slot="action" slot-scope="text, record">
+            <!-- <a-divider type="vertical" /> -->
+            <a href="javascript:;" @click="allotMent(record)">权限</a>
+            <!-- <a-divider type="vertical" /> -->
+            <a href="javascript:;" @click="allotRoles(record)">角色</a>
+            <!-- <a-divider type="vertical" /> -->
             <a href="javascript:;" @click="onEdit(record)">编辑</a>
-            <a-divider type="vertical" />
+            <!-- <a-divider type="vertical" /> -->
             <a href="javascript:;" @click="onDelete(record)">删除</a>
           </template>
   </a-table>
 
+    <a-pagination style="margin-top:2rem;text-align: right;" 
+    showSizeChanger
+     showQuickJumper 
+     v-model="current" 
+     :total="total"
+     :showTotal="(total, range) => ` 共${total}条记录 第 ${range[0]}/${range[1]}页` "
+      @showSizeChange="onShowSizeChange" />
+
+
     </el-card>
-    </el-col>
+    </a-col>
+
+  <!-- </a-row> -->
 
         <a-modal title="分配角色" v-model="dialogFormVisibleRoles" @ok="dialogFormVisibleRoles = true" @click="dialogFormVisibleRoles = true">
       <template>
@@ -593,6 +622,8 @@ const treeData = [{
 export default {
   data() {
     return {
+      //初始化搜索字段
+      selectValue:'Name',
             //批量选择
       selectedRowKeys: [], // Check here to configure the default column
       selectedRows:[],
@@ -604,9 +635,10 @@ export default {
       // dataButton,
       searchText: '',
             columns: [{
-        title: '按钮名称',
+        title: '名称',
         dataIndex: 'Name',
         key: 'Name',
+        width: 180,
         scopedSlots: {
           filterDropdown: 'filterDropdown',
           filterIcon: 'filterIcon',
@@ -621,22 +653,49 @@ export default {
           }
         },
       }, {
-        title: '图标',
-        dataIndex: 'Icon',
-        key: 'Icon',
+        title: 'Id',
+        dataIndex: 'Id',
+        key: 'Id',
+        width: 60,
       },
       {
-        title: '样式',
-        dataIndex: 'Classname',
-        key: 'Classname',
+        title: '账号',
+        dataIndex: 'Username',
+        key: 'Username',
+        width: 120,        
       },
-      { title: '显示状态', dataIndex: 'Isvisiable', key: 'Isvisiable', scopedSlots: { customRender: 'statu' } },
+      {
+        title: '部门名称',
+        dataIndex: 'DepartmentName',
+        key: 'DepartmentName',
+        width: 100,
+      },
+        { width: 100, title: '是否启用', dataIndex: 'State', key: 'State', scopedSlots: { customRender: 'State' } },
+        { width: 100, title: '是否超管', dataIndex: 'Issuper', key: 'Issuper', scopedSlots: { customRender: 'Issuper' } },
+      {
+        title: '邮箱',
+        dataIndex: 'Email',
+        key: 'Email',
+        width: 180
+      },
+      {
+        title: '手机',
+        dataIndex: 'Mobile',
+        key: 'Mobile',
+        width: 180
+      },
+      // {
+      //   title: '备注',
+      //   dataIndex: 'Memo',
+      //   key: 'Memo',
+      // },
       {
         title: '操作',
+        fixed: 'right',
         Key: 'action',
         dataIndex: 'action',
         scopedSlots: { customRender: 'action' },
-        width: 200
+        width: 160
       }, 
       // {
       //   title: 'Address',
@@ -716,7 +775,7 @@ export default {
         //接口标识，由后端提供
         add: "AddAdmin", //新增
         edit: "UpdateAdmin", //修改
-        del: "DelAdmin", //删除
+        del: "DelYsdatabaseYsAdmin", //删除
         getList: "GetYsdatabaseYsAdmin", //获取列表
         getObj: "GetSource", //获取对象（单个）
         getRolesList: "GetListYsdatabaseYsRole", //获取角色
@@ -750,8 +809,11 @@ export default {
       filters: {},
       users: [],
       userRoles: [],
+      //分页初始化
       total: 0,
       page: 1,
+      size:10,
+
       sels: [], // 列表选中列
       editFormRules: {
         mingcheng: [
@@ -857,14 +919,36 @@ export default {
     },
     filterText(val) {
       this.$refs.tree2.filter(val);
-    }
+    },
+
+    pageSize(val) {
+        
+        console.log('pageSize',val);
+      },
+      current(val) {
+        console.log('current',val);
+        this.page = val;
+        this.getDataList();
+      }
   },
-    computed: {
+      computed: {
     hasSelected() {
       return this.selectedRowKeys.length > 0
     }
   },
   methods: {
+            //分页操作
+    onShowSizeChange(current, pageSize) {
+        console.log('111',current, pageSize);
+        // this.page = val;
+        this.page = current;
+        this.size = pageSize;
+        this.getDataList();
+      },
+        //搜索
+    handleSelectChange (value) {
+      this.selectValue = value
+    },
         //批量选择
     start () {
       this.loading = true;
@@ -924,21 +1008,40 @@ export default {
       // ----------
       this.dialogStatus = "update";
       this.dialogFormVisibleEdit = true;
+      this.disabledZhangHao = true;
+      this.disabledMima = true;
       this.editForm = {};
       const paraId = {
         Id: row.Id,
       }; 
-      this.para.Code = 'GetYsdatabaseYsButton';
+            this.para.Code = 'GetYsdatabaseYsAdmin';
       this.para.Data = JSON.stringify(paraId);
       handlePost(this.para).then(res => {
         if (res.IsSuccess == true) {
       this.editForm = Object.assign({}, res.Data);
-        }else {
+          // this.dataList = res.Data;
+
+      this.para.Data = "";
+      this.para.Code = 'GetListYsdatabaseYsDepartment';
+      handlePost(this.para).then(res => {
+        if (res.IsSuccess == true) {
+          this.departments = res.Data.List;
+          this.para.Code = 'GetListYsdatabaseYsRole';
+          this.para.Data = '{}';
+          handlePost(this.para).then(res => {
+            if (res.IsSuccess == true) {
+              this.roles = res.Data.List;
+            }else {
                   this.$message({
                     message: res.Code + ':' + res.Message,
                     type: "warning"
                   });
                 }
+          });
+        }
+      });
+
+        }
       });
     },
     //删除
@@ -951,9 +1054,9 @@ export default {
       })
         .then(() => {
           const paraId = {
-            Id: data.Id
+            Ids: [data.Id]
           };
-          this.para.Code = 'DelYsdatabaseYsButton';
+          this.para.Code = this.bllCode.del;
           this.para.Data = JSON.stringify(paraId);
           handlePost(this.para).then(res => {
             if (res.IsSuccess == true) {
@@ -1156,14 +1259,6 @@ export default {
     handleOkEdit() {
       this.dialogFormVisibleEdit = false;
     },
-    //刷新页面
-    Refresh() {
-      (this.filters = {
-        Page: 1,
-        Size: 15
-      }),
-        this.getDataList();
-    },
     //多选角色
     handleChangeSelect(value) {
       console.log(`Selected: ${value}`);
@@ -1206,14 +1301,32 @@ export default {
     },
     // 获取用户列表
     getDataList() {
+      this.selectedRowKeys = []
+      var dataSource = this.selectValue
       //取列表
-      const paraSelect = {
-        Name:this.filters.data,
+            const paraId = [{
         Page: this.page,
-        Size: 10
-      };
+        Data: this.filters.data,
+        Size: this.size
+      }];
+
+            var keyMap = {
+            "Data" : dataSource,
+        };
+
+        for(var i = 0;i < paraId.length;i++){
+                var obj = paraId[i];
+                for(var key in obj){
+                          var newKey = keyMap[key];
+                          if(newKey){
+                                    obj[newKey] = obj[key];
+                                    delete obj[key];
+                            }
+                    }
+        }
+        
       this.para.Code = 'GetListYsdatabaseYsAdmin';
-      this.para.Data = JSON.stringify(paraSelect);
+      this.para.Data = JSON.stringify(paraId[0]);
       handlePost(this.para)
         .then(res => {
           if (res.IsSuccess == true) {
@@ -1604,5 +1717,24 @@ export default {
   /* width: 480px; */
   /* height: 68rem; */
 }
+/* ----------------------------------- */
+.custom-filter-dropdown {
+  padding: 8px;
+  border-radius: 6px;
+  background: #fff;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, .2);
+}
 
+.custom-filter-dropdown input {
+  width: 130px;
+  margin-right: 8px;
+}
+
+.custom-filter-dropdown button {
+  margin-right: 8px;
+}
+
+.highlight {
+  color: #f50;
+}
 </style>
