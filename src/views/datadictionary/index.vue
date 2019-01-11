@@ -1,10 +1,11 @@
 <template>
   <section class="app-container">
     <el-card class="box-card">
+    
         
     <!-- 部门树形 -->
   <el-col style="height:;width:18rem;position: relative;z-index: 99;">
-  <el-card class="box-card">
+  <el-card class="box-card" style="height: 62.8rem;">
   <!-- <div slot="header" class="clearfix">
     <el-input
       placeholder="快速查找部门"
@@ -20,7 +21,7 @@
 
   <div class="text item">
     <template>
-      <a-table :pagination='false' :columns="columnsData" :dataSource="DataSource" size="small" />
+      <a-table :bordered='false' :pagination='false' :columns="columnsData" :dataSource="DataSource" size="small" />
       
       <!-- <a-tree
       defaultExpandAll
@@ -144,7 +145,8 @@
       <template v-else>{{text}}</template>
     </template>
     <template slot="statu" slot-scope="text,record">
-        <a-badge v-if="record.State" status="success" text="正常" />
+        <a-badge v-if="record.State == true" status="success" text="正常" />
+         <a-badge v-if="record.State == false" status="error" text="停用" />
     </template>
     <template slot="action" slot-scope="text, record">
             <a href="javascript:;" @click="onEdit(record)">编辑</a>
@@ -349,7 +351,9 @@
       </div>
     </a-modal>
 
-
+    <a-divider orientation="left">字典规则</a-divider>
+    <p>以字典形式管理数据，对字典进行CRUD和分类展示</p>
+    <a-divider dashed />
     </el-card>
   </section>
 </template>

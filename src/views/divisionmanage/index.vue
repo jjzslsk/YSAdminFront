@@ -1,13 +1,15 @@
 <template>
   <section class="app-container">
     <el-card class="box-card">
+      
         
     <!--工具条-->
       <el-form :inline="true" :model="filters" @submit.native.prevent>
-          <a-button  v-if="buttons.selectshow==true" type="primary" v-on:click="getKeyList">刷新</a-button>
+          <!-- <a-button  v-if="buttons.selectshow==true" type="primary" v-on:click="getKeyList">刷新</a-button> -->
           <a-button type="primary" @click="handleAdd">{{button.add}}</a-button>
           <!-- <a-button type="primary" @click="handleAdd">编辑</a-button> -->
-          <a-button type="primary" @click="Refresh">刷新</a-button>
+          <!-- <a-button type="primary" @click="Refresh">刷新</a-button> -->
+          <a-button type="primary" :loading="loadingRefresh" @click="Refresh">刷新</a-button>
           <!-- <a-button type="primary" @click="allotButton">分配按钮</a-button> -->
           <!-- <a-button type="primary" @click="allotMent">分配权限</a-button> -->
       <!-- <a-button type="danger" @click="batchRemove" :disabled="this.sels.length===0">{{button.batchRemove}}</a-button> -->
@@ -49,6 +51,28 @@
           <a-table defaultExpandAllRows :pagination="false" :columns="columnsTree" :dataSource="dataList">
           <a slot="name" slot-scope="text" href="javascript:;">{{text}}</a>
           <!-- <span slot="customTitle"><a-icon type="smile-o" /> Name</span> -->
+
+              <div slot="filterDropdown" slot-scope="{ setSelectedKeys, selectedKeys, confirm, clearFilters }" class='custom-filter-dropdown'>
+                <a-input
+                  ref="searchInput"
+                  placeholder='请输入名称'
+                  :value="selectedKeys[0]"
+                  @change="e => setSelectedKeys(e.target.value ? [e.target.value] : [])"
+                  @pressEnter="() => handleSearch(selectedKeys, confirm)"
+                />
+                <a-button type='primary' @click="() => handleSearch(selectedKeys, confirm)">快速定位</a-button>
+                <a-button @click="() => handleReset(clearFilters)">取消</a-button>
+              </div>
+              <a-icon slot="filterIcon" slot-scope="filtered" type='tag' :style="{ color: filtered ? '#108ee9' : '#aaa' }" />
+              <template slot="customRender" slot-scope="text">
+                <span v-if="searchText">
+                  <template v-for="(fragment, i) in text.split(new RegExp(`(?<=${searchText})|(?=${searchText})`, 'i'))">
+                    <span v-if="fragment.toLowerCase() === searchText.toLowerCase()" :key="i" class="highlight">{{fragment}}</span>
+                    <template v-else>{{fragment}}</template>
+                  </template>
+                </span>
+                <template v-else>{{text}}</template>
+              </template>
 
           <template slot="action" slot-scope="text, record">
             <!-- <a href="javascript:;" @click="allotButton(record.Key)">分配按钮</a>
@@ -206,6 +230,9 @@
         <a-button type="primary" @click="updateData">{{button.modify}}</a-button>        
       </div>
     </a-modal>
+    <a-divider orientation="left">部门规则</a-divider>
+    <p>以部门树形展示方式，一级部门包含二级部门，用于用户管理分配所属集群</p>
+    <a-divider dashed />
     </el-card>
   </section>
 </template>
@@ -495,6 +522,26 @@ export default {
     };
   },
   methods: {
+        //列表查询
+    handleSearch (selectedKeys, confirm) {
+      confirm()
+      this.searchText = selectedKeys[0]
+    },
+        handleReset (clearFilters) {
+      clearFilters()
+      this.searchText = ''
+    },
+            //刷新页面
+    Refresh() {
+        this.filters = {}
+        this.loadingRefresh = true;
+        setTimeout(() => {
+        this.loadingRefresh = false;
+        this.page = 1
+        this.current = 1
+        this.getDataList();
+      }, 1000);
+    },
         handleCurrentChange(val) {
       this.page = val;
       this.getDataList();
@@ -564,14 +611,6 @@ export default {
         .catch(() => {});
       // const dataSource = [...this.dataSource]
       // this.dataSource = dataSource.filter(item => item.key !== key)
-    },
-        //刷新页面
-    Refresh() {
-      (this.filters = {
-        Page: 1,
-        Size: 15
-      }),
-        this.getDataList();
     },
         //穿梭框
     handleChange(value, direction, movedKeys) {

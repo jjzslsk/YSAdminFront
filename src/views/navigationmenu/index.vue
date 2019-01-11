@@ -1,7 +1,7 @@
 <template>
   <section class="app-container">
     <el-card class="box-card">
-        
+    
     <!--工具条-->
       <el-form :inline="true" :model="filters" @submit.native.prevent>
           <el-button v-if="buttons.selectshow==true" type="primary" v-on:click="getKeyList">刷新</el-button>
@@ -103,6 +103,7 @@
 
           <template slot="statu" slot-scope="text,record">
               <a-badge v-if="record.Show==='√'" status="success" text="正常" />
+              <a-badge v-if="record.Show==='X'" status="error" text="隐藏" />
           </template>
 
           <template slot="action" slot-scope="text, record">
@@ -169,7 +170,7 @@
     </a-modal>
 
             <!--按钮-->
-    <!-- <a-modal title="分配按钮" v-model="dialogFormVisibleButton" @ok="handleOkButton" @click="allotIcon">
+    <a-modal title="分配按钮" :width='800' class="amodalButton"  v-model="dialogFormVisibleButton" @ok="handleOkButton" @click="allotIcon">
           <div style="text-align: center" class="transferBox">
           <a-button type="primary" @click="GetYsMenuButton()">获取单个菜单按钮</a-button>
           <a-button type="primary" @click="GetYsMenuButtons">获取所有菜单按钮</a-button>
@@ -179,7 +180,7 @@
           <hr>
           ==============
           {{this.GetYsMenuButtonsData}}
-      <template>
+      <!-- <template>
         <a-transfer
           :dataSource="mockData"
           :filterOption="filterOption"
@@ -188,16 +189,77 @@
           :render="item=>item.title"
         >
         </a-transfer>
-      </template>
+      </template> -->
+
+              <a-form-item label=''>
+                <a-row :gutter="24">
+                  <a-col :span="3"> 导航菜单 </a-col>
+                  <a-col :span="21" style="float:left;text-align: left;">
+                    <a-checkbox :indeterminate="indeterminate" @change="onCheckAllChange" :checked="checkAll" >全选</a-checkbox>
+                    <a-checkbox-group  :options="plainOptions" v-model="checkedList" @change="onChangeCheckbox" />
+                  </a-col>
+                </a-row>
+                <a-row :gutter="24">
+                  <a-col :span="3"> 操作按钮 </a-col>
+                  <a-col :span="21" style="float:left;text-align: left;">
+                    <a-checkbox :indeterminate="indeterminate" @change="onCheckAllChange" :checked="checkAll" >全选</a-checkbox>
+                    <a-checkbox-group  :options="plainOptions" v-model="checkedList" @change="onChangeCheckbox" />
+                  </a-col>
+                </a-row>
+                <a-row :gutter="24">
+                  <a-col :span="3"> 角色管理 </a-col>
+                  <a-col :span="21" style="float:left;text-align: left;">
+                    <a-checkbox :indeterminate="indeterminate" @change="onCheckAllChange" :checked="checkAll" >全选</a-checkbox>
+                    <a-checkbox-group  :options="plainOptions" v-model="checkedList" @change="onChangeCheckbox" />
+                  </a-col>
+                </a-row>
+                <a-row :gutter="24">
+                  <a-col :span="3"> 用户管理 </a-col>
+                  <a-col :span="21" style="float:left;text-align: left;">
+                    <a-checkbox :indeterminate="indeterminate" @change="onCheckAllChange" :checked="checkAll" >全选</a-checkbox>
+                    <a-checkbox-group  :options="plainOptions" v-model="checkedList" @change="onChangeCheckbox" />
+                  </a-col>
+                </a-row>
+                <a-row :gutter="24">
+                  <a-col :span="3"> 部门管理 </a-col>
+                  <a-col :span="21" style="float:left;text-align: left;">
+                    <a-checkbox :indeterminate="indeterminate" @change="onCheckAllChange" :checked="checkAll" >全选</a-checkbox>
+                    <a-checkbox-group  :options="plainOptions" v-model="checkedList" @change="onChangeCheckbox" />
+                  </a-col>
+                </a-row>
+                <a-row :gutter="24">
+                  <a-col :span="3"> 数据字典 </a-col>
+                  <a-col :span="21" style="float:left;text-align: left;">
+                    <a-checkbox :indeterminate="indeterminate" @change="onCheckAllChange" :checked="checkAll" >全选</a-checkbox>
+                    <a-checkbox-group  :options="plainOptions" v-model="checkedList" @change="onChangeCheckbox" />
+                  </a-col>
+                </a-row>
+                <a-row :gutter="24">
+                  <a-col :span="3"> 操作日志 </a-col>
+                  <a-col :span="21" style="float:left;text-align: left;">
+                    <a-checkbox :indeterminate="indeterminate" @change="onCheckAllChange" :checked="checkAll" >全选</a-checkbox>
+                    <a-checkbox-group  :options="plainOptions" v-model="checkedList" @change="onChangeCheckbox" />
+                  </a-col>
+                </a-row>
+                <a-row :gutter="24">
+                  <a-col :span="3"> 系统设置 </a-col>
+                  <a-col :span="21" style="float:left;text-align: left;">
+                    <a-checkbox :indeterminate="indeterminate" @change="onCheckAllChange" :checked="checkAll" >全选</a-checkbox>
+                    <a-checkbox-group  :options="plainOptions" v-model="checkedList" @change="onChangeCheckbox" />
+                  </a-col>
+                </a-row>
+
+              </a-form-item>
+
       </div>
 
       <div slot="footer" class="dialog-footer">
         <a-button @click.native="dialogFormVisibleButton=false">取消</a-button>
         <a-button type="primary" @click.native="dialogFormVisibleButton=false">确认</a-button>
       </div>
-    </a-modal> -->
+    </a-modal>
 
-    <a-modal class="amodalButton" title="分配按钮" v-model="dialogFormVisibleButton" @ok="handleOkButton" @click="allotMenuButton">
+    <!-- <a-modal class="amodalButton" title="分配按钮" v-model="dialogFormVisibleButton" @ok="handleOkButton" @click="allotMenuButton">
       <template>
         <a-transfer
           :titles="['未选按钮', '已选按钮']"
@@ -214,7 +276,7 @@
         <a-button @click.native="dialogFormVisibleButton=false">取消</a-button>
         <a-button type="primary" @click="allotMenuButton">确认</a-button>
       </div>
-    </a-modal>
+    </a-modal> -->
 
     <!--添加界面-->
     <a-modal title="添加按钮" @ok="handleOkAdd" @click="createData" v-model="dialogFormVisibleAdd">
@@ -344,7 +406,11 @@
         <a-button type="primary" @click="updateData">{{button.modify}}</a-button>        
       </div>
     </a-modal>
+    <a-divider orientation="left">菜单规则</a-divider>
+    <p>规则通常对应一个控制器的方法,同时左侧的菜单栏数据也从规则中体现,通常建议通过命令行进行生成规则节点</p>
+    <a-divider dashed />
     </el-card>
+    
   </section>
 </template>
 <script>
@@ -356,6 +422,10 @@ import store from "@/store/index.js"; //引入本地存储
 import util from "@/utils/table.js";
 import { paraHelper } from "@/utils/para.js"; //请求参数格式
 import { handlePost, handleGet } from "@/api/apihelper.js";
+
+// 多选
+const plainOptions = ['查询','新增', '删除','导入','修改', '批量删除']
+const defaultCheckedList = ['新增', '查询']
 
 //表头部
 const columnsTree = [
@@ -494,6 +564,14 @@ const rowSelectionTree = {
 export default {
   data() {
     return {
+      // 多选
+      checkedList: defaultCheckedList,
+      indeterminate: true,
+      checkAll: false,
+      plainOptions,
+      // checkedLists:[],
+
+
       searchText: '',
       //初始化搜索字段
       selectValue:'Name',
@@ -728,6 +806,21 @@ export default {
     }
   },
   methods: {
+    // 多选
+    onChangeCheckbox (checkedList,checkedValues) {
+      // this.checkedLists = checkedList
+      console.log('checked = ', checkedList,checkedValues)
+      this.indeterminate = !!checkedList.length && (checkedList.length < plainOptions.length)
+      this.checkAll = checkedList.length === plainOptions.length
+    },
+    onCheckAllChange (e) {
+      // console.log (this.checkedLists)
+      Object.assign(this, {
+        checkedList: e.target.checked ? plainOptions : [],
+        indeterminate: false,
+        checkAll: e.target.checked,
+      })
+    },
         //分页操作
     onShowSizeChange(current, pageSize) {
         console.log('111',current, pageSize);

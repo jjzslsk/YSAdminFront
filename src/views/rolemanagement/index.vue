@@ -1,6 +1,7 @@
 <template>
   <section class="app-container">
     <el-card class="box-card">
+      
         
       <!--工具条-->
       <el-form :inline="true" :model="filters" @submit.native.prevent>
@@ -89,6 +90,79 @@
             <a-divider type="vertical" />
             <a href="javascript:;" @click="onDelete(record)">删除</a>
           </template>
+
+                          <div
+        slot="expandedRowRender"
+        slot-scope="record"
+        style="margin: 0">
+        <a-row
+          :gutter="24">
+          <a-col :span="12">
+            <a-col :lg="4" :md="24" style="margin-bottom: 12px;">
+              <span>用户管理：</span>
+            </a-col>
+            <a-col :lg="20" :md="24" style="margin-bottom: 12px;">
+              <a-tag color="cyan" >{{ record.description }}</a-tag>
+              <a-tag color="cyan" >查询</a-tag>
+              <a-tag color="cyan" >详情</a-tag>
+              <a-tag color="cyan" >修改</a-tag>
+              <a-tag color="cyan" >删除</a-tag>
+            </a-col>
+            <a-col :lg="4" :md="24" style="margin-bottom: 12px;">
+              <span>菜单管理：</span>
+            </a-col>
+            <a-col :lg="20" :md="24" style="margin-bottom: 12px;">
+              <a-tag color="cyan" >{{ record.description }}</a-tag>
+              <a-tag color="cyan" >查询</a-tag>
+              <a-tag color="cyan" >详情</a-tag>
+              <a-tag color="cyan" >修改</a-tag>
+              <a-tag color="cyan" >导入</a-tag>
+            </a-col>
+            <a-col :lg="4" :md="24" style="margin-bottom: 12px;">
+              <span>权限管理：</span>
+            </a-col>
+            <a-col :lg="20" :md="24" style="margin-bottom: 12px;">
+              <a-tag color="cyan" >{{ record.description }}</a-tag>
+              <a-tag color="cyan" >查询</a-tag>
+              <a-tag color="cyan" >详情</a-tag>
+              <a-tag color="cyan" >删除</a-tag>
+            </a-col>
+            <a-col :lg="4" :md="24" style="margin-bottom: 12px;">
+              <span>测试权限</span>
+            </a-col>
+            <a-col :span="20" style="margin-bottom: 12px;" >-</a-col>
+          </a-col>
+
+                    <a-col :span="12">
+            <a-col :lg="4" :md="24" style="margin-bottom: 12px;">
+              <span>角色管理：</span>
+            </a-col>
+            <a-col :lg="20" :md="24" style="margin-bottom: 12px;">
+              <a-tag color="cyan" >{{ record.description }}</a-tag>
+              <a-tag color="cyan" >查询</a-tag>
+              <a-tag color="cyan" >详情</a-tag>
+              <a-tag color="cyan" >修改</a-tag>
+              <a-tag color="cyan" >删除</a-tag>
+            </a-col>
+            <a-col :lg="4" :md="24" style="margin-bottom: 12px;">
+              <span>会员管理：</span>
+            </a-col>
+            <a-col :lg="20" :md="24" style="margin-bottom: 12px;">
+              <a-tag color="cyan" >{{ record.description }}</a-tag>
+              <a-tag color="cyan" >查询</a-tag>
+              <a-tag color="cyan" >详情</a-tag>
+              <a-tag color="cyan" >修改</a-tag>
+              <a-tag color="cyan" >删除</a-tag>
+            </a-col>
+            <a-col :lg="4" :md="24" style="margin-bottom: 12px;">
+              <span>测试权限：</span>
+            </a-col>
+            <a-col :lg="20" :md="24" style="margin-bottom: 12px;" >-</a-col>
+          </a-col>
+
+        </a-row>
+      </div>
+
   </a-table>
 
       <a-pagination style="margin-top:2rem;text-align: right;" 
@@ -238,6 +312,9 @@
         <a-button type="primary" @click="updateData">{{button.modify}}</a-button>
       </div>
     </a-modal>
+    <a-divider orientation="left">角色规则</a-divider>
+    <p>角色组可以有多个,角色有上下级层级关系,如果子角色有角色组和管理员的权限则可以派生属于自己组别的下级角色组或管理员</p>
+    <a-divider dashed />
     </el-card>
   </section>
 </template>
@@ -896,6 +973,8 @@ export default {
                             }
                     }
         }
+
+        
         
       this.para.Code = this.bllCode.getList;
       this.para.Data = JSON.stringify(paraId[0]);
@@ -903,6 +982,14 @@ export default {
         if (res.IsSuccess == true) {
           this.total = res.Data.Count;
           this.dataList = res.Data.List;
+
+          this.dataList.map((car)=>{
+              // var obj = {};
+              var key = "description";
+              var value = "添加"
+              eval("car." + key + "='" + value + "'");
+            })
+          
         }
       });
     },

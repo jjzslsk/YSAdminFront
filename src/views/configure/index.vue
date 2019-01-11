@@ -1,6 +1,6 @@
 <template>
   <section class="app-container">
-    <el-col :span="18">
+    <!-- <el-col :span="18"> -->
     <el-card class="box-card">
     <!--工具条-->
     <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
@@ -72,8 +72,11 @@
         </el-form-item>
       </el-form>
     </el-col>
+    <a-divider orientation="left">系统配置</a-divider>
+    <p>对数据库名称和类型进行配置,文件上传路径修改和清除服务器缓存</p>
+    <a-divider dashed />
     </el-card>
-  </el-col>
+  <!-- </el-col> -->
   </section>
 </template>
 
@@ -224,6 +227,6 @@ export default {
 
 <style scoped>
 .SubmissionForm {
-  margin: 1rem 0rem 2rem 20rem;
+  margin: 1rem 0rem 2rem 35.4rem;
 }
 </style>

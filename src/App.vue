@@ -190,6 +190,6 @@ export default {
   text-align: initial;
 }
 .ant-pagination-total-text {
-  float: left;
+  /* float: left; */
 }
 </style>

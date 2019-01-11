@@ -1,6 +1,7 @@
 <template>
   <section class="app-container">
     <el-card class="box-card">
+      
         
     <!--工具条-->
       <el-form :inline="true" :model="filters" @submit.native.prevent>
@@ -55,7 +56,7 @@
   </div> -->
   <div class="text item">
     <template>
-      <a-tree style="height: 60rem;"
+      <a-tree style="height: 54.1rem;"
         defaultExpandAll
         :defaultSelectedKeys="['0']"
         @select="onSelect"
@@ -128,10 +129,13 @@
       <template v-else>{{text}}</template>
     </template>
     <template slot="Issuper" slot-scope="text,record">
-        <a-badge v-if="record.Issuper" status="success" text="超管" />
+        <a-badge v-if="record.Issuper == true" status="success" text="超管" />
+         <a-badge v-if="record.Issuper == false" status="error" text="普通" />
+
     </template>
     <template slot="State" slot-scope="text,record">
-        <a-badge v-if="record.State" status="success" text="启用" />
+        <a-badge v-if="record.State == true" status="success" text="启用" />
+         <a-badge v-if="record.State == false" status="error" text="停用" />
     </template>
     <template slot="action" slot-scope="text, record">
             <!-- <a-divider type="vertical" /> -->
@@ -143,6 +147,80 @@
             <!-- <a-divider type="vertical" /> -->
             <a href="javascript:;" @click="onDelete(record)">删除</a>
           </template>
+
+          <!-- <p slot="expandedRowRender" slot-scope="record" style="margin: 0">{{record.description}}:</p> -->
+                <div
+        slot="expandedRowRender"
+        slot-scope="record"
+        style="margin: 0">
+        <a-row
+          :gutter="24">
+          <a-col :span="12">
+            <a-col :lg="4" :md="24" style="margin-bottom: 12px;">
+              <span>用户管理：</span>
+            </a-col>
+            <a-col :lg="20" :md="24" style="margin-bottom: 12px;">
+              <a-tag color="cyan" >{{ record.description }}</a-tag>
+              <a-tag color="cyan" >查询</a-tag>
+              <a-tag color="cyan" >详情</a-tag>
+              <a-tag color="cyan" >修改</a-tag>
+              <a-tag color="cyan" >删除</a-tag>
+            </a-col>
+            <a-col :lg="4" :md="24" style="margin-bottom: 12px;">
+              <span>菜单管理：</span>
+            </a-col>
+            <a-col :lg="20" :md="24" style="margin-bottom: 12px;">
+              <a-tag color="cyan" >{{ record.description }}</a-tag>
+              <a-tag color="cyan" >查询</a-tag>
+              <a-tag color="cyan" >详情</a-tag>
+              <a-tag color="cyan" >修改</a-tag>
+              <a-tag color="cyan" >导入</a-tag>
+            </a-col>
+            <a-col :lg="4" :md="24" style="margin-bottom: 12px;">
+              <span>权限管理：</span>
+            </a-col>
+            <a-col :lg="20" :md="24" style="margin-bottom: 12px;">
+              <a-tag color="cyan" >{{ record.description }}</a-tag>
+              <a-tag color="cyan" >查询</a-tag>
+              <a-tag color="cyan" >详情</a-tag>
+              <a-tag color="cyan" >删除</a-tag>
+            </a-col>
+            <a-col :lg="4" :md="24" style="margin-bottom: 12px;">
+              <span>测试权限</span>
+            </a-col>
+            <a-col :span="20" style="margin-bottom: 12px;" >-</a-col>
+          </a-col>
+
+                    <a-col :span="12">
+            <a-col :lg="4" :md="24" style="margin-bottom: 12px;">
+              <span>角色管理：</span>
+            </a-col>
+            <a-col :lg="20" :md="24" style="margin-bottom: 12px;">
+              <a-tag color="cyan" >{{ record.description }}</a-tag>
+              <a-tag color="cyan" >查询</a-tag>
+              <a-tag color="cyan" >详情</a-tag>
+              <a-tag color="cyan" >修改</a-tag>
+              <a-tag color="cyan" >删除</a-tag>
+            </a-col>
+            <a-col :lg="4" :md="24" style="margin-bottom: 12px;">
+              <span>会员管理：</span>
+            </a-col>
+            <a-col :lg="20" :md="24" style="margin-bottom: 12px;">
+              <a-tag color="cyan" >{{ record.description }}</a-tag>
+              <a-tag color="cyan" >查询</a-tag>
+              <a-tag color="cyan" >详情</a-tag>
+              <a-tag color="cyan" >修改</a-tag>
+              <a-tag color="cyan" >删除</a-tag>
+            </a-col>
+            <a-col :lg="4" :md="24" style="margin-bottom: 12px;">
+              <span>测试权限：</span>
+            </a-col>
+            <a-col :lg="20" :md="24" style="margin-bottom: 12px;" >-</a-col>
+          </a-col>
+
+        </a-row>
+      </div>
+
   </a-table>
 
     <a-pagination style="margin-top:2rem;text-align: right;" 
@@ -159,7 +237,7 @@
 
   <!-- </a-row> -->
 
-        <a-modal title="分配角色" v-model="dialogFormVisibleRoles" @ok="dialogFormVisibleRoles = true" @click="dialogFormVisibleRoles = true">
+        <a-modal title="分配角色" class="amodalButton" v-model="dialogFormVisibleRoles" @ok="dialogFormVisibleRoles = true" @click="dialogFormVisibleRoles = true">
       <template>
         <a-transfer
           :titles="['未选角色', '已选角色']"
@@ -435,6 +513,9 @@
         <el-button v-else type="primary" @click="updateData">修改</el-button>
       </div>
     </a-modal>
+    <a-divider orientation="left">用户管理</a-divider>
+    <p>一个管理员可以有多个角色组,左侧的菜单根据管理员所拥有的权限进行生成</p>
+    <a-divider dashed />
     </el-card>
   </section>
 </template>
@@ -1330,8 +1411,17 @@ export default {
       handlePost(this.para)
         .then(res => {
           if (res.IsSuccess == true) {
+            const description = {
+              description:'123'
+            }
             this.total = res.Data.Count;
             this.users = res.Data.List;
+            this.users.map((car)=>{
+              // var obj = {};
+              var key = "description";
+              var value = "添加"
+              eval("car." + key + "='" + value + "'");
+            })
           }
           console.log("userslist:", this.users);
           this.para.Data = "";

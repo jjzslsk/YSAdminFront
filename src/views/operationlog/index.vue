@@ -1,6 +1,7 @@
 <template>
   <section class="app-container">
     <el-card class="box-card">
+      
 
 
         <template>
@@ -184,7 +185,9 @@
         <a-button type="primary" @click.native="dialogFormVisibleButton=false">确认</a-button>
       </div>
     </el-dialog>
-
+<a-divider orientation="left">管理员日志</a-divider>
+    <p>管理员可以查看自己所拥有的权限的管理员日志</p>
+    <a-divider dashed />
     </el-card>
   </section>
 </template>
