@@ -4728,7 +4728,7 @@ export default {
   list-style: none;
   overflow: hidden;
 }
-ul.anticons-list li {
+.anticons-list li {
   float: left;
   width: 16.66%;
   /* width: 8.66%; */
