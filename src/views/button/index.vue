@@ -4186,7 +4186,7 @@ export default {
       console.log(event);
       this.editForm.Icon = event.target.parentElement.className
       console.log (this.editForm.Icon)
-      // this.dialogFormVisibleIcon = false
+      this.dialogFormVisibleIcon = false
     },
     //批量选择
     start() {
