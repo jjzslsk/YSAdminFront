@@ -4,7 +4,7 @@
     
     <!--工具条-->
       <el-form :inline="true" :model="filters" @submit.native.prevent>
-          <el-button v-if="buttons.selectshow==true" type="primary" v-on:click="getKeyList">刷新</el-button>
+          <!-- <el-button v-if="buttons.selectshow==true" type="primary" v-on:click="getKeyList">刷新</el-button> -->
           <a-button type="primary" @click="handleAdd">{{button.add}}</a-button>
           <a-button type="primary" :loading="loadingRefresh" @click="Refresh">刷新</a-button>
           <!-- <a-button type="primary" @click="handleEdit">编辑</a-button> -->
